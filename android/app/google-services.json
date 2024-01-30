@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "1062165223007",
+    "project_id": "omulimisa-64cf0",
+    "storage_bucket": "omulimisa-64cf0.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1062165223007:android:bf4ca9fee956f4b65aadea",
+        "android_client_info": {
+          "package_name": "m.omulimisa.uganda"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1062165223007-3oes0gfmsmtleq8rn0s4c6j8u9kvmmcp.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAyOUu5X1DzWSXWqF75FAa_uItBRSlAxVs"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1062165223007-3oes0gfmsmtleq8rn0s4c6j8u9kvmmcp.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
