@@ -1,3 +1,4 @@
+import 'package:chewie/chewie.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutx/flutx.dart';
@@ -20,11 +21,15 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen> {
   late VideoPlayerController _controller;
 
   bool isLoading = true;
+  ChewieController? chewieController = null;
+  Chewie? playerWidget;
 
   @override
   void initState() {
     super.initState();
-    SystemChrome.setEnabledSystemUIMode(SystemUiMode.manual, overlays: []);
+    //SystemChrome.setEnabledSystemUIMode(SystemUiMode.manual, overlays: []);
+
+    print(Uri.parse(widget.item.video_url).data.toString());
 
     widget.item.get_video_url();
     print(widget.item.video_url);
@@ -35,16 +40,27 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen> {
               try {
                 isLoading = false;
                 _controller.play();
+
+                chewieController = ChewieController(
+                  videoPlayerController: _controller,
+                  autoPlay: true,
+                  looping: true,
+                  fullScreenByDefault: true,
+                );
+                playerWidget = Chewie(
+                  controller: chewieController!,
+                );
+
                 setState(() {});
               } catch (e) {
-                isLoading = false;
-                setState(() {});
-                print(e);
-              }
-            }
-            // Ensure the first frame is shown after the video is initialized, even before the play button has been pressed.
+            isLoading = false;
             setState(() {});
-          });
+            print(e);
+          }
+        }
+        // Ensure the first frame is shown after the video is initialized, even before the play button has been pressed.
+        setState(() {});
+      });
   }
 
   @override
@@ -67,37 +83,41 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen> {
         backgroundColor: Colors.black,
       ),
       backgroundColor: Colors.black,
-      body: RotatedBox(
-        quarterTurns: 1,
-        child: _controller.value.isInitialized
-            ? AspectRatio(
-                aspectRatio: _controller.value.aspectRatio,
-                child: Stack(
-                  alignment: Alignment.bottomCenter,
-                  children: <Widget>[
-                    VideoPlayer(_controller),
-                    SizedBox(
-                      height: 20,
-                      child: VideoProgressIndicator(
-                        _controller,
-                        allowScrubbing: true,
-                        colors: const VideoProgressColors(
-                          playedColor: Colors.red,
-                          bufferedColor: CustomTheme.primary,
-                          backgroundColor: Colors.grey,
-                        ),
-                      ),
-                    ),
-                  ],
+      body: true
+          ? playerWidget == null
+              ? Text("Loading...")
+              : playerWidget
+          : RotatedBox(
+              quarterTurns: 1,
+              child: _controller.value.isInitialized
+                  ? AspectRatio(
+                      aspectRatio: _controller.value.aspectRatio,
+                      child: Stack(
+                        alignment: Alignment.bottomCenter,
+                        children: <Widget>[
+                          VideoPlayer(_controller),
+                          SizedBox(
+                            height: 20,
+                            child: VideoProgressIndicator(
+                  _controller,
+                  allowScrubbing: true,
+                  colors: const VideoProgressColors(
+                    playedColor: Colors.red,
+                    bufferedColor: CustomTheme.primary,
+                    backgroundColor: Colors.grey,
+                  ),
                 ),
-              )
-            : Container(
-                child: isLoading
-                    ? const CircularProgressIndicator(
-                        color: Colors.white,
-                      )
-                    : const Text('Error loading video'),
               ),
+            ],
+          ),
+        )
+            : Container(
+          child: isLoading
+              ? const CircularProgressIndicator(
+            color: Colors.white,
+          )
+              : const Text('Error loading video'),
+        ),
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
