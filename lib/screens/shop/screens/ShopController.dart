@@ -2,13 +2,13 @@
 // ignore: file_names
 import 'package:get/get.dart';
 import 'package:omulimisa2/models/LoggedInUserModel.dart';
+import 'package:omulimisa2/models/MovieModel.dart';
 
 import '../../../utils/Utilities.dart';
 import '../models/CartItem.dart';
 import '../models/ChatHead.dart';
 import '../models/OrderOnline.dart';
 import '../models/Product.dart';
-import '../models/ProductCategory.dart';
 
 class MainController extends GetxController {
   var count = 0.obs;
@@ -19,7 +19,7 @@ class MainController extends GetxController {
   RxList<dynamic> products = <Product>[].obs;
   RxList<dynamic> cartItems = <CartItem>[].obs;
   RxList<dynamic> myOrders = <OrderOnline>[].obs;
-  RxList<dynamic> categories = <ProductCategory>[].obs;
+  RxList<dynamic> watchedMovies = <MovieModel>[].obs;
 
   List<String> cartItemsIDs = [];
   LoggedInUserModel userModel = LoggedInUserModel();
@@ -32,9 +32,9 @@ class MainController extends GetxController {
 
   init() async {
     await getLoggedInUser();
+    return;
     getCartItems();
     getProducts();
-    getCategories();
     getMyProducts();
     getChatHeads();
     /* await getMyClasses();
@@ -105,6 +105,13 @@ class MainController extends GetxController {
     return;
   }
 
+  Future<void> getWatchedMovies() async {
+    watchedMovies.value = await MovieModel.get_items(
+      where: "watched_movie = 'Yes'",
+    );
+    update();
+  }
+
   getCartItems() async {
     cartItems.clear();
     cartItemsIDs.clear();
@@ -126,9 +133,4 @@ class MainController extends GetxController {
   increment() => count++;
 
   decrement() => count--;
-
-  Future<void> getCategories() async {
-    categories.value = await ProductCategory.getItems();
-    update();
-  }
 }

@@ -7,7 +7,6 @@ import '../../../../utils/Utilities.dart';
 import '../../app_introduction/view/splash_screen.dart';
 import 'base_controller.dart';
 class LoginScreenController {
-  final GlobalKey<FormState> formKey = GlobalKey<FormState>();
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
   final AuthController _authController = Get.put(AuthController());
@@ -35,8 +34,7 @@ class LoginScreenController {
     return null;
   }
   Future<void> loginUser() async {
-    if (formKey.currentState!.validate()) {
-      final email = emailController.text;
+    final email = emailController.text;
       final password = passwordController.text;
 
 
@@ -69,7 +67,6 @@ class LoginScreenController {
       Utils.toast("Success!");
 
       Get.off(() => const SplashScreen());
-    }
   }
 
 

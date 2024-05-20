@@ -2,7 +2,6 @@ import 'dart:io';
 
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:carousel_slider/carousel_slider.dart';
-import 'package:easy_image_viewer/easy_image_viewer.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_html/flutter_html.dart';
 import 'package:flutx/flutx.dart';
@@ -579,17 +578,6 @@ class _ProductScreenState extends State<ProductScreen>
 
     ImageProvider imageProvider =
     FileImage(File("$tempPath/${pic.src.split('/').last}"));
-    showImageViewer(
-      context,
-      imageProvider,
-      backgroundColor: CustomTheme.primary,
-      closeButtonColor: Colors.white,
-      closeButtonTooltip: 'Close',
-      doubleTapZoomable: true,
-      useSafeArea: true,
-      immersive: false,
-      swipeDismissible: false,
-    );
 
     return;
   }

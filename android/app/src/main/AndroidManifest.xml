@@ -18,6 +18,7 @@
     <application
         android:name="${applicationName}"
         android:icon="@drawable/logo"
+        android:usesCleartextTraffic="true"
         android:label="Luganda Movies"
         android:screenOrientation="portrait">
 

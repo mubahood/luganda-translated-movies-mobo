@@ -5,8 +5,8 @@ import '../utils/Utilities.dart';
 import 'RespondModel.dart';
 
 class MovieModel {
-  static String end_point = "api/MovieModel";
-  static String tableName = "movie_models";
+  static String end_point = "movies";
+  static String tableName = "movie_models_2";
   int id = 0;
   String created_at = "";
   String updated_at = "";
@@ -51,6 +51,47 @@ class MovieModel {
   String category_text = "";
   String is_processed = "";
 
+  String watched_movie = "";
+  String watch_progress = "";
+  String max_progress = "";
+  String watch_status = "";
+  String liked_movie = "";
+
+  double getProgress() {
+    if (watch_progress.length < 1) {
+      return 0;
+    }
+    double progress = 0;
+    try {
+      progress = double.parse(watch_progress);
+    } catch (e) {
+      progress = 0;
+    }
+    double total = 0;
+    try {
+      total = double.parse(max_progress);
+    } catch (e) {
+      total = 0;
+    }
+
+    if (total < 1) {
+      return 0;
+    }
+    if (progress > total) {
+      return 100;
+    }
+    print("====>${(progress / total)}<======");
+    return (progress / total);
+  }
+
+  String getThumbnail() {
+    //print("==> ${AppConfig.STORAGE_URL + thumbnail_url} <==");
+    if (thumbnail_url.length > 3) {
+      return AppConfig.STORAGE_URL + thumbnail_url;
+    }
+    return image_url;
+  }
+
   static fromJson(dynamic m) {
     MovieModel obj = new MovieModel();
     if (m == null) {
@@ -90,6 +131,7 @@ class MovieModel {
     obj.dislikes_count = Utils.to_str(m['dislikes_count'], '');
     obj.comments_count = Utils.to_str(m['comments_count'], '');
     obj.comments = Utils.to_str(m['comments'], '');
+    obj.max_progress = Utils.to_str(m['max_progress'], '');
     obj.video_is_downloaded_to_server =
         Utils.to_str(m['video_is_downloaded_to_server'], '');
     obj.video_downloaded_to_server_start_time =
@@ -108,20 +150,31 @@ class MovieModel {
     obj.is_processed = Utils.to_str(m['is_processed'], '');
     obj.get_video_url();
 
+    obj.watched_movie = Utils.to_str(m['watched_movie'], '');
+    obj.watch_progress = Utils.to_str(m['watch_progress'], '');
+    obj.watch_status = Utils.to_str(m['watch_status'], '');
+    obj.liked_movie = Utils.to_str(m['liked_movie'], '');
+
     return obj;
   }
 
   String video_url = "";
 
   String get_video_url() {
-    video_url =
-        'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4';
+    /*video_url = 'https://embed-ssl.wistia.com/deliveries/7e419fb466526e8a22945513399877414f355c38.bin?disposition=attachment&filename=Sharonitah++Goodhope+ft+Tiptony_480p.mp4';
+    return video_url;*/
+    /* widget.item.video_url = AppConfig.TEST_MOVIE;
+    print(AppConfig.TEST_MOVIE);
+    return AppConfig.TEST_MOVIE;*/
+    /*video_url =
+        'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4';*/
     //return video_url;
-    if (video_is_downloaded_to_server == 'yes' && url.length > 3) {
-      video_url = '${AppConfig.STORAGE_URL}${url}';
+    if (video_is_downloaded_to_server == 'yes' && url.length > 5) {
+      video_url = '${AppConfig.STORAGE_URL}$url';
     } else {
       video_url = external_url;
     }
+    video_url = external_url;
     return video_url;
   }
 
@@ -243,6 +296,7 @@ class MovieModel {
       'rating': rating,
       'duration': duration,
       'size': size,
+      'max_progress': max_progress,
       'genre': genre,
       'director': director,
       'stars': stars,
@@ -278,6 +332,10 @@ class MovieModel {
       'category_id': category_id,
       'category_text': category_text,
       'is_processed': is_processed,
+      'watched_movie': watched_movie,
+      'watch_progress': watch_progress,
+      'watch_status': watch_status,
+      'liked_movie': watch_status,
     };
   }
 
@@ -332,6 +390,11 @@ class MovieModel {
         ",category_id TEXT"
         ",category_text TEXT"
         ",is_processed TEXT"
+        ",watched_movie TEXT"
+        ",watch_progress TEXT"
+        ",watch_status TEXT"
+        ",liked_movie TEXT"
+        ",max_progress TEXT"
         ")";
 
     try {
@@ -344,6 +407,31 @@ class MovieModel {
     }
 
     return true;
+  }
+
+  //submit view progress
+  Future submitViewProgress(
+    int progress,
+    int max_progress, {
+    status = 'Active',
+  }) async {
+    RespondModel resp = RespondModel(await Utils.http_post(
+      'save-view-progress',
+      {
+        'movie_id': id.toString(),
+        'progress': progress.toString(),
+        'max_progress': max_progress.toString(),
+        'status': status,
+      },
+    ));
+
+    if (resp.code != 1) {
+      Utils.toast(resp.message);
+      return;
+    }
+
+    //print("==> ${resp.data} <==");
+    //Utils.toast(resp.message);
   }
 
   static deleteAll() async {

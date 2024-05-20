@@ -16,7 +16,6 @@ import '../models/ParishModel.dart';
 import '../models/SubcountyModel.dart';
 import '../utils/AppConfig.dart';
 import '../utils/my_colors.dart';
-import 'MapPickerScreen.dart';
 
 class WeatherForeCastScreen extends StatefulWidget {
   const WeatherForeCastScreen({Key? key}) : super(key: key);
@@ -264,18 +263,7 @@ class _WeatherForeCastScreenState extends State<WeatherForeCastScreen>
                     pickerIsOpen = true;
                     setState(() {});
                     return;
-                    dynamic x = await Get.to(() => MapPickerScreen(const {}));
-                    if (x == null) {
-                      return;
-                    }
 
-                    if (x.runtimeType.toString() != 'MapLocationModel') {
-                      Utils.toast('Invalid location');
-                      return;
-                    }
-                    selected_location = x;
-                    futureInit = myInit();
-                    setState(() {});
                   },
                   child: Flex(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,

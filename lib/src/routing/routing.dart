@@ -1,15 +1,13 @@
 import 'package:get/get.dart';
 
 import '../../screens/auth/login_screen.dart';
-import '../../screens/farmer_profiling/FarmerProfilingStep2Screen.dart';
-import '../../screens/farmer_profiling/FarmerProfilingStep3Screen.dart';
-import '../../screens/home/HomeScreen.dart';
+import '../../screens/shop/screens/shop/full_app/full_app.dart';
 import '../features/app_introduction/view/onboarding_screens.dart';
 import '../features/app_introduction/view/splash_screen.dart';
 import '../features/authentication/view/signup_screen.dart';
 import '../features/home/view/resource_category_screen.dart';
 import '../features/home/view/resource_subcategory_screen.dart';
-import '../features/home/view/training_session_screen.dart';
+
 import '../features/home/view/update_profile.dart';
 
 class AppRouter {
@@ -58,18 +56,6 @@ class AppRouter {
     GetPage(
       name: searchSubCategory,
       page: () => SearchSubCategoryScreen(),
-    ),
-    GetPage(
-      name: trainingSession,
-      page: () => const TrainingSessionsScreen (),
-    ),
-    GetPage(
-      name: farmerProfilingScreenTwo,
-      page: () => const FarmerProfilingStep2Screen(),
-    ),
-    GetPage(
-      name: farmerProfilingScreenThree,
-      page: () => const FarmerProfilingStep3Screen(),
     ),
   ];
 

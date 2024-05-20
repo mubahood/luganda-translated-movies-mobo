@@ -1,24 +1,27 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutx/flutx.dart';
 import 'package:get/get.dart';
+import 'package:omulimisa2/screens/shop/screens/shop/full_app/SectionResume.dart';
 import 'package:omulimisa2/screens/shop/screens/shop/full_app/section/AccountSection.dart';
-import 'package:omulimisa2/screens/shop/screens/shop/full_app/section/SectionCart.dart';
 import 'package:omulimisa2/screens/shop/screens/shop/full_app/section/SectionDashboard.dart';
-import 'package:omulimisa2/screens/shop/screens/shop/full_app/section/SectionOrders.dart';
+import 'package:omulimisa2/screens/shop/screens/shop/full_app/section/SectionSeries.dart';
 
 import '../../../../../controllers/MainController.dart';
 import '../../../../../utils/CustomTheme.dart';
 import '../../../../../utils/app_theme.dart';
 import '../../full_app_controller.dart';
-import '../chat/ChatsScreen.dart';
-class ShopApp extends StatefulWidget {
-  const ShopApp({Key? key}) : super(key: key);
+import 'SectionFavourite.dart';
+
+class HomeScreen extends StatefulWidget {
+  const HomeScreen({Key? key}) : super(key: key);
 
   @override
-  _ShopAppState createState() => _ShopAppState();
+  _HomeScreenState createState() => _HomeScreenState();
 }
 
-class _ShopAppState extends State<ShopApp> with SingleTickerProviderStateMixin {
+class _HomeScreenState extends State<HomeScreen>
+    with SingleTickerProviderStateMixin {
   late ThemeData theme;
 
   late FullAppController controller;
@@ -46,8 +49,8 @@ class _ShopAppState extends State<ShopApp> with SingleTickerProviderStateMixin {
                 controller.navItems[i].iconData,
                 size: controller.navItems[i].title.length < 10 ? 22 : 25,
                 color :(controller.currentIndex == i)
-                    ? CustomTheme.primary
-                    : theme.colorScheme.onBackground,
+                    ? CustomTheme.accent
+                    : CustomTheme.secondary,
               ),
               const SizedBox(
                 height: 3,
@@ -56,8 +59,8 @@ class _ShopAppState extends State<ShopApp> with SingleTickerProviderStateMixin {
                 controller.navItems[i].title,
                 fontSize: controller.navItems[i].title.length < 10 ? 12 : 8,
                 color :(controller.currentIndex == i)
-                    ? CustomTheme.primary
-                    : theme.colorScheme.onBackground,
+                    ? CustomTheme.accent
+                    : CustomTheme.secondary,
               ),
             ],
           ),
@@ -73,6 +76,21 @@ class _ShopAppState extends State<ShopApp> with SingleTickerProviderStateMixin {
         controller: controller,
         builder: (controller) {
           return Scaffold(
+            backgroundColor: CustomTheme.primary,
+            appBar: AppBar(
+              systemOverlayStyle: const SystemUiOverlayStyle(
+                statusBarColor: CustomTheme.primary,
+                statusBarIconBrightness: Brightness.light,
+                statusBarBrightness: Brightness.light,
+                systemNavigationBarColor: CustomTheme.primary,
+                systemNavigationBarIconBrightness: Brightness.light,
+                systemNavigationBarContrastEnforced: true,
+                systemNavigationBarDividerColor: CustomTheme.primary,
+                systemStatusBarContrastEnforced: true,
+              ),
+              toolbarHeight: 0,
+              elevation: 0,
+            ),
             body: SafeArea(
               child: Row(
                 children: [
@@ -85,24 +103,19 @@ class _ShopAppState extends State<ShopApp> with SingleTickerProviderStateMixin {
                             controller: controller.tabController,
                             children: <Widget>[
                               const SectionDashboard(),
-                              const ChatsScreen(),
-                              SectionCart(mainController),
-                              SectionOrders(mainController),
+                              const SectionSeries(),
+                              SectionResume(),
+                              SectionFavourite(),
                               const AccountSection(),
                             ],
                           ),
                         ),
                         FxContainer(
-                          bordered: true,
+                          bordered: false,
                           enableBorderRadius: false,
-                          border: Border(
-                              top: BorderSide(
-                                  color: theme.dividerColor,
-                                  width: 1,
-                                  style: BorderStyle.solid)),
+                          borderRadiusAll: 20,
                           padding: FxSpacing.xy(0, 5),
-                          marginAll: 0,
-                          color: theme.scaffoldBackgroundColor,
+                          color: CustomTheme.primary,
                           child: TabBar(
                             labelPadding: EdgeInsets.zero,
                             controller: controller.tabController,
@@ -113,17 +126,17 @@ class _ShopAppState extends State<ShopApp> with SingleTickerProviderStateMixin {
                               }*/
                             },
                             indicator: const FxTabIndicator(
-                                indicatorColor: CustomTheme.primary,
-                                indicatorHeight: 3,
-                                radius: 4,
-                                width: 60,
+                                indicatorColor: CustomTheme.accent,
+                                indicatorHeight: 10,
+                                radius: 10,
+                                width: 10,
                                 indicatorStyle: FxTabIndicatorStyle.rectangle,
-                                yOffset: -7),
+                                yOffset: -15),
                             indicatorSize: TabBarIndicatorSize.tab,
-                            indicatorColor: CustomTheme.primary,
+                            indicatorColor: CustomTheme.accent,
                             tabs: buildTab(),
                           ),
-                        )
+                        ),
                       ],
                     ),
                   ),

@@ -1,18 +1,21 @@
 import 'dart:ui';
 
 class AppConfig {
-  static String BASE_URL = "https://movies.ugnews24.info";
-  static String API_BASE_URL = "https://movies.ugnews24.info/api";
-  static const String DASHBOARD_URL = "https://movies.ugnews24.info";
+  /*static const String BASE_URL =
+      "http://10.0.2.2:8888/movies-1/luganda-translated-movies";*/
+
+  static const String BASE_URL = "https://m.schooldynamics.ug";
+  static const String MAIN_SITE_URL = BASE_URL;
+  static String API_BASE_URL = "${BASE_URL}/api";
+  static const String DASHBOARD_URL = "https://m.schooldynamics.ug";
   static const String ONESIGNAL_APP_ID = "3f223c2e-7191-4f2d-a1c1-bd7ae47625ce";
-  static const String APP_NAME = "M-Omulimisa";
+  static const String APP_NAME = "Luganda Movies";
   static const String APP_VERSION = "10";
-  static const String DATABASE_PATH = "omulimisa2_${11}";
-  static const String MAIN_SITE_URL = "https://movies.ugnews24.info";
-  static const String STORAGE_URL = "$MAIN_SITE_URL/storage/";
-  static const String logo_1 = "assets/images/logo_1.png";
-  static const String logo_2 = "assets/images/logo_2.png";
-  static const String logo_3 = "assets/images/logo_3.png";
+  static const String DATABASE_PATH = "movies_${12}";
+  static const String STORAGE_URL = "$BASE_URL/storage/";
+  static const String logo_1 = "assets/images/logo.png";
+  static const String logo_2 = "assets/images/logo.png";
+  static const String logo_3 = "assets/images/logo.png";
   static const String USER_IMAGE = "assets/images/logo_3.png";
   static const String NO_IMAGE = "assets/images/no_image.png";
   static const String AUDIO_PHOTO = "assets/images/wap.png";

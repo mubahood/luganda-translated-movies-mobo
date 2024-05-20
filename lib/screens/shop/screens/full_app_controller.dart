@@ -22,11 +22,11 @@ class FullAppController extends FxController {
 
   FullAppController(this.tickerProvider) {
     navItems = [
-      NavItem('Home', FeatherIcons.home),
-      NavItem('Messages', FeatherIcons.messageCircle),
-      NavItem('SELL NOW', FeatherIcons.plus),
-      NavItem('Orders', FeatherIcons.file),
-      NavItem('Account', FeatherIcons.user),
+      NavItem('MOVIES'.toUpperCase(), FeatherIcons.home),
+      NavItem('Series'.toUpperCase(), Icons.movie_creation_outlined),
+      NavItem('Resume'.toUpperCase(), FeatherIcons.playCircle),
+      NavItem('Favorite'.toUpperCase(), FeatherIcons.heart),
+      NavItem('Account'.toUpperCase(), FeatherIcons.user),
     ];
 
     tabController = TabController(

@@ -1,16 +1,19 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:flutx/flutx.dart';
+import 'package:form_builder_validators/form_builder_validators.dart';
 import 'package:get/get.dart';
-import 'package:loader_overlay/loader_overlay.dart';
-import 'package:loading_animation_widget/loading_animation_widget.dart';
-import 'package:omulimisa2/src/routing/routing.dart';
+import 'package:omulimisa2/screens/auth/password_reset_screen.dart';
+import 'package:omulimisa2/screens/auth/register_screen.dart';
 
 import '../../core/styles.dart';
+import '../../models/LoggedInUserModel.dart';
+import '../../models/RespondModel.dart';
+import '../../src/features/app_introduction/view/splash_screen.dart';
 import '../../src/features/authentication/controllers/login_screen_controller.dart';
-import '../../src/features/authentication/view/common_widgets/custom_button.dart';
-import '../../src/features/authentication/view/common_widgets/text_form_field.dart';
 import '../../utils/AppConfig.dart';
+import '../../utils/CustomTheme.dart';
 import '../../utils/Utilities.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -35,6 +38,10 @@ class LoginScreenState extends State<LoginScreen> {
   void initState() {
     Utils.init_theme();
   }
+
+  final _fKey = GlobalKey<FormBuilderState>();
+  String _email = '';
+  String _password = '';
 
   @override
   Widget build(BuildContext context) {
@@ -70,136 +77,243 @@ class LoginScreenState extends State<LoginScreen> {
               ]);
           return false;
         },
-        child: LoaderOverlay(
-          useDefaultLoading: false,
-          overlayWidget: Center(
-            child: LoadingAnimationWidget.threeRotatingDots(
-              color: AppStyles.secondaryColor,
-              size: 30,
+        child: Scaffold(
+          appBar: AppBar(
+            backgroundColor: Colors.transparent,
+            elevation: 0,
+            toolbarHeight: 0,
+            systemOverlayStyle: const SystemUiOverlayStyle(
+              statusBarColor: CustomTheme.primary,
+              statusBarIconBrightness: Brightness.light,
+              statusBarBrightness: Brightness.dark,
+              systemNavigationBarColor: CustomTheme.primary,
+            ),
+            leading: IconButton(
+              icon: const Icon(Icons.arrow_back_ios),
+              onPressed: () {
+                Get.back();
+              },
             ),
           ),
-          child: Scaffold(
-            body: SafeArea(
-              child: Form(
-                key: _loginScreenController.formKey,
+          body: Stack(
+            children: [
+              Image(
+                image: const AssetImage(
+                  'assets/images/bg.jpg',
+                ),
+                fit: BoxFit.fill,
+                height: Get.height,
+                width: Get.width,
+              ),
+              Container(
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    begin: Alignment.bottomCenter,
+                    end: Alignment.topCenter,
+                    colors: [
+                      Colors.black.withOpacity(.9),
+                      Colors.black.withOpacity(.6),
+                    ],
+                  ),
+                ),
+              ),
+              FormBuilder(
+                key: _fKey,
                 child: SingleChildScrollView(
                   child: Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 24),
                     child: Column(
                       children: [
                         const SizedBox(height: 60),
-                        Image(
-                          image: const AssetImage(AppConfig.logo_1),
-                          width: 70,
+                        const Image(
+                          image: AssetImage(AppConfig.logo_1),
+                          width: 150,
                           fit: BoxFit.fill,
                         ),
                         const SizedBox(
-                          height: 40,
+                          height: 15,
                         ),
                         Text(
-                          'Welcome Back !',
+                          'Sign In',
                           style: AppStyles.googleFontMontserrat.copyWith(
-                              fontWeight: FontWeight.w700, fontSize: 24),
+                              color: Colors.grey.shade300,
+                              fontWeight: FontWeight.w700,
+                              fontSize: 24),
                         ),
-                        const SizedBox(height: 12),
-                        Text(
-                          'Sign in with your email and\n \t \t \t \t password',
-                          style: AppStyles.googleFontMontserrat.copyWith(
-                              fontWeight: FontWeight.w400, fontSize: 14),
-                        ),
-                        const SizedBox(height: 40),
                         Padding(
                           padding: const EdgeInsets.symmetric(horizontal: 0),
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.stretch,
                             children: [
-                              const SizedBox(height: 28.0),
-                              CustomTextFormField(
-                                  controller:
-                                      _loginScreenController.emailController,
-                                  labelText: 'Email',
-                                  keyboardType: TextInputType.emailAddress,
-                                  validator:
-                                      _loginScreenController.validateEmail),
-                              const SizedBox(height: 28.0),
-                              CustomTextFormField(
-                                  controller:
-                                      _loginScreenController.passwordController,
-                                  labelText: 'Password',
-                                  obscureText: true,
-                                  validator:
-                                      _loginScreenController.validatePassword),
+                              const SizedBox(height: 30.0),
+                              FormBuilderTextField(
+                                decoration: CustomTheme.in_4(
+                                    'Email', 'Enter your email'),
+                                style: AppStyles.googleFontMontserrat.copyWith(
+                                    color: Colors.grey.shade300,
+                                    fontWeight: FontWeight.w500,
+                                    fontSize: 16),
+                                name: "email",
+                                onChanged: (value) {
+                                  _email = value.toString();
+                                },
+                                keyboardType: TextInputType.emailAddress,
+                                textInputAction: TextInputAction.next,
+                                validator: FormBuilderValidators.compose([
+                                  FormBuilderValidators.required(
+                                      errorText: "This field is required."),
+                                  FormBuilderValidators.email(
+                                      errorText: "Invalid email.")
+                                ]),
+                              ),
+                              const SizedBox(height: 25.0),
+                              FormBuilderTextField(
+                                decoration: CustomTheme.in_4(
+                                    'Password', 'Enter your password'),
+                                style: AppStyles.googleFontMontserrat.copyWith(
+                                    color: Colors.grey.shade300,
+                                    fontWeight: FontWeight.w500,
+                                    fontSize: 16),
+                                name: "password",
+                                onChanged: (value) {
+                                  _password = value.toString();
+                                },
+                                obscureText: true,
+                                keyboardType: TextInputType.emailAddress,
+                                textInputAction: TextInputAction.next,
+                                validator: FormBuilderValidators.compose([
+                                  FormBuilderValidators.required(
+                                      errorText: "This field is required."),
+                                ]),
+                              ),
+                              Align(
+                                alignment: Alignment.centerRight,
+                                child: FxButton.text(
+                                    onPressed: () {
+                                      Get.to(() => const PasswordResetScreen());
+                                    },
+                                    child: FxText.titleMedium(
+                                      "Forgot Password?",
+                                      color: Colors.yellow.shade300,
+                                      fontWeight: 900,
+                                    )),
+                              ),
                             ],
                           ),
                         ),
-                        const SizedBox(height: 32),
-                        CustomElevatedButton(
+                        const SizedBox(height: 0),
+                        FxButton.block(
+                          padding: const EdgeInsets.symmetric(vertical: 20),
+                          backgroundColor: CustomTheme.accent,
                           onPressed: () async {
-                            Map<String, dynamic> formDataMap = {};
-                            formDataMap = {
-                              'username': _formKey
-                                  .currentState?.fields['username']?.value,
-                              'password': _formKey
-                                  .currentState?.fields['password']?.value,
-                            };
-
-                         /*   RespondModel resp = RespondModel(
-                                await Utils.http_post('login', form_data_map));
-
-                            if(resp.code != 1){
-                              Utils.toast(resp.message);
+                            if (!_fKey.currentState!.saveAndValidate()) {
                               return;
                             }
 
+                            Map<String, dynamic> formDataMap = {};
+                            _email = _fKey.currentState!.fields['email']!.value;
+                            _password =
+                                _fKey.currentState!.fields['password']!.value;
+                            formDataMap = {
+                              'email': _email,
+                              'password': _password,
+                            };
 
-                            print(resp.message);
+                            Utils.toast("Loading....");
+                            RespondModel resp =
+                                RespondModel(await Utils.http_post(
+                              'auth/login',
+                              formDataMap,
+                            ));
 
-                            return;*/
-
-                            context.loaderOverlay.show();
-                            _loginScreenController.loginUser();
-                            setState(() {
-                              _isLoaderVisible = context.loaderOverlay.visible;
-                            });
-                            await Future.delayed(const Duration(seconds: 2));
-                            if (_isLoaderVisible) {
-                              context.loaderOverlay.hide();
+                            if (resp.code != 1) {
+                              Utils.toast(resp.message);
+                              return;
                             }
-                            setState(() {
-                              _isLoaderVisible = context.loaderOverlay.visible;
-                            });
+                            if (resp.data['user'] == null) {
+                              Utils.toast("User not found");
+                              return;
+                            }
+
+                            LoggedInUserModel u =
+                                LoggedInUserModel.fromJson(resp.data['user']);
+
+                            if (u.id < 1) {
+                              Utils.toast("User not found");
+                              return;
+                            }
+
+                            if (!(await u.save())) {
+                              Utils.toast('failed to log you in ');
+                              return;
+                            }
+
+                            Get.off(() => const SplashScreen());
                           },
-                          text: 'Login',
+                          child: FxText.titleLarge(
+                            'Sign In',
+                            fontWeight: 700,
+                            color: Colors.white,
+                          ),
+                        ),
+                        const SizedBox(height: 28),
+                        Row(
+                          children: [
+                            Expanded(
+                              child: Container(
+                                height: 1,
+                                color: Colors.grey.shade300,
+                              ),
+                            ),
+                            const SizedBox(
+                              width: 10,
+                            ),
+                            Text(
+                              "Don't have account?",
+                              style: AppStyles.googleFontMontserrat.copyWith(
+                                  fontWeight: FontWeight.w500,
+                                  color: Colors.grey.shade300,
+                                  fontSize: 16),
+                            ),
+                            const SizedBox(
+                              width: 10,
+                            ),
+                            Expanded(
+                              child: Container(
+                                height: 1,
+                                color: Colors.grey.shade300,
+                              ),
+                            )
+                          ],
                         ),
                         const SizedBox(height: 18),
-                        Wrap(children: [
-                          Text(
-                            "Don't have an account?",
-                            style: AppStyles.googleFontMontserrat.copyWith(
-                                fontWeight: FontWeight.w500, fontSize: 14),
-                          ),
-                          const SizedBox(
-                            width: 3,
-                          ),
-                          InkWell(
-                            onTap: () {
-                              AppRouter.goToRegister();
-                            },
-                            child: Text(
-                              'Register',
-                              style: AppStyles.googleFontMontserrat.copyWith(
-                                  fontWeight: FontWeight.w700,
-                                  fontSize: 14,
-                                  color: AppStyles.secondaryColor),
+                        Align(
+                          alignment: Alignment.center,
+                          child: Wrap(children: [
+                            const SizedBox(
+                              width: 3,
                             ),
-                          ),
-                        ])
+                            InkWell(
+                              onTap: () {
+                                Get.to(() => const RegisterScreen());
+                              },
+                              child: Text(
+                                'Create Account',
+                                style: AppStyles.googleFontMontserrat.copyWith(
+                                    fontWeight: FontWeight.w900,
+                                    fontSize: 18,
+                                    color: Colors.yellow,
+                                    decoration: TextDecoration.underline),
+                              ),
+                            ),
+                          ]),
+                        )
                       ],
                     ),
                   ),
                 ),
               ),
-            ),
+            ],
           ),
         ));
   }

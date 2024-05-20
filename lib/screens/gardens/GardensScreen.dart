@@ -7,6 +7,7 @@ import 'package:omulimisa2/utils/CustomTheme.dart';
 import 'package:omulimisa2/utils/Utilities.dart';
 
 import '../../models/MovieModel.dart';
+import '../shop/screens/shop/full_app/full_app.dart';
 
 class GardensScreen extends StatefulWidget {
   const GardensScreen({super.key});
@@ -95,6 +96,15 @@ class _GardensScreenState extends State<GardensScreen> {
           actions: [
             IconButton(
               onPressed: () {
+                Get.to(() => const HomeScreen());
+              },
+              icon: const Icon(
+                Icons.ac_unit,
+                color: Colors.white,
+              ),
+            ),
+            IconButton(
+              onPressed: () {
                 setState(() {
                   searchMode = !searchMode;
                 });
@@ -138,7 +148,9 @@ class _GardensScreenState extends State<GardensScreen> {
                       children: [
                         FxContainer(
                           onTap: () {
-                            Get.to(()=>VideoPlayerScreen(item));
+                            print(item.video_url);
+                            print(item.thumbnail_url);
+                            Get.to(() => VideoPlayerScreen(item));
                           },
                           color: item.video_is_downloaded_to_server == 'yes'
                               ? Colors.green.shade100

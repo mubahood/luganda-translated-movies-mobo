@@ -2,12 +2,11 @@ import 'dart:async';
 
 import "package:flutter/material.dart";
 import 'package:get/get.dart';
-import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:omulimisa2/utils/AppConfig.dart';
 
 import '../../../../controllers/MainController.dart';
 import "../../../../core/styles.dart";
-import '../../../../screens/home/HomeScreen.dart';
+import '../../../../screens/shop/screens/shop/full_app/full_app.dart';
 import '../../../../utils/Utilities.dart';
 import '../../../routing/routing.dart';
 import 'onboarding_screens.dart';
@@ -72,11 +71,13 @@ class _SplashScreenState extends State<SplashScreen> {
               ),
               const SizedBox(height: 25),
               Center(
-                child: LoadingAnimationWidget.staggeredDotsWave(
-                  color: AppStyles.secondaryColor,
-                  size: 40,
+                  child: Text(
+                AppConfig.APP_NAME,
+                style: const TextStyle(
+                  fontSize: 20,
+                  fontWeight: FontWeight.bold,
                 ),
-              ),
+              )),
             ],
           ),
         )));

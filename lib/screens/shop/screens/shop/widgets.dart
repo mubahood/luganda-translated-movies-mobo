@@ -226,12 +226,34 @@ Widget productUi2(Product pro) {
   );
 }
 
-Widget roundedImage(String url, double w, double h,
+Widget roundedImage2(String url, double w, double h,
     {String no_image = AppConfig.NO_IMAGE, double radius = 10}) {
   return ClipRRect(
     borderRadius: BorderRadius.circular(radius),
     child: CachedNetworkImage(
       fit: BoxFit.cover,
+      imageUrl: url,
+      width: (Get.width / w),
+      height: (Get.width / h),
+      placeholder: (context, url) => ShimmerLoadingWidget(
+        height: double.infinity,
+      ),
+      errorWidget: (context, url, error) => Image(
+        image: AssetImage(no_image),
+        fit: BoxFit.cover,
+        width: (Get.width / w),
+        height: (Get.width / h),
+      ),
+    ),
+  );
+}
+
+Widget roundedImage(String url, double w, double h,
+    {String no_image = AppConfig.NO_IMAGE, double radius = 10}) {
+  return ClipRRect(
+    borderRadius: BorderRadius.circular(radius),
+    child: CachedNetworkImage(
+      fit: BoxFit.fitWidth,
       imageUrl: url,
       width: (Get.width / w),
       height: (Get.width / h),
@@ -785,33 +807,53 @@ Widget noItemWidget(String title, Function onTap) {
   );
 }
 
-Widget titleWidget(String title, Function onTap) {
+Widget titleWidget(String title, Function onTap,
+{
+  IconData icon = FeatherIcons.trendingUp,
+}
+    ) {
   return InkWell(
     onTap: () {
       onTap();
     },
     child: Container(
-      padding: const EdgeInsets.only(left: 5, top: 20, right: 5, bottom: 20),
+      padding: const EdgeInsets.only(left: 5, top: 14, right: 5, bottom: 14),
       child: Flex(
         direction: Axis.horizontal,
         children: [
+          const FxContainer(
+            height: 15,
+            width: 8,
+            color: Colors.yellow,
+            borderRadiusAll: 0,
+          ),
+          SizedBox(width: 5,),
           FxText.titleMedium(
             title.toUpperCase(),
             fontWeight: 800,
-            color: CustomTheme.primary,
+            color: CustomTheme.accent,
+            fontSize: 22,
           ),
           const Spacer(),
-          Row(
+          true?Icon(
+            icon,
+            color: Colors.yellow,
+            size: 25,
+          ):Row(
             children: [
               FxText.bodyLarge(
                 'View All'.toUpperCase(),
                 fontWeight: 700,
-                color: Colors.black,
+                color: CustomTheme.accent,
                 letterSpacing: .1,
               ),
-              const Icon(FeatherIcons.chevronRight),
+              const Icon(
+                FeatherIcons.chevronRight,
+                color: CustomTheme.accent,
+              ),
             ],
           ),
+          SizedBox(width: 3,),
         ],
       ),
     ),

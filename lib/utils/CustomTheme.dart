@@ -2,10 +2,17 @@ import 'package:flutter/material.dart';
 import 'package:flutx/flutx.dart';
 import 'package:omulimisa2/utils/my_colors.dart';
 
+import '../core/styles.dart';
+
 class CustomTheme {
   static const Color primary = MyColors.primary;
   static const Color primaryDark = MyColors.primary;
   static const Color accent = MyColors.accent;
+  static const Color secondary = Colors.yellow;
+  static  Color color = Colors.grey.shade300;
+  static  Color color2 = Colors.grey.shade500;
+  static  Color color3 = Colors.grey.shade600;
+  static  Color color4 = Colors.grey.shade700;
 
   final Color card,
       cardDark,
@@ -168,6 +175,34 @@ class CustomTheme {
     gapPadding: 20,
     borderRadius: BorderRadius.all(Radius.circular(50.0)),
   );
+
+  static InputDecoration in_4(
+  String labelText,
+  String hintText,
+      { IconData icon = Icons.edit}) {
+    return InputDecoration(
+      labelText: labelText,
+      labelStyle: AppStyles.googleFontMontserrat.copyWith(
+          color: Colors.grey.shade300,
+          fontWeight: FontWeight.w500,
+          fontSize: 16),
+      hintText: hintText,
+      hintStyle: AppStyles.googleFontMontserrat.copyWith(
+          color: Colors.grey.shade300,
+          fontWeight: FontWeight.w500,
+          fontSize: 16),
+      filled: true,
+      fillColor: Colors.grey.shade800.withOpacity(.5),
+      focusedBorder: OutlineInputBorder(
+        borderSide: const BorderSide(color: Colors.grey, width: 1.0),
+        borderRadius: BorderRadius.circular(5.0),
+      ),
+      enabledBorder: OutlineInputBorder(
+        borderSide: const BorderSide(color: Colors.grey, width: 1.0),
+        borderRadius: BorderRadius.circular(5.0),
+      ),
+    );
+  }
 
   static InputDecoration in_3(
       {String label = "", String hintText = "", double label_font_size = 16}) {

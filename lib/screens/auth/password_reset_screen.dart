@@ -4,7 +4,6 @@ import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:flutx/flutx.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
 import 'package:get/get.dart';
-import 'package:omulimisa2/screens/auth/login_screen.dart';
 
 import '../../core/styles.dart';
 import '../../models/LoggedInUserModel.dart';
@@ -14,14 +13,14 @@ import '../../utils/AppConfig.dart';
 import '../../utils/CustomTheme.dart';
 import '../../utils/Utilities.dart';
 
-class RegisterScreen extends StatefulWidget {
-  const RegisterScreen({Key? key}) : super(key: key);
+class PasswordResetScreen extends StatefulWidget {
+  const PasswordResetScreen({Key? key}) : super(key: key);
 
   @override
-  RegisterScreenState createState() => RegisterScreenState();
+  PasswordResetScreenState createState() => PasswordResetScreenState();
 }
 
-class RegisterScreenState extends State<RegisterScreen> {
+class PasswordResetScreenState extends State<PasswordResetScreen> {
   final _formKey = GlobalKey<FormBuilderState>();
 
   bool _isLoaderVisible = false;
@@ -43,6 +42,7 @@ class RegisterScreenState extends State<RegisterScreen> {
   String _password = '';
   String _password_1 = '';
   bool isLoading = false;
+  bool haveCode = false;
 
   @override
   Widget build(BuildContext context) {
@@ -104,7 +104,7 @@ class RegisterScreenState extends State<RegisterScreen> {
                       height: 15,
                     ),
                     Text(
-                      'Creating New Account',
+                      'Password Reset',
                       style: AppStyles.googleFontMontserrat.copyWith(
                           color: Colors.grey.shade300,
                           fontWeight: FontWeight.w700,
@@ -115,26 +115,6 @@ class RegisterScreenState extends State<RegisterScreen> {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.stretch,
                         children: [
-                          const SizedBox(height: 20.0),
-                          FormBuilderTextField(
-                            decoration: CustomTheme.in_4(
-                                'Full Name', 'Enter your full name'),
-                            style: AppStyles.googleFontMontserrat.copyWith(
-                                color: Colors.grey.shade300,
-                                fontWeight: FontWeight.w500,
-                                fontSize: 16),
-                            name: "name",
-                            onChanged: (value) {
-                              _name = value.toString();
-                            },
-                            keyboardType: TextInputType.emailAddress,
-                            textInputAction: TextInputAction.next,
-                            validator: FormBuilderValidators.compose([
-                              FormBuilderValidators.required(
-                                  errorText: "This field is required."),
-                              FormBuilderValidators.minLength(3)
-                            ]),
-                          ),
                           const SizedBox(height: 20.0),
                           FormBuilderTextField(
                             decoration:
@@ -156,50 +136,85 @@ class RegisterScreenState extends State<RegisterScreen> {
                                   errorText: "Invalid email.")
                             ]),
                           ),
-                          const SizedBox(height: 25.0),
-                          FormBuilderTextField(
-                            decoration: CustomTheme.in_4(
-                                'Password', 'Enter your password'),
-                            style: AppStyles.googleFontMontserrat.copyWith(
-                                color: Colors.grey.shade300,
-                                fontWeight: FontWeight.w500,
-                                fontSize: 16),
-                            name: "password",
-                            onChanged: (value) {
-                              _password = value.toString();
-                            },
-                            obscureText: true,
-                            keyboardType: TextInputType.visiblePassword,
-                            textInputAction: TextInputAction.next,
-                            validator: FormBuilderValidators.compose([
-                              FormBuilderValidators.required(
-                                  errorText: "This field is required."),
-                              FormBuilderValidators.minLength(4,
-                                  errorText: "Password too short"),
-                            ]),
-                          ),
-                          const SizedBox(height: 25.0),
-                          FormBuilderTextField(
-                            decoration: CustomTheme.in_4(
-                                'Re-Enter Password', 'Enter your password'),
-                            style: AppStyles.googleFontMontserrat.copyWith(
-                                color: Colors.grey.shade300,
-                                fontWeight: FontWeight.w500,
-                                fontSize: 16),
-                            name: "_password_1",
-                            onChanged: (value) {
-                              _password_1 = value.toString();
-                            },
-                            keyboardType: TextInputType.visiblePassword,
-                            obscureText: true,
-                            textInputAction: TextInputAction.done,
-                            validator: FormBuilderValidators.compose([
-                              FormBuilderValidators.required(
-                                  errorText: "This field is required."),
-                              FormBuilderValidators.minLength(4,
-                                  errorText: "Password too short"),
-                            ]),
-                          ),
+                          (!haveCode)
+                              ? const SizedBox(height: 0)
+                              : Column(
+                                  children: [
+                                    const SizedBox(height: 20.0),
+                                    FormBuilderTextField(
+                                      decoration: CustomTheme.in_4(
+                                          'Secret Code', 'Secret Code'),
+                                      style: AppStyles.googleFontMontserrat
+                                          .copyWith(
+                                              color: Colors.grey.shade300,
+                                              fontWeight: FontWeight.w500,
+                                              fontSize: 16),
+                                      name: "name",
+                                      onChanged: (value) {
+                                        _name = value.toString();
+                                      },
+                                      keyboardType: TextInputType.emailAddress,
+                                      textInputAction: TextInputAction.next,
+                                      validator: FormBuilderValidators.compose([
+                                        FormBuilderValidators.required(
+                                            errorText:
+                                                "This field is required."),
+                                        FormBuilderValidators.minLength(3)
+                                      ]),
+                                    ),
+                                    const SizedBox(height: 25.0),
+                                    FormBuilderTextField(
+                                      decoration: CustomTheme.in_4(
+                                          'Password', 'Enter your password'),
+                                      style: AppStyles.googleFontMontserrat
+                                          .copyWith(
+                                              color: Colors.grey.shade300,
+                                              fontWeight: FontWeight.w500,
+                                              fontSize: 16),
+                                      name: "password",
+                                      onChanged: (value) {
+                                        _password = value.toString();
+                                      },
+                                      obscureText: true,
+                                      keyboardType:
+                                          TextInputType.visiblePassword,
+                                      textInputAction: TextInputAction.next,
+                                      validator: FormBuilderValidators.compose([
+                                        FormBuilderValidators.required(
+                                            errorText:
+                                                "This field is required."),
+                                        FormBuilderValidators.minLength(4,
+                                            errorText: "Password too short"),
+                                      ]),
+                                    ),
+                                    const SizedBox(height: 25.0),
+                                    FormBuilderTextField(
+                                      decoration: CustomTheme.in_4(
+                                          'Re-Enter Password',
+                                          'Enter your password'),
+                                      style: AppStyles.googleFontMontserrat
+                                          .copyWith(
+                                              color: Colors.grey.shade300,
+                                              fontWeight: FontWeight.w500,
+                                              fontSize: 16),
+                                      name: "_password_1",
+                                      onChanged: (value) {
+                                        _password_1 = value.toString();
+                                      },
+                                      keyboardType:
+                                          TextInputType.visiblePassword,
+                                      obscureText: true,
+                                      textInputAction: TextInputAction.done,
+                                      validator: FormBuilderValidators.compose([
+                                        FormBuilderValidators.required(
+                                            errorText:
+                                                "This field is required."),
+                                        FormBuilderValidators.minLength(4,
+                                            errorText: "Password too short"),
+                                      ]),
+                                    ),
+                                  ],
+                                ),
                           error_message.isEmpty
                               ? const SizedBox(
                                   height: 20,
@@ -246,12 +261,11 @@ class RegisterScreenState extends State<RegisterScreen> {
                                 return;
                               }
 
-                              if (!_name.contains(' ')) {
-                                error_message =
-                                    "Please provide your full name.";
-                                Utils.toast(error_message, color: Colors.red);
+                              if (!haveCode) {
+                                request_code();
                                 return;
                               }
+
 
                               if (_password != _password_1) {
                                 error_message = "Passwords did not match";
@@ -267,7 +281,7 @@ class RegisterScreenState extends State<RegisterScreen> {
                               formDataMap = {
                                 'email': _email,
                                 'password': _password,
-                                'name': _name,
+                                'code': _name,
                               };
 
                               Utils.toast("Loading....");
@@ -276,7 +290,7 @@ class RegisterScreenState extends State<RegisterScreen> {
                               });
                               RespondModel resp =
                                   RespondModel(await Utils.http_post(
-                                'auth/register',
+                                'auth/password-reset',
                                 formDataMap,
                               ));
                               setState(() {
@@ -310,7 +324,9 @@ class RegisterScreenState extends State<RegisterScreen> {
                               Get.off(() => const SplashScreen());
                             },
                             child: FxText.titleLarge(
-                              'Create Account',
+                              haveCode
+                                  ? 'Reset Password'
+                                  : 'Request Secret Code',
                               fontWeight: 700,
                               color: Colors.white,
                             ),
@@ -328,7 +344,9 @@ class RegisterScreenState extends State<RegisterScreen> {
                           width: 10,
                         ),
                         Text(
-                          "Already have account?",
+                          (!haveCode)
+                              ? "Already have secret code?"
+                              : "Don't have secret code?",
                           style: AppStyles.googleFontMontserrat.copyWith(
                               fontWeight: FontWeight.w500,
                               color: Colors.grey.shade300,
@@ -354,11 +372,13 @@ class RegisterScreenState extends State<RegisterScreen> {
                         ),
                         InkWell(
                           onTap: () {
-                            Get.to(() => const LoginScreen(),
-                                preventDuplicates: false);
+                            haveCode = !haveCode;
+                            setState(() {});
                           },
                           child: Text(
-                            'Sign In',
+                            (!haveCode)
+                                ? 'Enter Secret Code'
+                                : 'Request Secret Code',
                             style: AppStyles.googleFontMontserrat.copyWith(
                                 fontWeight: FontWeight.w900,
                                 fontSize: 20,
@@ -376,5 +396,42 @@ class RegisterScreenState extends State<RegisterScreen> {
         ],
       ),
     );
+  }
+
+  request_code() async {
+    setState(() {
+      error_message = "";
+    });
+    if (!_fKey.currentState!.saveAndValidate()) {
+      return;
+    }
+
+    Map<String, dynamic> formDataMap = {};
+    _email = _fKey.currentState!.fields['email']!.value;
+    formDataMap = {
+      'email': _email,
+    };
+
+    Utils.toast("Loading....");
+    setState(() {
+      isLoading = true;
+    });
+    RespondModel resp = RespondModel(await Utils.http_post(
+      'auth/request-password-reset-code',
+      formDataMap,
+    ));
+    setState(() {
+      isLoading = false;
+    });
+
+    if (resp.code != 1) {
+      error_message = resp.message;
+      Utils.toast(error_message);
+      setState(() {});
+      return;
+    }
+    Utils.toast("Secret code sent to your email.");
+    haveCode = true;
+    setState(() {});
   }
 }

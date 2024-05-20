@@ -44,16 +44,18 @@ class AccountEditState extends State<AccountEdit>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: CustomTheme.primary,
       appBar: AppBar(
         elevation: 1,
+        backgroundColor: CustomTheme.primary,
         systemOverlayStyle: Utils.overlay(),
         leading: InkWell(
           onTap: () {
             Navigator.of(context).pop();
           },
-          child: const Icon(
+          child:  Icon(
             Icons.arrow_back_outlined,
-            color :Colors.black,
+            color : CustomTheme.accent
           ),
         ),
         actions: [
@@ -75,14 +77,14 @@ class AccountEditState extends State<AccountEdit>
                   },
                   child: FxText.bodyLarge(
                     "SAVE",
-                    color :CustomTheme.primary,
+                    color : CustomTheme.secondary,
                     fontWeight : 800,
                   ))
         ],
         title: FxText.titleMedium(
           "Editing profile",
           fontSize: 20,
-          color :Colors.black,
+          color: CustomTheme.accent,
           fontWeight : 700,
         ),
       ),

@@ -8,7 +8,6 @@ import 'package:dio/io.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
 import 'package:internet_connection_checker/internet_connection_checker.dart';
 import 'package:intl/intl.dart';
@@ -34,7 +33,6 @@ import '../screens/shop/models/ChatHead.dart';
 import '../screens/shop/models/Product.dart';
 import '../screens/shop/screens/shop/chat/ChatsScreen.dart';
 import '../screens/shop/screens/shop/chat/chat_screen.dart';
-import '../src/network/dio_interceptor.dart';
 import 'AppConfig.dart';
 import 'CustomTheme.dart';
 
@@ -80,7 +78,8 @@ class Utils {
     return const SystemUiOverlayStyle(
       statusBarColor: CustomTheme.primary,
       statusBarIconBrightness: Brightness.light,
-      statusBarBrightness: Brightness.light, // For iOS (dark icons)
+      statusBarBrightness: Brightness.light,
+      systemNavigationBarColor: CustomTheme.primary,
     );
   }
 
@@ -129,8 +128,6 @@ class Utils {
   }
 
   static Future<void> initOneSignal(LoggedInUserModel u) async {
-    //await Firebase.initializeApp();
-    // Set the background messaging handler early on, as a named top-level function
     OneSignal.shared.setAppId(AppConfig.ONESIGNAL_APP_ID);
 
     if (u.id > 0) {
@@ -237,36 +234,6 @@ class Utils {
     );
   }
 
-  static Future<Position> get_device_location() async {
-    bool serviceEnabled;
-    LocationPermission permission;
-
-    // Test if location services are enabled.
-    serviceEnabled = await Geolocator.isLocationServiceEnabled();
-    if (!serviceEnabled) {
-      // Location services are not enabled don't continue
-      // accessing the position and request users of the
-      // App to enable the location services.
-    }
-
-    permission = await Geolocator.checkPermission();
-    if (permission == LocationPermission.denied) {
-      permission = await Geolocator.requestPermission();
-      if (permission == LocationPermission.denied) {
-        // Permissions are denied, next time you could try
-        // requesting permissions again (this is also where
-        // Android's shouldShowRequestPermissionRationale
-        // returned true. According to Android guidelines
-        // your App should show an explanatory UI now.
-      }
-    }
-
-    if (permission == LocationPermission.deniedForever) {
-      // Permissions are denied forever, handle appropriately.
-    }
-
-    return await Geolocator.getCurrentPosition();
-  }
 
   static String to_date(dynamic updatedAt) {
     String dateText = "--:--";
@@ -439,7 +406,7 @@ class Utils {
       };
     }
     dynamic response;
-    var dio = Dio()..interceptors.add(DioInterceptor());
+    var dio = Dio();
     (dio.httpClientAdapter as DefaultHttpClientAdapter).onHttpClientCreate =
         (HttpClient client) {
       client.badCertificateCallback =
@@ -447,20 +414,21 @@ class Utils {
       return client;
     };
 
-    // LoggedInUserModel userModel = await LoggedInUserModel.getLoggedInUser();
+    LoggedInUserModel userModel = await LoggedInUserModel.getLoggedInUser();
     // String token = userModel.token;
     // body['user_id'] = LoggedInUserModel.id;
-    body['logged_in_user_id'] = 1;
+    body['logged_in_user_id'] = userModel.id.toString();
+    print(userModel.id.toString());
     var da = dioPackage.FormData.fromMap(body); //.fromMap();
     try {
+      print("${AppConfig.API_BASE_URL}/$path");
       response = await dio.post("${AppConfig.API_BASE_URL}/$path",
           data: da,
           options: Options(
             headers: <String, String>{
-
               "Content-Type": "application/json",
               "Accept": "application/json",
-              "logged_in_user_id": "1",
+              "logged_in_user_id": userModel.id.toString(),
             },
           ));
       return response.data;
@@ -483,8 +451,6 @@ class Utils {
       {bool addBase = true}) async {
     LoggedInUserModel u = await LoggedInUserModel.getLoggedInUser();
     // body['user_id'] = u.id;
-    //print url
-    print("${AppConfig.API_BASE_URL}/$path");
 
     bool isOnline = await Utils.is_connected();
     if (!isOnline) {
@@ -505,6 +471,7 @@ class Utils {
       return client;
     };
 
+    body['logged_in_user_id'] = u.id.toString();
     try {
       response =
       await dio.get(addBase ? "${AppConfig.API_BASE_URL}/$path" : path,
@@ -513,6 +480,7 @@ class Utils {
                 headers: {
                   "authorization": "Bearer ${u.token}",
                   //  "User-Id": '${u.id}',
+                  "logged_in_user_id": '${u.id}',
                   'Content-Type': 'application/json; charset=UTF-8',
                   'accept': 'application/json',
                 },

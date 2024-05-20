@@ -2,11 +2,13 @@
 // ignore: file_names
 import 'package:get/get.dart';
 import 'package:omulimisa2/models/LoggedInUserModel.dart';
+import 'package:omulimisa2/models/MovieModel.dart';
 import 'package:omulimisa2/models/ResourceModel.dart';
 
 import '../models/FarmerQuestion.dart';
 import '../models/MyPermission.dart';
 import '../models/MyRole.dart';
+import '../models/SeriesModel.dart';
 import '../models/WeatherForeCastModel.dart';
 import '../screens/shop/models/CartItem.dart';
 import '../screens/shop/models/OrderOnline.dart';
@@ -21,6 +23,8 @@ class MainController extends GetxController {
   LoggedInUserModel loggedInUser = LoggedInUserModel();
   LoggedInUserModel userModel = LoggedInUserModel();
   List<ResourceModel> resources = [];
+  List<MovieModel> movies = [];
+  List<SeriesModel> series = [];
   List<FarmerQuestion> questions = [];
   RxList<dynamic> categories = <ProductCategory>[].obs;
 
@@ -28,16 +32,26 @@ class MainController extends GetxController {
   RxList<dynamic> myOrders = <OrderOnline>[].obs;
   RxList<dynamic> myProducts = <Product>[].obs;
   RxList<dynamic> products = <Product>[].obs;
+  RxList<dynamic> watchedMovies = <MovieModel>[].obs;
 
   init() async {
+    await getMovies();
+    await getWatchedMovies();
+    return;
     await getLoggedInUser();
     await getWeather('1.003567', '34.334366');
-    await getResources();
-    await getQuestions();
-    await getCartItems();
-    await getMyProducts();
-    await getProducts();
-    await getOrders();
+    // await getQuestions();
+    // await getCartItems();
+    // await getMyProducts();
+    // await getProducts();
+    // await getOrders();
+  }
+
+  Future<void> getWatchedMovies() async {
+    watchedMovies.value = await MovieModel.get_items(
+      where: "watched_movie = 'Yes'",
+    );
+    update();
   }
 
   getOrders() async {
@@ -101,8 +115,14 @@ class MainController extends GetxController {
     update();
   }
 
-  Future<void> getResources() async {
-    resources = await ResourceModel.get_items();
+  Future<void> getMovies() async {
+    movies = await MovieModel.get_items(
+      where: 'status = "Active" AND type = "Movie"',
+    );
+
+    movies.sort((a, b) => a.id.compareTo(b.id));
+    series = await SeriesModel.get_items();
+    update();
   }
 
   Future<List<FarmerQuestion>> getQuestions() async {

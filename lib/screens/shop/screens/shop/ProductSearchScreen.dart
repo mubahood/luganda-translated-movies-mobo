@@ -4,13 +4,13 @@ import 'package:flutter_feather_icons/flutter_feather_icons.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:flutx/flutx.dart';
 import 'package:get/get.dart';
+import 'package:omulimisa2/models/MovieModel.dart';
+import 'package:omulimisa2/screens/gardens/video_player_screen.dart';
 
 import '../../../../controllers/MainController.dart';
 import '../../../../utils/AppConfig.dart';
 import '../../../../utils/CustomTheme.dart';
 import '../../../../widget/widgets.dart';
-import '../../models/Product.dart';
-import 'ProductScreen.dart';
 
 
 class ProductSearchScreen extends StatefulWidget {
@@ -36,6 +36,7 @@ class _ProductSearchScreenState extends State<ProductSearchScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: CustomTheme.primary,
       appBar: AppBar(
         backgroundColor: CustomTheme.primary,
         elevation: 0,
@@ -102,11 +103,12 @@ class _ProductSearchScreenState extends State<ProductSearchScreen> {
     setState(() {});
   }
 
-  List<Product> products = [];
+  List<MovieModel> products = [];
 
   Future<dynamic> myInit() async {
     if (keyWord.length > 1) {
-      products = await Product.getItems(where: 'name LIKE \'%$keyWord%\'');
+      products = await MovieModel.get_items(
+          where: 'title LIKE \'%$keyWord%\' AND status = "Active" ');
     } else {
       products.clear();
     }
@@ -125,7 +127,7 @@ class _ProductSearchScreenState extends State<ProductSearchScreen> {
             child: RefreshIndicator(
               onRefresh: doRefresh,
               color :CustomTheme.primary,
-              backgroundColor: Colors.white,
+              backgroundColor: CustomTheme.primary,
               child: SafeArea(
                 child: products.isEmpty
                     ? SizedBox(
@@ -153,16 +155,17 @@ class _ProductSearchScreenState extends State<ProductSearchScreen> {
                           SliverList(
                             delegate: SliverChildBuilderDelegate(
                               (BuildContext context, int index) {
-                                Product pro = products[index];
+                                MovieModel pro = products[index];
                                 return FxContainer(
                                   borderColor: CustomTheme.primaryDark,
                                   bordered: false,
                                   onTap: () {
-                                    Get.to(() => ProductScreen(pro));
+                                    Get.to(() => VideoPlayerScreen(pro));
                                   },
                                   margin: const EdgeInsets.only(bottom: 15),
                                   borderRadiusAll: 8,
                                   paddingAll: 0,
+                                  color: Colors.grey.shade900,
                                   child: Flex(
                                     direction: Axis.horizontal,
                                     mainAxisAlignment: MainAxisAlignment.start,
@@ -176,8 +179,7 @@ class _ProductSearchScreenState extends State<ProductSearchScreen> {
                                           fit: BoxFit.cover,
                                           width: Get.width / 5.6,
                                           height: Get.width / 5.6,
-                                          imageUrl:
-                                              "${AppConfig.MAIN_SITE_URL}/storage/images/${pro.feature_photo}",
+                                          imageUrl: pro.getThumbnail(),
                                           placeholder: (context, url) =>
                                               ShimmerLoadingWidget(),
                                           errorWidget: (context, url, error) =>
@@ -201,27 +203,27 @@ class _ProductSearchScreenState extends State<ProductSearchScreen> {
                                           const SizedBox(
                                             height: 3,
                                           ),
-                                          FxText(
-                                            "${pro.name} ",
-                                            height: 1,
+                                          FxText.titleMedium(
+                                            pro.title,
+                                            height: 1.2,
                                             fontWeight : 700,
                                             maxLines: 2,
-                                            color :Colors.grey.shade900,
+                                            color: Colors.grey.shade100,
                                             overflow: TextOverflow.ellipsis,
                                           ),
                                           const SizedBox(
-                                            height: 1,
+                                            height: 5,
                                           ),
                                           FxCard(
                                             padding: const EdgeInsets.only(
                                                 left: 10,
                                                 right: 10,
-                                                top: 5,
-                                                bottom: 0),
+                                                top: 1,
+                                                bottom: 2),
                                             color :CustomTheme.primary,
-                                            child: FxText.titleLarge(
-                                              "UGX ${pro.price_1} ",
-                                              height: .9,
+                                            child: FxText.titleMedium(
+                                              "${pro.genre} ",
+                                              height: 1.2,
                                               fontWeight : 900,
                                               maxLines: 2,
                                               color :Colors.white,

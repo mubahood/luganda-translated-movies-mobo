@@ -6,8 +6,8 @@ import 'package:get/get.dart';
 import '../../../../../../controllers/MainController.dart';
 import '../../../../../../utils/CustomTheme.dart';
 import '../../../../../../utils/Utilities.dart';
-import '../../ProductCreateScreen.dart';
-import '../../widgets.dart';
+import '../../ProductSearchScreen.dart';
+import '../../account/AccountEdit.dart';
 import '../full_app.dart';
 
 class AccountSection extends StatefulWidget {
@@ -29,151 +29,211 @@ class _AccountSectionState extends State<AccountSection> {
 
   final MainController mainController = Get.find<MainController>();
 
-  myInit() async {}
+  myInit() async {
+    mainController.getLoggedInUser();
+    setState(() {});
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: CustomTheme.primary,
       appBar: AppBar(
+        backgroundColor: CustomTheme.primary,
         systemOverlayStyle: Utils.overlay(),
         elevation: .5,
         automaticallyImplyLeading: false,
-        title: FxText.titleLarge(
-          "Account ",
-          fontWeight : 900,
+        title: Row(
+          children: [
+            const FxContainer(
+              width: 12,
+              color: CustomTheme.secondary,
+              height: 25,
+            ),
+            const SizedBox(
+              width: 10,
+            ),
+            FxText.titleLarge(
+              "My Account",
+              fontWeight: 900,
+              color: CustomTheme.accent,
+            ),
+          ],
         ),
+        actions: [
+          IconButton(
+            icon: const Icon(
+              FeatherIcons.user,
+              color: CustomTheme.accent,
+            ),
+            onPressed: () {
+              Get.to(() => ProductSearchScreen());
+            },
+          ),
+          IconButton(
+            icon: const Icon(
+              FeatherIcons.helpCircle,
+              color: CustomTheme.accent,
+            ),
+            onPressed: () {},
+          ),
+        ],
       ),
-      body: (mainController.userModel.id < 1)
-          ? notLoggedInWidget()
-          : SingleChildScrollView(
+      body: Column(
+        children: [
+          Divider(
+            height: .5,
+            color: CustomTheme.accent,
+          ),
+          Expanded(
+            child: SingleChildScrollView(
               child: Column(
                 children: [
                   ListTile(
                     leading: const Icon(
                       FeatherIcons.user,
-                      color :CustomTheme.primary,
+                      color: CustomTheme.secondary,
+                      size: 35,
                     ),
                     title: FxText.bodyLarge(
                       "My Profile",
+                      fontWeight: 600,
+                      color: CustomTheme.color,
                     ),
-                    onTap: () {},
+                    onTap: () {
+                      Get.to(()=>AccountEdit());
+                    },
+                    subtitle: FxText.bodySmall(
+                      "View and edit your profile",
+                      color: CustomTheme.color3,
+                    ),
                     trailing: const Icon(
                       FeatherIcons.chevronRight,
-                      color :CustomTheme.primary,
+                      color: CustomTheme.secondary,
+                      size: 30,
                     ),
                   ),
                   ListTile(
-                    title: FxText.bodyLarge(
-                      "Change Password",
-                    ),
-                    onTap: () {},
                     leading: const Icon(
                       FeatherIcons.key,
-                      color :CustomTheme.primary,
+                      color: CustomTheme.secondary,
+                      size: 35,
                     ),
-                    trailing: const Icon(
-                      FeatherIcons.chevronRight,
-                      color :CustomTheme.primary,
-                    ),
-                  ),
-                  ListTile(
                     title: FxText.bodyLarge(
-                      "Sell now",
+                      "Change Password",
+                      fontWeight: 600,
+                      color: CustomTheme.color,
                     ),
-                    leading: const Icon(
-                      FeatherIcons.tag,
-                      color :CustomTheme.primary,
+                    onTap: () {},
+                    subtitle: FxText.bodySmall(
+                      "Update your password",
+                      color: CustomTheme.color3,
                     ),
-                    onTap: () {
-                      Get.to(()=> const ProductCreateScreen());
-                    },
                     trailing: const Icon(
                       FeatherIcons.chevronRight,
-                      color :CustomTheme.primary,
+                      color: CustomTheme.secondary,
+                      size: 30,
                     ),
                   ),
                   ListTile(
+                    leading: const Icon(
+                      FeatherIcons.monitor,
+                      color: CustomTheme.secondary,
+                      size: 35,
+                    ),
+                    title: FxText.bodyLarge(
+                      "My Subscription",
+                      fontWeight: 600,
+                      color: CustomTheme.color,
+                    ),
+                    onTap: () {},
+                    subtitle: FxText.bodySmall(
+                      "Manage your subscription",
+                      color: CustomTheme.color3,
+                    ),
+                    trailing: const Icon(
+                      FeatherIcons.chevronRight,
+                      color: CustomTheme.secondary,
+                      size: 30,
+                    ),
+                  ),
+                  ListTile(
+                    leading: const Icon(
+                      FeatherIcons.info,
+                      color: CustomTheme.secondary,
+                      size: 35,
+                    ),
                     title: FxText.bodyLarge(
                       "How it works",
-                    ),
-                    leading: const Icon(
-                      FeatherIcons.helpCircle,
-                      color :CustomTheme.primary,
+                      fontWeight: 600,
+                      color: CustomTheme.color,
                     ),
                     onTap: () {},
+                    subtitle: FxText.bodySmall(
+                      "Learn how the app works",
+                      color: CustomTheme.color3,
+                    ),
                     trailing: const Icon(
                       FeatherIcons.chevronRight,
-                      color :CustomTheme.primary,
+                      color: CustomTheme.secondary,
+                      size: 30,
                     ),
                   ),
                   ListTile(
+                    leading: const Icon(
+                      FeatherIcons.mail,
+                      color: CustomTheme.secondary,
+                      size: 35,
+                    ),
                     title: FxText.bodyLarge(
                       "Contact Us",
-                    ),
-                    leading: const Icon(
-                      FeatherIcons.phone,
-                      color :CustomTheme.primary,
+                      fontWeight: 600,
+                      color: CustomTheme.color,
                     ),
                     onTap: () {},
+                    subtitle: FxText.bodySmall(
+                      "Get in touch with us",
+                      color: CustomTheme.color3,
+                    ),
                     trailing: const Icon(
                       FeatherIcons.chevronRight,
-                      color :CustomTheme.primary,
+                      color: CustomTheme.secondary,
+                      size: 30,
                     ),
                   ),
                   ListTile(
+                    trailing: const Icon(
+                      FeatherIcons.logOut,
+                      color: CustomTheme.accent,
+                      size: 35,
+                    ),
                     title: FxText.bodyLarge(
                       "Logout",
-                    ),
-                    leading: const Icon(
-                      FeatherIcons.logOut,
-                      color :CustomTheme.primary,
+                      fontWeight: 600,
+                      color: CustomTheme.color,
                     ),
                     onTap: () {
-                      Get.defaultDialog(
-                          middleText: "Are you sure you want to logout?",
-                          titleStyle: const TextStyle(color: Colors.black),
-                          actions: <Widget>[
-                            FxButton.outlined(
-                              onPressed: () {
-                                Navigator.pop(context);
-                                do_logout();
-                              },
-                              padding: const EdgeInsets.symmetric(
-                                  vertical: 10, horizontal: 15),
-                              borderColor: CustomTheme.primary,
-                              child: FxText(
-                                'LOGOUT',
-                                color :CustomTheme.primary,
-                              ),
-                            ),
-                            FxButton.small(
-                              onPressed: () {
-                                Navigator.pop(context);
-                              },
-                              padding: const EdgeInsets.symmetric(
-                                  vertical: 10, horizontal: 15),
-                              child: FxText(
-                                'CANCEL',
-                                color :Colors.white,
-                              ),
-                            )
-                          ]);
+                      Navigator.pop(context);
+                      do_logout();
                     },
-                    trailing: const Icon(
-                      FeatherIcons.chevronRight,
-                      color :CustomTheme.primary,
+                    subtitle: FxText.bodySmall(
+                      "Sign out of your account",
+                      color: CustomTheme.color3,
                     ),
                   ),
                 ],
               ),
             ),
+          ),
+        ],
+      ),
     );
   }
 
   Future<void> do_logout() async {
     Utils.logout();
     Utils.toast("Logged you out!");
-    Get.to(() => const ShopApp());
+    Get.to(() => const HomeScreen());
     //Navigator.pushNamedAndRemoveUntil(context, AppConfig.FullApp, (r) => false);
   }
 }

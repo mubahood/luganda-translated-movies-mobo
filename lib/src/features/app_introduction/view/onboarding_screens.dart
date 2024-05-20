@@ -1,112 +1,73 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_onboard/flutter_onboard.dart';
+import 'package:flutter/services.dart';
 import 'package:get/get.dart';
-import 'package:omulimisa2/core/styles.dart';
+import 'package:omulimisa2/models/LoggedInUserModel.dart';
+import 'package:omulimisa2/screens/auth/login_screen.dart';
+import 'package:omulimisa2/utils/Utilities.dart';
+import 'package:omulimisa2/utils/my_colors.dart';
 
-import '../../../routing/routing.dart';
+import '../../../../screens/shop/screens/shop/full_app/full_app.dart';
+import '../../../../utils/AppConfig.dart';
 
-class OnBoardingScreen extends StatelessWidget {
+class OnBoardingScreen extends StatefulWidget {
+  OnBoardingScreen({super.key});
+
+  @override
+  State<OnBoardingScreen> createState() => _OnBoardingScreenState();
+}
+
+class _OnBoardingScreenState extends State<OnBoardingScreen> {
   final PageController _pageController = PageController();
 
-  OnBoardingScreen({super.key});
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    myInit();
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppStyles.backgroundWhite,
-      body: OnBoard(
-        pageController: _pageController,
-
-        // onSkip: () {
-        //   // print('skipped');
-        // },
-
-        // onDone: () {
-        //   // print('done tapped');
-        // },
-        onBoardData: onBoardData,
-        titleStyles: AppStyles.googleFontMontserrat.copyWith(
-            fontSize: 18, color: AppStyles.black, fontWeight: FontWeight.w700),
-        descriptionStyles: AppStyles.googleFontMontserrat.copyWith(
-            fontSize: 14, color: AppStyles.black, fontWeight: FontWeight.w400),
-        pageIndicatorStyle: const PageIndicatorStyle(
-          width: 77,
-          inactiveColor: AppStyles.secondaryColor,
-          activeColor: AppStyles.secondaryColor,
-          inactiveSize: Size(10, 10),
-          activeSize: Size(20, 20),
-        ),
-        // Either Provide onSkip Callback or skipButton Widget to handle skip state
-        skipButton: TextButton(
-          onPressed: () {
-            AppRouter.goToLogin();
-          },
-          child: Text(
-            "Skip",
-            style: AppStyles.googleFontMontserrat.copyWith(
-                color: AppStyles.textHighlightColor,
-                fontWeight: FontWeight.w700),
+        appBar: AppBar(
+          backgroundColor: MyColors.primary,
+          foregroundColor: MyColors.primary,
+          surfaceTintColor: MyColors.primary,
+          systemOverlayStyle: const SystemUiOverlayStyle(
+            statusBarColor: MyColors.primary,
+            statusBarIconBrightness: Brightness.light,
+            statusBarBrightness: Brightness.light,
           ),
         ),
-        // Either Provide onDone Callback or nextButton Widget to handle done state
-        nextButton: OnBoardConsumer(
-          builder: (context, ref, child) {
-            final state = ref.watch(onBoardStateProvider);
-            return InkWell(
-              onTap: () => _onNextTap(state),
-              child: Container(
-                width: 230,
-                height: 50,
-                alignment: Alignment.center,
-                decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(30),
-                    color: AppStyles.primaryColor),
-                child: Text(
-                  state.isLastPage ? "Get Started" : "Next",
-                  style: const TextStyle(
-                    color: Colors.white,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-              ),
-            );
-          },
+        backgroundColor: MyColors.primary,
+        body: newScreen());
+  }
+
+  newScreen() {
+    return Center(
+      child: InkWell(
+        onTap: () {
+          myInit();
+        },
+        child: Image(
+          image: const AssetImage(AppConfig.logo_1),
+          width: Get.width / 2,
+          fit: BoxFit.fill,
         ),
       ),
     );
   }
 
-  void _onNextTap(OnBoardState onBoardState) {
-    if (!onBoardState.isLastPage) {
-      _pageController.animateToPage(
-        onBoardState.page + 1,
-        duration: const Duration(milliseconds: 250),
-        curve: Curves.easeInOutSine,
-      );
-    } else {
-      Get.offAllNamed(AppRouter.login);
-      //AppRouter.goToLogin();
+  LoggedInUserModel u = LoggedInUserModel();
+
+  void myInit() async {
+    u = await LoggedInUserModel.getLoggedInUser();
+    await Future.delayed(const Duration(seconds: 3));
+    if (u.id < 1) {
+      Get.off(() => const LoginScreen());
+      return;
     }
+    Utils.toast("Welcome ${u.name}!");
+    Get.off(() => const HomeScreen());
   }
 }
-
-final List<OnBoardModel> onBoardData = [
-  const OnBoardModel(
-    title: "Farmers Connect",
-    description:
-        "Welcome to Farmers Connect! 🌾🚜 Join our thriving community of farmers where you can share your expertise, connect with fellow farmers, and access valuable resources to enhance your farming journey. Whether you're a seasoned pro or just starting out, we're here to support you every step of the way. Let's grow together!",
-    imgUrl: "assets/images/onboarding1.jpg",
-  ),
-  const OnBoardModel(
-    title: "AgriHub: Your Farming Companion",
-    description:
-        "AgriHub is your one-stop destination for all things agriculture. 🌱👩‍🌾 We're delighted to have you on board! Here, you'll find a warm and welcoming community of farmers eager to share knowledge, discuss the latest trends, and exchange tips and tricks. Whether you're a hobbyist or a commercial farmer, AgriHub is your trusted farming companion.",
-    imgUrl: 'assets/images/onboarding2.jpg',
-  ),
-  const OnBoardModel(
-    title: "HarvestChat: Where Farmers Unite",
-    description:
-        "Welcome to HarvestChat, the virtual gathering place for farmers like you! 🌻🤝 We're excited to have you as part of our growing family. Join the conversation, ask questions, and connect with farmers from around the world. HarvestChat is the place to be for those who are passionate about farming. Let's sow the seeds of friendship and knowledge together!",
-    imgUrl: 'assets/images/onboarding3.jpg',
-  ),
-];

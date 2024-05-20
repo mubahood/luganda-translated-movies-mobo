@@ -1,9 +1,13 @@
+import 'dart:math';
+
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_feather_icons/flutter_feather_icons.dart';
+import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:flutx/flutx.dart';
 import 'package:get/get.dart';
+import 'package:omulimisa2/models/MovieModel.dart';
 
 import '../../../../../../controllers/MainController.dart';
 import '../../../../../../utils/AppConfig.dart';
@@ -11,9 +15,8 @@ import '../../../../../../utils/CustomTheme.dart';
 import '../../../../../../utils/SizeConfig.dart';
 import '../../../../../../utils/app_theme.dart';
 import '../../../../../../widget/widgets.dart';
-import '../../../../models/Product.dart';
+import '../../../../../gardens/video_player_screen.dart';
 import '../../../../models/ProductCategory.dart';
-import '../../ProductScreen.dart';
 import '../../ProductSearchScreen.dart';
 import '../../ProductsScreen.dart';
 import '../../cart/CartScreen.dart';
@@ -40,7 +43,7 @@ class _SectionDashboardState extends State<SectionDashboard> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: CustomTheme.primary,
       body: FutureBuilder(
           future: futureInit,
           builder: (context, snapshot) {
@@ -63,24 +66,26 @@ class _SectionDashboardState extends State<SectionDashboard> {
     setState(() {});
   }
 
-  List<ProductCategory> cats = [];
-  List<ProductCategory> banners = [];
-
+  MovieModel topMovie = MovieModel();
+  List<MovieModel> recentMovies = [];
   Future<dynamic> myInit() async {
-    await mainController.getCategories();
-
-    cats.clear();
-    banners.clear();
-    await mainController.getProducts();
-
-    for (var e in mainController.categories) {
-      if (e.show_in_banner.toString().toLowerCase() == 'yes') {
-        banners.add(e);
-      }
-      if (e.show_in_categories == 'Yes') {
-        cats.add(e);
+    await mainController.getMovies();
+    mainController.movies.shuffle();
+    if (mainController.movies.length < 4) {}
+    if (mainController.movies.isNotEmpty) {
+      mainController.movies.shuffle();
+      topMovie = mainController.movies[0];
+      if (mainController.movies.length > 10) {
+        mainController.movies.shuffle();
+        recentMovies = mainController.movies.sublist(1, 10);
+        recentMovies.shuffle();
       }
     }
+    mainController.movies.sort((b, a) => a.id.compareTo(b.id));
+    setState(() {});
+
+    return;
+    await mainController.getProducts();
 
     return "Done";
   }
@@ -105,8 +110,8 @@ class _SectionDashboardState extends State<SectionDashboard> {
                   Get.back();
                 },
                 child: const Icon(
-                  FeatherIcons.arrowLeft,
-                  color: Colors.white,
+                  FeatherIcons.home,
+                  color: CustomTheme.accent,
                   size: 30,
                 ),
               ),
@@ -121,7 +126,7 @@ class _SectionDashboardState extends State<SectionDashboard> {
                 color: CustomTheme.primary,
                 bordered: true,
                 borderRadiusAll: 8,
-                borderColor: Colors.white,
+                borderColor: CustomTheme.accent,
                 margin: const EdgeInsets.only(left: 5),
                 padding: const EdgeInsets.only(left: 5, top: 8, bottom: 8),
                 child: Row(
@@ -131,31 +136,31 @@ class _SectionDashboardState extends State<SectionDashboard> {
                     ),
                     const Icon(
                       FeatherIcons.search,
-                      color: Colors.white,
+                      color: CustomTheme.accent,
                       size: 18,
                     ),
                     const SizedBox(
                       width: 5,
                     ),
                     FxText(
-                      'Search...',
+                      'Search Luganda translated movies...',
                       fontWeight: 400,
-                      color: Colors.white,
+                      color: CustomTheme.color,
                     ),
                   ],
                 ),
               )),
               const SizedBox(
-                width: 15,
+                width: 10,
               ),
               InkWell(
                 onTap: () {
                   showBottomSheetCategoryPicker();
                 },
                 child: const Icon(
-                  FeatherIcons.filter,
-                  color: Colors.white,
-                  size: 25,
+                  FeatherIcons.mic,
+                  color: CustomTheme.accent,
+                  size: 35,
                 ),
               ),
               const SizedBox(
@@ -173,52 +178,280 @@ class _SectionDashboardState extends State<SectionDashboard> {
               color: CustomTheme.primary,
               backgroundColor: Colors.white,
               child: SafeArea(
-                child: Obx(() => CustomScrollView(
-                      slivers: [
-                        SliverList(
-                          delegate: SliverChildBuilderDelegate(
-                            (BuildContext context, int index) {
-                              return CarouselSlider(
-                                options: CarouselOptions(
-                                  autoPlay: true,
-                                  viewportFraction: 1,
-                                  initialPage: 0,
-                                  enableInfiniteScroll: true,
-                                  autoPlayInterval: const Duration(seconds: 6),
-                                  autoPlayAnimationDuration:
-                                      const Duration(milliseconds: 800),
-                                  autoPlayCurve: Curves.fastOutSlowIn,
-                                  enlargeCenterPage: true,
-                                  enlargeFactor: 0.3,
-                                  scrollDirection: Axis.horizontal,
+                child: CustomScrollView(
+                  slivers: [
+                    SliverList(
+                      delegate: SliverChildBuilderDelegate(
+                        (BuildContext context, int index) {
+                          return Padding(
+                            padding: const EdgeInsets.only(
+                                left: 10, right: 10, top: 0, bottom: 0),
+                            child: Row(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                roundedImage(topMovie.getThumbnail(), 3, 2.2),
+                                const SizedBox(
+                                  width: 10,
                                 ),
-                            items: banners
-                                .map(
-                                      (item) => InkWell(
-                                        onTap: () => {
-                                          Get.to(() => ProductsScreen(
-                                              {'category': item}))
-                                        },
-                                        child: CachedNetworkImage(
-                                          fit: BoxFit.contain,
-                                          height: Get.width / 2,
-                                          imageUrl:
-                                              "${AppConfig.MAIN_SITE_URL}/${item.banner_image}",
-                                          placeholder: (context, url) =>
-                                              ShimmerLoadingWidget(
-                                                  height: Get.width / 2),
-                                          errorWidget: (context, url, error) =>
-                                              Image(
-                                            image: const AssetImage(
-                                              AppConfig.NO_IMAGE,
-                                            ),
-                                            fit: BoxFit.cover,
-                                            height: Get.width / 2,
-                                          ),
+                                Expanded(
+                                  child: Column(
+                                    mainAxisAlignment: MainAxisAlignment.start,
+                                    mainAxisSize: MainAxisSize.min,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Padding(
+                                        padding: const EdgeInsets.only(
+                                          left: 5,
+                                        ),
+                                        child: FxText.titleLarge(
+                                          topMovie.title,
+                                          fontWeight: 600,
+                                          maxLines: 3,
+                                          letterSpacing: .2,
+                                          textAlign: TextAlign.start,
+                                          overflow: TextOverflow.ellipsis,
+                                          height: 1,
+                                          color: Colors.white,
                                         ),
                                       ),
-                                    )
-                                    .toList(),
+                                      const SizedBox(
+                                        height: 10,
+                                      ),
+                                      RatingBar(
+                                        initialRating:
+                                            Random().nextDouble() * 5,
+                                        itemSize: 25,
+                                        direction: Axis.horizontal,
+                                        allowHalfRating: true,
+                                        itemCount: 5,
+                                        ratingWidget: RatingWidget(
+                                          full: const Icon(
+                                            Icons.star,
+                                            color: Colors.amber,
+                                          ),
+                                          half: const Icon(
+                                            Icons.star_half,
+                                            color: Colors.amber,
+                                          ),
+                                          empty: const Icon(
+                                            Icons.star_border,
+                                            color: Colors.amber,
+                                          ),
+                                        ),
+                                        itemPadding: const EdgeInsets.symmetric(
+                                            horizontal: 4.0),
+                                        onRatingUpdate: (rating) {
+                                          print(rating);
+                                        },
+                                      ),
+                                      const SizedBox(
+                                        height: 5,
+                                      ),
+                                      Row(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.center,
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.start,
+                                        children: [
+                                          SizedBox(
+                                            width: 8,
+                                          ),
+                                          Icon(
+                                            FeatherIcons.eye,
+                                            color: Colors.grey,
+                                            size: 14,
+                                          ),
+                                          const SizedBox(
+                                            width: 5,
+                                          ),
+                                          FxText.bodySmall(
+                                            "${Random().nextInt(1000)}",
+                                            color: Colors.grey,
+                                          ),
+                                          const SizedBox(
+                                            width: 15,
+                                          ),
+                                          Icon(
+                                            FeatherIcons.heart,
+                                            color: Colors.grey,
+                                            size: 14,
+                                          ),
+                                          const SizedBox(
+                                            width: 5,
+                                          ),
+                                          FxText.bodySmall(
+                                            "${Random().nextInt(1000)}",
+                                            color: Colors.grey,
+                                          ),
+                                          const SizedBox(
+                                            width: 15,
+                                          ),
+                                          Icon(
+                                            FeatherIcons.download,
+                                            color: Colors.grey,
+                                            size: 14,
+                                          ),
+                                          const SizedBox(
+                                            width: 5,
+                                          ),
+                                          FxText.bodySmall(
+                                            "${Random().nextInt(1000)}",
+                                            color: Colors.grey,
+                                          ),
+                                        ],
+                                      ),
+                                      const SizedBox(
+                                        height: 10,
+                                      ),
+                                      Row(
+                                        children: [
+                                          const SizedBox(
+                                            height: 10,
+                                          ),
+                                          //watch now button
+                                          FxButton.outlined(
+                                            onPressed: () {
+                                              Get.to(() =>
+                                                  VideoPlayerScreen(topMovie));
+                                            },
+                                            borderRadiusAll: 8,
+                                            borderColor: Colors.white,
+                                            block: false,
+                                            padding: const EdgeInsets.symmetric(
+                                                vertical: 10, horizontal: 20),
+                                            child: Row(
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.center,
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.center,
+                                              children: [
+                                                const Icon(
+                                                  FeatherIcons.play,
+                                                  color: Colors.white,
+                                                  size: 15,
+                                                ),
+                                                FxText.bodyMedium(
+                                                  "Watch Now",
+                                                  color: Colors.white,
+                                                  fontWeight: 800,
+                                                ),
+                                              ],
+                                            ),
+                                          ),
+                                          //icon button add to watchlist
+                                          const SizedBox(
+                                            height: 10,
+                                          ),
+                                          SizedBox(
+                                            width: 10,
+                                          ),
+                                          FxButton.outlined(
+                                            onPressed: () {
+                                              Get.to(() =>
+                                                  VideoPlayerScreen(topMovie));
+                                            },
+                                            borderRadiusAll: 8,
+                                            borderColor: Colors.white,
+                                            block: false,
+                                            padding: const EdgeInsets.symmetric(
+                                                vertical: 10, horizontal: 20),
+                                            child: const Icon(
+                                              FeatherIcons.heart,
+                                              color: Colors.white,
+                                              size: 20,
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ],
+                            ),
+                          );
+
+/*                          return CarouselSlider(
+                            options: CarouselOptions(
+                              autoPlay: true,
+                              viewportFraction: 1,
+                              initialPage: 0,
+                              enableInfiniteScroll: true,
+                              autoPlayInterval: const Duration(seconds: 6),
+                              autoPlayAnimationDuration:
+                              const Duration(milliseconds: 800),
+                              autoPlayCurve: Curves.fastOutSlowIn,
+                              enlargeCenterPage: true,
+                              enlargeFactor: 0.3,
+                              scrollDirection: Axis.horizontal,
+                            ),
+                            items: banners
+                                .map(
+                                  (item) => InkWell(
+                                onTap: () => {
+                                  Get.to(() => ProductsScreen(
+                                      {'category': item}))
+                                },
+                                child: CachedNetworkImage(
+                                  fit: BoxFit.contain,
+                                  height: Get.width / 2,
+                                  imageUrl:
+                                  "${AppConfig.MAIN_SITE_URL}/${item.banner_image}",
+                                  placeholder: (context, url) =>
+                                      ShimmerLoadingWidget(
+                                          height: Get.width / 2),
+                                  errorWidget: (context, url, error) =>
+                                      Image(
+                                        image: const AssetImage(
+                                          AppConfig.NO_IMAGE,
+                                        ),
+                                        fit: BoxFit.cover,
+                                        height: Get.width / 2,
+                                      ),
+                                ),
+                              ),
+                            )
+                                .toList(),
+                          );*/
+                        },
+                        childCount: 1, // 1000 list items
+                      ),
+                    ),
+                    SliverList(
+                      delegate: SliverChildBuilderDelegate(
+                        (BuildContext context, int index) {
+                          return titleWidget('Trending', () {});
+                        },
+                        childCount: 1, // 1000 list items
+                      ),
+                    ),
+                    SliverList(
+                      delegate: SliverChildBuilderDelegate(
+                        (BuildContext context, int index) {
+                          return CarouselSlider(
+                            options: CarouselOptions(
+                              autoPlay: false,
+                              viewportFraction: .42,
+                              initialPage: 1,
+                              enableInfiniteScroll: false,
+                              height: Get.width / 2,
+                              autoPlayInterval: const Duration(seconds: 6),
+                              autoPlayAnimationDuration:
+                                  const Duration(milliseconds: 800),
+                              autoPlayCurve: Curves.fastOutSlowIn,
+                              enlargeCenterPage: true,
+                              enlargeFactor: 0,
+                              scrollDirection: Axis.horizontal,
+                            ),
+                            items: recentMovies
+                                .map(
+                                  (item) => InkWell(
+                                    onTap: () =>
+                                        {Get.to(() => VideoPlayerScreen(item))},
+                                    child: movieUi(item),
+                                  ),
+                                )
+                                .toList(),
                           );
                         },
                         childCount: 1, // 1000 list items
@@ -227,208 +460,34 @@ class _SectionDashboardState extends State<SectionDashboard> {
                     SliverList(
                       delegate: SliverChildBuilderDelegate(
                             (BuildContext context, int index) {
-                              return Padding(
-                                padding:
-                                    const EdgeInsets.only(top: 20, bottom: 15),
-                                child: FxText.titleMedium(
-                                  'top Categories'.toUpperCase(),
-                                  fontWeight: 900,
-                                  color: CustomTheme.primary,
-                                ),
-                              );
-                            },
-                        childCount: 1, // 1000 list items
-                      ),
-                    ),
-                    SliverGrid(
-                          gridDelegate:
-                              const SliverGridDelegateWithFixedCrossAxisCount(
-                            crossAxisCount: 4,
-                            crossAxisSpacing: 6,
-                            childAspectRatio: 0.78,
-                          ),
-                          delegate: SliverChildBuilderDelegate(
-                            (BuildContext context, int index) {
-                              ProductCategory item = cats[index];
-                              double width = Get.width / 4.5;
-                              return InkWell(
-                                onTap: () {
-                                  Get.to(
-                                      () => ProductsScreen({'category': item}));
-                                },
-                                child: Column(
-                                  children: [
-                                    const Spacer(),
-                                    ClipRRect(
-                                      borderRadius: const BorderRadius.only(
-                                        topLeft: Radius.circular(10),
-                                        topRight: Radius.circular(10),
-                                        bottomLeft: Radius.circular(10),
-                                        bottomRight: Radius.circular(10),
-                                      ),
-                                      child: CachedNetworkImage(
-                                        fit: BoxFit.contain,
-                                        width: width,
-                                        height: width,
-                                        imageUrl:
-                                            "${AppConfig.MAIN_SITE_URL}/${item.image}",
-                                        placeholder: (context, url) =>
-                                            ShimmerLoadingWidget(height: width),
-                                        errorWidget: (context, url, error) =>
-                                            Image(
-                                          image: const AssetImage(
-                                            AppConfig.NO_IMAGE,
-                                          ),
-                                          fit: BoxFit.cover,
-                                          width: width,
-                                          height: width,
-                                        ),
-                                      ),
-                                    ),
-                                    const SizedBox(height: 3),
-                                    Center(
-                                      child: FxText.bodyMedium(
-                                        item.category.toUpperCase(),
-                                        color: Colors.black,
-                                        wordSpacing: 800,
-                                        maxLines: 1,
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              );
-                            },
-                        childCount: cats.length,
-                      ),
-                    ),
-                    SliverList(
-                      delegate: SliverChildBuilderDelegate(
-                            (BuildContext context, int index) {
-                              return titleWidget('Top selling items', () {});
-                            },
+                          return titleWidget('Recently Uploaded', () {},
+                              icon: FeatherIcons.tv);
+                        },
                         childCount: 1, // 1000 list items
                       ),
                     ),
                     SliverGrid(
                       gridDelegate:
-                              const SliverGridDelegateWithFixedCrossAxisCount(
-                            crossAxisCount: 2,
-                            crossAxisSpacing: 5,
-                            mainAxisSpacing: 10,
-                            childAspectRatio: 0.76,
-                          ),
+                          const SliverGridDelegateWithFixedCrossAxisCount(
+                        crossAxisCount: 2,
+                        crossAxisSpacing: 10,
+                        mainAxisSpacing: 10,
+                        childAspectRatio: 0.7,
+                      ),
                       delegate: SliverChildBuilderDelegate(
                             (BuildContext context, int index) {
-                              Product pro = mainController.products[index];
-                              return FxContainer(
-                                borderColor: CustomTheme.primaryDark,
-                                bordered: false,
-                                color: CustomTheme.primary.withAlpha(40),
-                                borderRadiusAll: 8,
-                                paddingAll: 0,
-                                child: Column(
-                                  mainAxisAlignment: MainAxisAlignment.start,
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    InkWell(
-                                      child: ClipRRect(
-                                        borderRadius: const BorderRadius.only(
-                                          topLeft: Radius.circular(10),
-                                          topRight: Radius.circular(10),
-                                        ),
-                                    child: CachedNetworkImage(
-                                      fit: BoxFit.cover,
-                                          width: double.infinity,
-                                          height: Get.width / 2.2,
-                                          imageUrl:
-                                              "${AppConfig.MAIN_SITE_URL}/storage/images/${pro.feature_photo}",
-                                          placeholder: (context, url) =>
-                                              ShimmerLoadingWidget(),
-                                          errorWidget: (context, url, error) =>
-                                              const Image(
-                                            image:
-                                                AssetImage(AppConfig.NO_IMAGE),
-                                            fit: BoxFit.cover,
-                                          ),
-                                        ),
-                                  ),
-                                  onTap: () {
-                                    Get.to(() => ProductScreen(pro));
-                                  },
-                                ),
-                                Container(
-                                      padding: const EdgeInsets.only(
-                                          left: 8, right: 5),
-                                      child: Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        children: [
-                                          Padding(
-                                            padding:
-                                                const EdgeInsets.only(top: 8),
-                                            child: FxText.titleSmall(
-                                              "${pro.name} ",
-                                              height: .9,
-                                              fontWeight: 800,
-                                              maxLines: 1,
-                                              color: Colors.black,
-                                              overflow: TextOverflow.ellipsis,
-                                            ),
-                                          ),
-                                      const SizedBox(
-                                        height: 5,
-                                          ),
-                                      Container(
-                                        padding: EdgeInsets.zero,
-                                        child: Flex(
-                                          mainAxisAlignment:
-                                                  MainAxisAlignment
-                                                      .spaceBetween,
-                                              direction: Axis.horizontal,
-                                              children: [
-                                                Expanded(
-                                                  child: FxText.bodyMedium(
-                                                    "UGX${pro.price_1}",
-                                                    color:
-                                                        CustomTheme.primaryDark,
-                                                    fontWeight: 800,
-                                                  ),
-                                                ),
-                                                FxCard(
-                                                  marginAll: 0,
-                                                  color: CustomTheme.primary,
-                                                  onTap: () {
-                                                    mainController
-                                                        .addToCart(pro);
-
-                                                    /*  Utils.toast(
-                                                    "Product added to cart.");*/
-                                                  },
-                                                  padding: const EdgeInsets
-                                                          .symmetric(
-                                                      vertical: 3,
-                                                      horizontal: 5),
-                                                  child: FxText.bodySmall(
-                                                    'BUY NOW',
-                                                    fontWeight: 800,
-                                                    color: Colors.white,
-                                                  ),
-                                                )
-                                              ],
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              );
-                            },
-                            childCount: mainController.products.length,
-                          ),
-                        ),
-                      ],
-                    )),
+                          MovieModel pro = mainController.movies[index];
+                          return InkWell(
+                              onTap: () {
+                                Get.to(() => VideoPlayerScreen(pro));
+                              },
+                              child: movieUi2(pro));
+                        },
+                        childCount: mainController.movies.length,
+                      ),
+                    ),
+                  ],
+                ),
               ),
             ),
           ),
@@ -502,7 +561,7 @@ class _SectionDashboardState extends State<SectionDashboard> {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         FxText.titleMedium(
-                          'Filter by categories',
+                          'Filter by VJ',
                           color: Colors.black,
                         ),
                         InkWell(
@@ -553,5 +612,190 @@ class _SectionDashboardState extends State<SectionDashboard> {
             ),
           );
         });
+  }
+
+  Widget movieUi2(MovieModel item) {
+    return Container(
+        padding: const EdgeInsets.only(
+          right: 5,
+          left: 5,
+        ),
+        child: Stack(
+          children: [
+            roundedImage2(item.getThumbnail(), 1, 1),
+            Container(
+              //gradient: color with opacity
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  begin: Alignment.bottomCenter,
+                  end: Alignment.topCenter,
+                  colors: [
+                    CustomTheme.accent.withOpacity(.9),
+                    Colors.transparent
+                  ],
+                ),
+                borderRadius: BorderRadius.circular(10.0),
+              ),
+              width: double.infinity,
+            ),
+            Positioned(
+              bottom: 0,
+              left: 0,
+              right: 0,
+              child: Container(
+                padding: const EdgeInsets.only(
+                  left: 8,
+                  right: 5,
+                  top: 5,
+                  bottom: 5,
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    FxText.bodyMedium(
+                      "${item.title} ",
+                      height: 1.1,
+                      fontWeight: 600,
+                      maxLines: 2,
+                      color: Colors.white,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                    const SizedBox(
+                      height: 1,
+                    ),
+                    Row(
+                      children: [
+                        const Icon(
+                          FeatherIcons.mic,
+                          color: Colors.white,
+                          size: 14,
+                        ),
+                        const SizedBox(
+                          width: 1,
+                        ),
+                        Expanded(
+                          child: FxText(
+                            "VJ ${item.genre}",
+                            color: Colors.yellow,
+                            fontWeight: 800,
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                            fontSize: 16,
+                          ),
+                        ),
+                      ],
+                    )
+                  ],
+                ),
+              ),
+            ),
+          ],
+        ));
+  }
+
+  Widget movieUi(MovieModel item) {
+    double h = Get.width / 2;
+    return Container(
+      padding: const EdgeInsets.only(
+        right: 5,
+        left: 5,
+      ),
+      child: true
+          ? Stack(
+              children: [
+                roundedImage2(item.getThumbnail(), 2, 2),
+                Container(
+                  //gradient: color with opacity
+                  decoration: BoxDecoration(
+                    gradient: LinearGradient(
+                      begin: Alignment.bottomCenter,
+                      end: Alignment.topCenter,
+                      colors: [
+                        CustomTheme.accent.withOpacity(.5),
+                        Colors.white.withOpacity(.1)
+                      ],
+                    ),
+                    borderRadius: BorderRadius.circular(10.0),
+                  ),
+                  height: h,
+                  width: double.infinity,
+                  /* color: [
+                    Colors.red,
+                    Colors.green,
+                    Colors.blue,
+                    Colors.yellow,
+                    Colors.purple,
+                    Colors.orange,
+                    Colors.pink,
+                  ][Random().nextInt(7)].withOpacity(.5),*/
+                ),
+                Positioned(
+                  bottom: 0,
+                  left: 0,
+                  right: 0,
+                  child: Container(
+                    padding: const EdgeInsets.only(
+                      left: 8,
+                      right: 5,
+                      top: 5,
+                      bottom: 5,
+                    ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        FxText.bodyMedium(
+                          "${item.title} ",
+                          height: 1.1,
+                          fontWeight: 600,
+                          maxLines: 2,
+                          color: Colors.white,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                        const SizedBox(
+                          height: 1,
+                        ),
+                        Row(
+                          children: [
+                            const Icon(
+                              FeatherIcons.mic,
+                              color: Colors.white,
+                              size: 14,
+                            ),
+                            const SizedBox(
+                              width: 1,
+                            ),
+                            Expanded(
+                              child: FxText(
+                                "VJ ${item.genre}",
+                                color: Colors.yellow,
+                                fontWeight: 800,
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                                fontSize: 16,
+                              ),
+                            ),
+                          ],
+                        )
+                      ],
+                    ),
+                  ),
+                ),
+              ],
+            )
+          : CachedNetworkImage(
+              fit: BoxFit.contain,
+              height: h,
+              imageUrl: item.getThumbnail(),
+              placeholder: (context, url) =>
+                  ShimmerLoadingWidget(height: Get.width / 2),
+              errorWidget: (context, url, error) => Image(
+                image: const AssetImage(
+                  AppConfig.NO_IMAGE,
+                ),
+                fit: BoxFit.cover,
+                height: Get.width / 2,
+              ),
+            ),
+    );
   }
 }

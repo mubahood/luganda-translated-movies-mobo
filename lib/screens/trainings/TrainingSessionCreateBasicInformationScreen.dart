@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_feather_icons/flutter_feather_icons.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:flutx/flutx.dart';
-import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
 import 'package:omulimisa2/screens/pickers/LocationPickerScreen.dart';
 
@@ -179,17 +178,7 @@ class TrainingSessionCreateBasicInformationScreenState
                                     GetStringUtils("gps latitude").capitalize!,
                               ),
                               readOnly: true,
-                              onTap: () async {
-                                Utils.toast('Getting location...');
-                                Position pos =
-                                    await Utils.get_device_location();
-                                item.gps_latitude = pos.latitude.toString();
-                                item.gps_longitude = pos.longitude.toString();
-                                _fKey.currentState!.patchValue({
-                                  "gps_latitude": item.gps_latitude,
-                                  "gps_longitude": item.gps_longitude,
-                                });
-                                                            },
+                              onTap: () async {},
                               initialValue: item.gps_latitude,
                               textCapitalization: TextCapitalization.words,
                               name: "gps_latitude",
@@ -206,15 +195,8 @@ class TrainingSessionCreateBasicInformationScreenState
                               ),
                               readOnly: true,
                               onTap: () async {
-                                Position pos =
-                                    await Utils.get_device_location();
-                                item.gps_latitude = pos.latitude.toString();
-                                item.gps_longitude = pos.longitude.toString();
-                                _fKey.currentState!.patchValue({
-                                  "gps_latitude": item.gps_latitude,
-                                  "gps_longitude": item.gps_longitude,
-                                });
-                                                            },
+                        
+                              },
                               initialValue: item.gps_longitude,
                               textCapitalization: TextCapitalization.words,
                               name: "gps_longitude",

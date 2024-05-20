@@ -8,7 +8,6 @@ import "package:omulimisa2/src/features/home/view/widgets/video_item_widget.dart
 
 import '../../core/styles.dart';
 import "../../models/ResourceModel.dart";
-import '../../src/features/home/view/widgets/pdf_document_widget.dart';
 import '../../src/features/home/view/widgets/youtube_widget.dart';
 import '../../utils/AppConfig.dart';
 import '../../utils/CustomTheme.dart';
@@ -149,9 +148,7 @@ class ResourceDetailScreen extends StatelessWidget {
     if (resourceModel.type == 'File' && resourceModel.file.isNotEmpty) {
       final fileExtension = resourceModel.file.split('.').last.toLowerCase();
       if (fileExtension == 'pdf') {
-        return PDFScreen(
-          path: resourceModel.file,
-        );
+
       } else {
         return DocumentItemWidget(
           filePath: '',
@@ -167,7 +164,6 @@ class ResourceDetailScreen extends StatelessWidget {
       // if (videoId != null) {
       //   return YoutubeVideoWidget(videoId: videoId);
       // }
-      return  const YoutubePlayerDemo(videoId: '',);
     } else if (resourceModel.type == 'Photo' && resourceModel.photo.isNotEmpty) {
       final imageUrl = resourceModel.photo;
       if (imageUrl.isEmpty) {

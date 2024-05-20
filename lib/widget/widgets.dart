@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutx/flutx.dart';
 import 'package:get/get.dart';
+import 'package:omulimisa2/utils/CustomTheme.dart';
 import 'package:shimmer/shimmer.dart';
 
 import '../utils/Utilities.dart';
@@ -58,25 +59,7 @@ Widget training_widget(session) {
               FxText.bodyLarge(
                 session.name,
                 fontWeight: 600,
-              )
-              /*Row(
-                                              children: [
-                                                FxText.bodyLarge(
-                                                  session.name,
-                                                  fontWeight: 600,
-                                                ),
-                                                const Icon(
-                                                  Icons.arrow_forward,
-                                                  size: 18,
-                                                  color: Colors.grey,
-                                                ),
-                                                FxText.bodyLarge(
-                                                  session.venue,
-                                                  fontWeight: 600,
-                                                ),
-                                              ],
-                                            )*/
-              ,
+              ),
               const SizedBox(
                 height: 10,
               ),
@@ -127,6 +110,58 @@ Widget training_widget(session) {
     ),
   );
 }
+
+Widget emptyListWidget(title, subtitle, Function onTap) {
+  return Center(
+    child: Container(
+      alignment: Alignment.center,
+      padding: EdgeInsets.symmetric(
+        horizontal: 45,
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          FxText.titleMedium(
+            title,
+            color: Colors.grey,
+            textAlign: TextAlign.center,
+          ),
+          const SizedBox(
+            height: 5,
+          ),
+          FxText.bodySmall(
+            subtitle,
+            //italic: true,
+            textAlign: TextAlign.center,
+            color: CustomTheme.secondary,
+          ),
+          const SizedBox(
+            height: 25,
+          ),
+          FxButton.outlined(
+            backgroundColor: CustomTheme.accent,
+            borderRadiusAll: 25,
+            padding: const EdgeInsets.symmetric(
+              horizontal: 20,
+              vertical: 10,
+            ),
+            borderColor: CustomTheme.accent,
+            onPressed: () {
+              onTap();
+            },
+            splashColor: Colors.transparent,
+            child: FxText.bodySmall(
+              'Refresh',
+              color: CustomTheme.accent,
+            ),
+          )
+        ],
+      ),
+    ),
+  );
+}
+
 Widget myListLoaderWidget() {
   return ListView(
     children: [
@@ -153,12 +188,12 @@ Widget singleLoadingWidget() {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Shimmer.fromColors(
-          baseColor: Colors.grey.shade50,
-          highlightColor: Colors.grey.shade300,
+          baseColor: Colors.grey.shade900,
+          highlightColor: Colors.grey.shade600,
           child: FxContainer(
             width: Get.width / 4,
             height: Get.width / 4,
-            color: Colors.grey,
+            color: Colors.grey.shade600,
           ),
         ),
         const SizedBox(
@@ -166,12 +201,12 @@ Widget singleLoadingWidget() {
         ),
         Expanded(
             child: Shimmer.fromColors(
-              baseColor: Colors.grey.shade50,
-              highlightColor: Colors.grey.shade300,
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.start,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
+          baseColor: Colors.grey.shade900,
+          highlightColor: Colors.grey.shade700,
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
                   FxContainer(
                     color: Colors.grey,
                     height: Get.width / 30,

@@ -1,15 +1,13 @@
 
 import "package:get/get.dart";
+
 import '../../../../models/RespondModel.dart';
 import '../../../../utils/Utilities.dart';
-import '../../../network/auth_Api/auth_Api.dart';
-import '../../../routing/routing.dart';
 import '../models/user_model.dart';
 import '../models/user_update_form_data.dart';
 // enum AuthState { idle, loading, success, failure }
 
 class AuthController {
-  final AuthApi _authApi = AuthApi();
   final  isLoading = false.obs;
 
   Future<void> registerUser({
@@ -57,23 +55,6 @@ class AuthController {
       'username': emailOrPhoneNumber,
       'password': password,
     };
-    final result = await _authApi.loginUser(
-      emailOrPhoneNumber: emailOrPhoneNumber,
-      password: password,
-    );
-
-    result.fold(
-          (String failure) {
-            isLoading.value = false;
-            Get.snackbar('Login Failed', failure);
-      },
-          (UserModel user) {
-            isLoading.value =false ;
-            Get.snackbar('Login', 'successfully Logged in');
-            Get.toNamed(AppRouter.home, arguments: {'userModel':user});
-        // Handle successful login, if needed
-      },
-    );
   }
 
   Future<void> updateUserProfile({
@@ -81,25 +62,6 @@ class AuthController {
   }) async {
 
     isLoading.value = true;
-    final result = await _authApi.updateUser(
-      email: userProfile.email,
-      password: userProfile.password,
-      photo: userProfile.photo,
-      name: userProfile.name
-    );
-
-    result.fold(
-          (String failure) {
-        isLoading.value = false;
-        Get.snackbar('update of profile unsuccessful', failure);
-      },
-          (UserModel user) async{
-        isLoading.value =false ;
-        Get.snackbar('success', 'successfully update profile');
-        Get.toNamed(AppRouter.home, arguments: {'userModel':user});
-        // Handle successful login, if needed
-      },
-    );
   }
 
 
