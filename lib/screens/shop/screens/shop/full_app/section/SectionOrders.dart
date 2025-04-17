@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_feather_icons/flutter_feather_icons.dart';
 import 'package:flutx/flutx.dart';
 import 'package:get/get.dart';
-import 'package:omulimisa2/models/LoggedInUserModel.dart';
+import 'package:ugflix/models/LoggedInUserModel.dart';
 
 import '../../../../../../controllers/MainController.dart';
 import '../../../../../../utils/CustomTheme.dart';

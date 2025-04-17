@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutx/flutx.dart';
 import 'package:get/get.dart';
-import 'package:omulimisa2/utils/CustomTheme.dart';
+import 'package:ugflix/utils/CustomTheme.dart';
 import 'package:shimmer/shimmer.dart';
 
 import '../utils/Utilities.dart';
@@ -264,8 +264,8 @@ Widget ShimmerLoadingWidget(
       width: width,
       height: height,
       child: Shimmer.fromColors(
-        baseColor: Colors.grey.shade50,
-        highlightColor: Colors.grey.shade300,
+        baseColor: Colors.black,
+        highlightColor: Colors.grey.shade700,
         child: const FxContainer(),
       ),
     ),

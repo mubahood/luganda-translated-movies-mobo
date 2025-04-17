@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutx/flutx.dart';
-import 'package:omulimisa2/utils/my_colors.dart';
+import 'package:ugflix/utils/my_colors.dart';
 
 import '../core/styles.dart';
 

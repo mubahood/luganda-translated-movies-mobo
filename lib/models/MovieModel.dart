@@ -1,4 +1,4 @@
-import 'package:omulimisa2/utils/AppConfig.dart';
+import 'package:ugflix/utils/AppConfig.dart';
 import 'package:sqflite/sqflite.dart';
 
 import '../utils/Utilities.dart';
@@ -85,6 +85,7 @@ class MovieModel {
   }
 
   String getThumbnail() {
+    return thumbnail_url;
     //print("==> ${AppConfig.STORAGE_URL + thumbnail_url} <==");
     if (thumbnail_url.length > 3) {
       return AppConfig.STORAGE_URL + thumbnail_url;
@@ -161,6 +162,8 @@ class MovieModel {
   String video_url = "";
 
   String get_video_url() {
+    video_url = url;
+    return url;
     /*video_url = 'https://embed-ssl.wistia.com/deliveries/7e419fb466526e8a22945513399877414f355c38.bin?disposition=attachment&filename=Sharonitah++Goodhope+ft+Tiptony_480p.mp4';
     return video_url;*/
     /* widget.item.video_url = AppConfig.TEST_MOVIE;

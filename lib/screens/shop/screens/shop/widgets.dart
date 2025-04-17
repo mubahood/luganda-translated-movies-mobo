@@ -5,7 +5,7 @@ import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:flutx/flutx.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
 import 'package:get/get.dart';
-import 'package:omulimisa2/models/LoggedInUserModel.dart';
+import 'package:ugflix/models/LoggedInUserModel.dart';
 
 import '../../../../utils/AppConfig.dart';
 import '../../../../utils/CustomTheme.dart';
@@ -17,7 +17,6 @@ import '../../../auth/register_screen.dart';
 import '../../models/ChatHead.dart';
 import '../../models/Product.dart';
 import 'ProductScreen.dart';
-import 'chat/chat_screen.dart';
 
 //create title_detail_widget
 Widget title_detail_widget(String title, String detail) {
@@ -47,9 +46,7 @@ Widget title_detail_widget(String title, String detail) {
 
 Widget chatHeadUi(ChatHead item) {
   return InkWell(
-    onTap: () {
-      Get.to(() => ChatScreen(item, Product()));
-    },
+    onTap: () {},
     child: Container(
       color: item.myUnreadCount < 1
           ? Colors.transparent
@@ -226,24 +223,44 @@ Widget productUi2(Product pro) {
   );
 }
 
-Widget roundedImage2(String url, double w, double h,
+Widget roundedImage3(String url, double w, double h,
     {String no_image = AppConfig.NO_IMAGE, double radius = 10}) {
   return ClipRRect(
     borderRadius: BorderRadius.circular(radius),
     child: CachedNetworkImage(
       fit: BoxFit.cover,
       imageUrl: url,
-      width: (Get.width / w),
-      height: (Get.width / h),
-      placeholder: (context, url) => ShimmerLoadingWidget(
-        height: double.infinity,
-      ),
+      width: (w),
+      height: (h),
+      placeholder: (context, url) => ShimmerLoadingWidget(height: h, width: w),
       errorWidget: (context, url, error) => Image(
         image: AssetImage(no_image),
         fit: BoxFit.cover,
-        width: (Get.width / w),
-        height: (Get.width / h),
+        width: (w),
+        height: (h),
       ),
+    ),
+  );
+}
+
+Widget roundedImage2(String url, double w, double h,
+    {String no_image = AppConfig.NO_IMAGE, double radius = 10}) {
+  return ClipRRect(
+    borderRadius: BorderRadius.all(
+      Radius.circular(radius),
+    ),
+    child: CachedNetworkImage(
+      fit: BoxFit.cover,
+      imageUrl: url,
+      width: (Get.width / w),
+      height: (Get.width / h),
+      placeholder: (context, url) =>
+          ShimmerLoadingWidget(height: double.infinity),
+      errorWidget: (context, url, error) => Image(
+          width: (Get.width / w),
+          height: (Get.width / h),
+          fit: BoxFit.cover,
+          image: AssetImage('assets/images/bg.jpg')),
     ),
   );
 }
@@ -807,53 +824,59 @@ Widget noItemWidget(String title, Function onTap) {
   );
 }
 
-Widget titleWidget(String title, Function onTap,
-{
+Widget titleWidget(
+  String title,
+  Function onTap, {
   IconData icon = FeatherIcons.trendingUp,
-}
-    ) {
+}) {
   return InkWell(
     onTap: () {
       onTap();
     },
     child: Container(
-      padding: const EdgeInsets.only(left: 5, top: 14, right: 5, bottom: 14),
+      padding: const EdgeInsets.only(left: 5, top: 5, right: 5, bottom: 2),
       child: Flex(
         direction: Axis.horizontal,
         children: [
           const FxContainer(
-            height: 15,
+            height: 13,
             width: 8,
             color: Colors.yellow,
             borderRadiusAll: 0,
           ),
-          SizedBox(width: 5,),
+          const SizedBox(
+            width: 3,
+          ),
           FxText.titleMedium(
             title.toUpperCase(),
             fontWeight: 800,
             color: CustomTheme.accent,
-            fontSize: 22,
+            fontSize: 16,
           ),
           const Spacer(),
-          true?Icon(
-            icon,
-            color: Colors.yellow,
-            size: 25,
-          ):Row(
-            children: [
-              FxText.bodyLarge(
-                'View All'.toUpperCase(),
-                fontWeight: 700,
-                color: CustomTheme.accent,
-                letterSpacing: .1,
-              ),
-              const Icon(
-                FeatherIcons.chevronRight,
-                color: CustomTheme.accent,
-              ),
-            ],
+          true
+              ? Icon(
+                  icon,
+                  color: Colors.yellow,
+                  size: 15,
+                )
+              : Row(
+                  children: [
+                    FxText.bodyLarge(
+                      'View All'.toUpperCase(),
+                      fontWeight: 700,
+                      color: CustomTheme.accent,
+                      letterSpacing: .1,
+                    ),
+                    const Icon(
+                      FeatherIcons.chevronRight,
+                      color: CustomTheme.accent,
+                    ),
+                  ],
+                ),
+          const SizedBox(
+            width: 3,
           ),
-          SizedBox(width: 3,),
         ],
       ),
     ),

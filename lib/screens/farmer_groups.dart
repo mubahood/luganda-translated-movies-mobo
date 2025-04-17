@@ -3,7 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_feather_icons/flutter_feather_icons.dart';
 import 'package:flutx/flutx.dart';
 import "package:get/get.dart";
-import "package:omulimisa2/screens/farmer_group_detail.dart";
+import "package:ugflix/screens/farmer_group_detail.dart";
 
 import '../utils/CustomTheme.dart';
 

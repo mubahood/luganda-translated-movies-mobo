@@ -3,10 +3,9 @@ import 'dart:io';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_html/flutter_html.dart';
 import 'package:flutx/flutx.dart';
 import 'package:get/get.dart';
-import 'package:omulimisa2/screens/shop/screens/shop/widgets.dart';
+import 'package:ugflix/screens/shop/screens/shop/widgets.dart';
 import 'package:path_provider/path_provider.dart';
 
 import '../../../../controllers/MainController.dart';
@@ -19,7 +18,6 @@ import '../../models/ChatHead.dart';
 import '../../models/ImageModelLocal.dart';
 import '../../models/Product.dart';
 import 'cart/CartScreen.dart';
-import 'chat/chat_screen.dart';
 
 
 class ProductScreen extends StatefulWidget {
@@ -256,22 +254,6 @@ class _ProductScreenState extends State<ProductScreen>
                                         fontWeight: 800,
                                       ),
                                     ),
-                                    Container(
-                                      padding:
-                                      const EdgeInsets.symmetric(horizontal: 5),
-                                      child: Html(
-                                        data: item.description,
-                                        style: {
-                                          '*': Style(
-                                            color: Colors.grey.shade700,
-                                          ),
-                                          "strong": Style(
-                                              color: CustomTheme.primary,
-                                              fontSize: FontSize(18),
-                                              fontWeight: FontWeight.normal),
-                                        },
-                                      ),
-                                    ),
                                     const SizedBox(
                                       height: 5,
                                     ),
@@ -500,7 +482,6 @@ class _ProductScreenState extends State<ProductScreen>
                           flex: 1,
                           child: FxButton.block(
                             onPressed: () {
-                              Get.to(() => ChatScreen(ChatHead(),item));
                             },
                             padding: const EdgeInsets.symmetric(
                               vertical: 22,

@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutx/flutx.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:omulimisa2/utils/CustomTheme.dart';
+import 'package:ugflix/utils/CustomTheme.dart';
 
 import '../../utils/Utilities.dart';
 import '../shop/screens/shop/models/ImageModelLocal.dart';

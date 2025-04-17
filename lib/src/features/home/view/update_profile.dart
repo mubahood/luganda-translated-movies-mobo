@@ -3,7 +3,7 @@ import 'package:flutx/flutx.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/material.dart';
 import 'dart:io';
-import 'package:image_picker/image_picker.dart';
+import 'package:image_picker/image_picker.dart'; 
 import 'package:get/get.dart';
 
 import '../../../../core/styles.dart';

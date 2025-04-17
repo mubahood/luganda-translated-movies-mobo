@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
-import 'package:omulimisa2/models/LoggedInUserModel.dart';
-import 'package:omulimisa2/screens/auth/login_screen.dart';
-import 'package:omulimisa2/utils/Utilities.dart';
-import 'package:omulimisa2/utils/my_colors.dart';
+import 'package:ugflix/models/LoggedInUserModel.dart';
+import 'package:ugflix/screens/auth/login_screen.dart';
+import 'package:ugflix/utils/Utilities.dart';
+import 'package:ugflix/utils/my_colors.dart';
 
 import '../../../../screens/shop/screens/shop/full_app/full_app.dart';
 import '../../../../utils/AppConfig.dart';
