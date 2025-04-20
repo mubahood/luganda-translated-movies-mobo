@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutx/flutx.dart';
-import 'package:ugflix/utils/my_colors.dart';
+import 'package:moviebox/utils/my_colors.dart';
 
 import '../core/styles.dart';
 

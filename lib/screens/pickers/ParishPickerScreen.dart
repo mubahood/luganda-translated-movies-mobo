@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:ugflix/models/ParishModel.dart';
-import 'package:ugflix/utils/CustomTheme.dart';
+import 'package:moviebox/models/ParishModel.dart';
+import 'package:moviebox/utils/CustomTheme.dart';
 
 
 class ParishPickerScreen extends StatefulWidget {

@@ -1,4 +1,4 @@
-package ugflix.com
+package movie-box.luganda-translated.movies
 
 import io.flutter.embedding.android.FlutterActivity
 

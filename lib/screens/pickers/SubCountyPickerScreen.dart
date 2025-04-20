@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:ugflix/models/SubcountyModel.dart';
-import 'package:ugflix/utils/CustomTheme.dart';
+import 'package:moviebox/models/SubcountyModel.dart';
+import 'package:moviebox/utils/CustomTheme.dart';
 
 
 class SubCountyPickerScreen extends StatefulWidget {

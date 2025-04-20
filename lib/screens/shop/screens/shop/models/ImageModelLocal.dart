@@ -1,7 +1,7 @@
 import 'dart:io';
 
 import 'package:dio/dio.dart';
-import 'package:ugflix/utils/Utilities.dart';
+import 'package:moviebox/utils/Utilities.dart';
 import 'package:sqflite/sqflite.dart';
 
 import '../../../../../models/RespondModel.dart';

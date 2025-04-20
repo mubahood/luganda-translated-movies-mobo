@@ -2,10 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutx/flutx.dart';
 import 'package:get/get.dart';
-import 'package:ugflix/screens/shop/screens/shop/full_app/SectionResume.dart';
-import 'package:ugflix/screens/shop/screens/shop/full_app/section/AccountSection.dart';
-import 'package:ugflix/screens/shop/screens/shop/full_app/section/SectionDashboard.dart';
-import 'package:ugflix/screens/shop/screens/shop/full_app/section/SectionSeries.dart';
+import 'package:moviebox/screens/shop/screens/shop/full_app/SectionResume.dart';
+import 'package:moviebox/screens/shop/screens/shop/full_app/section/AccountSection.dart';
+import 'package:moviebox/screens/shop/screens/shop/full_app/section/SectionDashboard.dart';
+import 'package:moviebox/screens/shop/screens/shop/full_app/section/SectionSeries.dart';
 
 import '../../../../../controllers/MainController.dart';
 import '../../../../../utils/CustomTheme.dart';

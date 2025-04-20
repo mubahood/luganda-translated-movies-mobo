@@ -6,13 +6,13 @@ import 'package:flutter_feather_icons/flutter_feather_icons.dart';
 import 'package:flutx/flutx.dart'; // Assuming FxButton, FxContainer, FxText are used
 import 'package:get/get.dart';
 // Assuming these paths are correct - adjust if needed
-import 'package:ugflix/controllers/MainController.dart';
-import 'package:ugflix/models/ManifestModel.dart';
-import 'package:ugflix/models/ManifestService.dart';
-import 'package:ugflix/models/NewMovieModel.dart';
-import 'package:ugflix/utils/AppConfig.dart'; // Assuming contains checkForUpdate
-import 'package:ugflix/utils/CustomTheme.dart';
-import 'package:ugflix/utils/app_theme.dart';
+import 'package:moviebox/controllers/MainController.dart';
+import 'package:moviebox/models/ManifestModel.dart';
+import 'package:moviebox/models/ManifestService.dart';
+import 'package:moviebox/models/NewMovieModel.dart';
+import 'package:moviebox/utils/AppConfig.dart'; // Assuming contains checkForUpdate
+import 'package:moviebox/utils/CustomTheme.dart';
+import 'package:moviebox/utils/app_theme.dart';
 
 import '../../../../../../utils/Utilities.dart';
 import '../../MoviesSearchScreen.dart';

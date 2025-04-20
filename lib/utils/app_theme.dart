@@ -7,7 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutx/flutx.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:ugflix/utils/theme_type.dart';
+import 'package:moviebox/utils/theme_type.dart';
 
 import 'CustomTheme.dart';
 import 'my_colors.dart';

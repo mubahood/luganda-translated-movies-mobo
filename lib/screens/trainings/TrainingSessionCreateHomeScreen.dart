@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutx/flutx.dart';
 import 'package:get/get.dart';
-import 'package:ugflix/models/RespondModel.dart';
-import 'package:ugflix/utils/Utilities.dart';
-import 'package:ugflix/utils/my_colors.dart';
+import 'package:moviebox/models/RespondModel.dart';
+import 'package:moviebox/utils/Utilities.dart';
+import 'package:moviebox/utils/my_colors.dart';
 
 import '../../models/TrainingModel.dart';
 import '../../models/TrainingSessionLocalModel.dart';

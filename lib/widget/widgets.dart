@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutx/flutx.dart';
 import 'package:get/get.dart';
-import 'package:ugflix/utils/CustomTheme.dart';
+import 'package:moviebox/utils/CustomTheme.dart';
 import 'package:shimmer/shimmer.dart';
 
 import '../utils/Utilities.dart';

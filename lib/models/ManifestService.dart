@@ -1,6 +1,6 @@
 import 'dart:convert';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:ugflix/utils/Utilities.dart';
+import 'package:moviebox/utils/Utilities.dart';
 
 class ManifestService {
   static const String manifestKey = "manifest_data";

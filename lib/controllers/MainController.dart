@@ -1,11 +1,11 @@
 // ignore: file_names
 // ignore: file_names
 import 'package:get/get.dart';
-import 'package:ugflix/models/LoggedInUserModel.dart';
-import 'package:ugflix/models/MovieModel.dart';
-import 'package:ugflix/models/ResourceModel.dart';
-import 'package:ugflix/models/ManifestModel.dart'; // <-- Import ManifestModel
-import 'package:ugflix/models/ManifestService.dart'; // <-- Import ManifestService
+import 'package:moviebox/models/LoggedInUserModel.dart';
+import 'package:moviebox/models/MovieModel.dart';
+import 'package:moviebox/models/ResourceModel.dart';
+import 'package:moviebox/models/ManifestModel.dart'; // <-- Import ManifestModel
+import 'package:moviebox/models/ManifestService.dart'; // <-- Import ManifestService
 
 import '../models/FarmerQuestion.dart';
 import '../models/MyPermission.dart';

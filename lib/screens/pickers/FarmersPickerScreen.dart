@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutx/flutx.dart';
-import 'package:ugflix/models/FarmerModel.dart';
-import 'package:ugflix/utils/CustomTheme.dart';
+import 'package:moviebox/models/FarmerModel.dart';
+import 'package:moviebox/utils/CustomTheme.dart';
 
 import '../../models/DynamicModel.dart';
 

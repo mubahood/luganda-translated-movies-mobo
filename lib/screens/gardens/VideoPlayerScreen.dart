@@ -5,9 +5,9 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
-import 'package:ugflix/models/NewMovieModel.dart';
-import 'package:ugflix/utils/CustomTheme.dart';
-import 'package:ugflix/utils/Utilities.dart';
+import 'package:moviebox/models/NewMovieModel.dart';
+import 'package:moviebox/utils/CustomTheme.dart';
+import 'package:moviebox/utils/Utilities.dart';
 import 'package:video_player/video_player.dart';
 import 'package:wakelock_plus/wakelock_plus.dart';
 

@@ -5,7 +5,7 @@ import 'package:flutter_feather_icons/flutter_feather_icons.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:flutx/flutx.dart';
 import 'package:get/get.dart';
-import 'package:ugflix/models/MovieModel.dart';
+import 'package:moviebox/models/MovieModel.dart';
 
 import '../../../../../controllers/MainController.dart';
 import '../../../../../utils/CustomTheme.dart';

@@ -1,4 +1,4 @@
-import 'package:ugflix/utils/AppConfig.dart';
+import 'package:moviebox/utils/AppConfig.dart';
 import 'package:sqflite/sqflite.dart';
 
 import '../utils/Utilities.dart';

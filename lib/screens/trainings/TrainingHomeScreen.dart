@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutx/flutx.dart';
 import 'package:get/get.dart';
-import 'package:ugflix/utils/my_colors.dart';
+import 'package:moviebox/utils/my_colors.dart';
 
 import '../../src/routing/routing.dart';
 import 'TrainingSessionsScreen.dart';

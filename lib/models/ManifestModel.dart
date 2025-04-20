@@ -1,5 +1,5 @@
-import 'package:ugflix/models/NewMovieModel.dart';
-import 'package:ugflix/utils/Utilities.dart';
+import 'package:moviebox/models/NewMovieModel.dart';
+import 'package:moviebox/utils/Utilities.dart';
 
 class ManifestModel {
   final List<NewMovieModel> top_movie = [];
@@ -59,16 +59,16 @@ class ManifestModel {
     }
     if (json['IOS_LINK'] != null) {
       m.IOS_LINK = Utils.to_str(json['IOS_LINK'],
-          "https://play.google.com/store/apps/details?id=ugflix.com");
+          "https://play.google.com/store/apps/details?id=moviebox.com");
     } else {
-      m.IOS_LINK = "https://play.google.com/store/apps/details?id=ugflix.com";
+      m.IOS_LINK = "https://play.google.com/store/apps/details?id=moviebox.com";
     }
     if (json['ANDROID_LINK'] != null) {
       m.ANDROID_LINK = Utils.to_str(json['ANDROID_LINK'],
-          "https://play.google.com/store/apps/details?id=ugflix.com");
+          "https://play.google.com/store/apps/details?id=moviebox.com");
     } else {
       m.ANDROID_LINK =
-          "https://play.google.com/store/apps/details?id=ugflix.com";
+          "https://play.google.com/store/apps/details?id=moviebox.com";
     }
 
     if (json['APP_VERSION'] != null) {

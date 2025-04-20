@@ -3,7 +3,7 @@ import 'package:flutter_feather_icons/flutter_feather_icons.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:flutx/flutx.dart';
 import 'package:get/get.dart';
-import 'package:ugflix/screens/pickers/LocationPickerScreen.dart';
+import 'package:moviebox/screens/pickers/LocationPickerScreen.dart';
 
 import '../../models/LocationModel.dart';
 import '../../models/TrainingSessionLocalModel.dart';

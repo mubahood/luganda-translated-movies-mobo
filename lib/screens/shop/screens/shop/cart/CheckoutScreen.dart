@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:flutx/flutx.dart';
 import 'package:get/get.dart';
-import 'package:ugflix/models/LoggedInUserModel.dart';
+import 'package:moviebox/models/LoggedInUserModel.dart';
 
 import '../../../../../controllers/MainController.dart';
 import '../../../../../models/RespondModel.dart';

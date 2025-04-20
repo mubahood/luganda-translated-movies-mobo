@@ -2,7 +2,7 @@ import 'dart:async';
 
 import "package:flutter/material.dart";
 import 'package:get/get.dart';
-import 'package:ugflix/utils/AppConfig.dart';
+import 'package:moviebox/utils/AppConfig.dart';
 
 import '../../../../controllers/MainController.dart';
 import "../../../../core/styles.dart";

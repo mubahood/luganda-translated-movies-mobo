@@ -7,14 +7,14 @@ import 'package:flutx/flutx.dart'; // For FxText, FxButton, etc.
 import 'package:get/get.dart';
 import 'package:readmore/readmore.dart';
 import 'package:shimmer/shimmer.dart';
-import 'package:ugflix/controllers/MainController.dart';
-import 'package:ugflix/models/ManifestModel.dart';
-import 'package:ugflix/models/ManifestService.dart';
-import 'package:ugflix/models/NewMovieModel.dart';
-import 'package:ugflix/screens/gardens/VideoPlayerScreen.dart';
-import 'package:ugflix/utils/CustomTheme.dart';
-import 'package:ugflix/utils/Utilities.dart';
-import 'package:ugflix/widget/widgets.dart';
+import 'package:moviebox/controllers/MainController.dart';
+import 'package:moviebox/models/ManifestModel.dart';
+import 'package:moviebox/models/ManifestService.dart';
+import 'package:moviebox/models/NewMovieModel.dart';
+import 'package:moviebox/screens/gardens/VideoPlayerScreen.dart';
+import 'package:moviebox/utils/CustomTheme.dart';
+import 'package:moviebox/utils/Utilities.dart';
+import 'package:moviebox/widget/widgets.dart';
 
 /// MovieDetailScreen displays details for a given movie. When the movie is
 /// of type "Series", it loads and displays all episodes (which share the same

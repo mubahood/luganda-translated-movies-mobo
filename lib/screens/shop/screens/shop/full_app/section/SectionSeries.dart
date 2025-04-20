@@ -4,9 +4,9 @@ import 'package:flutter_feather_icons/flutter_feather_icons.dart';
 import 'package:flutx/flutx.dart';
 import 'package:get/get.dart';
 import 'package:shimmer/shimmer.dart';
-import 'package:ugflix/models/NewMovieModel.dart';
-import 'package:ugflix/screens/shop/screens/shop/movies/MovieDetailScreen.dart';
-import 'package:ugflix/utils/CustomTheme.dart';
+import 'package:moviebox/models/NewMovieModel.dart';
+import 'package:moviebox/screens/shop/screens/shop/movies/MovieDetailScreen.dart';
+import 'package:moviebox/utils/CustomTheme.dart';
 
 class SectionSeries extends StatefulWidget {
   const SectionSeries({Key? key}) : super(key: key);

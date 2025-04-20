@@ -6,7 +6,7 @@ import 'package:flutx/flutx.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
 import 'package:get/get.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:ugflix/screens/auth/login_screen.dart';
+import 'package:moviebox/screens/auth/login_screen.dart';
 import '../../core/styles.dart';
 import '../../models/LoggedInUserModel.dart';
 import '../../models/RespondModel.dart';

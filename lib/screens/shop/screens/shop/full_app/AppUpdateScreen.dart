@@ -5,8 +5,8 @@ import 'package:flutter/services.dart';
 import 'package:flutter_feather_icons/flutter_feather_icons.dart'; // For icons
 import 'package:flutx/flutx.dart'; // Assuming FxText, FxButton are used
 import 'package:get/get.dart';
-import 'package:ugflix/models/ManifestModel.dart';
-import 'package:ugflix/utils/CustomTheme.dart'; // Your theme colors
+import 'package:moviebox/models/ManifestModel.dart';
+import 'package:moviebox/utils/CustomTheme.dart'; // Your theme colors
 import 'package:url_launcher/url_launcher.dart'; // For launching URLs
 
 class AppUpdateScreen extends StatefulWidget {

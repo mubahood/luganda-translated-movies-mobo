@@ -4,10 +4,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:flutx/flutx.dart';
 import 'package:get/get.dart';
-import 'package:ugflix/models/SeriesModel.dart';
-import 'package:ugflix/utils/CustomTheme.dart';
-import 'package:ugflix/utils/Utilities.dart';
-import 'package:ugflix/utils/my_colors.dart';
+import 'package:moviebox/models/SeriesModel.dart';
+import 'package:moviebox/utils/CustomTheme.dart';
+import 'package:moviebox/utils/Utilities.dart';
+import 'package:moviebox/utils/my_colors.dart';
 
 import '../../../../../../models/MovieModel.dart';
 import '../../widgets.dart';

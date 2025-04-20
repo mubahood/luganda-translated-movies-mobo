@@ -19,7 +19,7 @@
     <application
         android:name="${applicationName}"
         android:icon="@drawable/logo"
-        android:label="Ugflix Translated Movies"
+        android:label="Moviebox - Luganda Translated Movies"
         android:screenOrientation="portrait"
         android:usesCleartextTraffic="true"
         tools:ignore="DiscouragedApi">

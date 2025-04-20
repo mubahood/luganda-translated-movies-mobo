@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:ugflix/utils/CustomTheme.dart';
+import 'package:moviebox/utils/CustomTheme.dart';
 
 import '../../models/DistrictModel.dart';
 

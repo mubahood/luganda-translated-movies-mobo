@@ -5,7 +5,7 @@ import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:flutx/flutx.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
 import 'package:get/get.dart';
-import 'package:ugflix/models/DistrictModel.dart';
+import 'package:moviebox/models/DistrictModel.dart';
 
 import '../../controllers/MainController.dart';
 import '../../models/WeatherForeCastModel.dart';

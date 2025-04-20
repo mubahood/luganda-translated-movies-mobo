@@ -8,12 +8,12 @@ import 'package:shimmer/shimmer.dart';
 import 'package:flutter_feather_icons/flutter_feather_icons.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 
-import 'package:ugflix/models/MovieModel.dart';
-import 'package:ugflix/controllers/MainController.dart';
-import 'package:ugflix/utils/CustomTheme.dart';
-import 'package:ugflix/utils/Utilities.dart';
-import 'package:ugflix/utils/my_colors.dart';
-import 'package:ugflix/screens/gardens/VideoPlayerScreen.dart';
+import 'package:moviebox/models/MovieModel.dart';
+import 'package:moviebox/controllers/MainController.dart';
+import 'package:moviebox/utils/CustomTheme.dart';
+import 'package:moviebox/utils/Utilities.dart';
+import 'package:moviebox/utils/my_colors.dart';
+import 'package:moviebox/screens/gardens/VideoPlayerScreen.dart';
 
 class SectionResume extends StatefulWidget {
   @override

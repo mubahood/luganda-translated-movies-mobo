@@ -7,11 +7,11 @@ import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:flutx/flutx.dart';
 import 'package:flutx/widgets/text/text.dart';
 import 'package:get/get.dart';
-import 'package:ugflix/utils/AppConfig.dart';
-import 'package:ugflix/utils/CustomTheme.dart';
-import 'package:ugflix/utils/SizeConfig.dart';
-import 'package:ugflix/utils/app_theme.dart';
-import 'package:ugflix/widget/widgets.dart';
+import 'package:moviebox/utils/AppConfig.dart';
+import 'package:moviebox/utils/CustomTheme.dart';
+import 'package:moviebox/utils/SizeConfig.dart';
+import 'package:moviebox/utils/app_theme.dart';
+import 'package:moviebox/widget/widgets.dart';
 
 import '../../../../../../models/ManifestModel.dart';
 import '../../../../../../models/ManifestService.dart';

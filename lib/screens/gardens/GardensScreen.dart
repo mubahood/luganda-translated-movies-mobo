@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutx/widgets/container/container.dart';
 import 'package:flutx/widgets/text/text.dart';
 import 'package:get/get.dart';
-import 'package:ugflix/utils/CustomTheme.dart';
-import 'package:ugflix/utils/Utilities.dart';
+import 'package:moviebox/utils/CustomTheme.dart';
+import 'package:moviebox/utils/Utilities.dart';
 
 import '../../models/MovieModel.dart';
 import '../shop/screens/shop/full_app/full_app.dart';
