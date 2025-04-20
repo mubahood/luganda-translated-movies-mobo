@@ -15,7 +15,7 @@ class MyApp extends StatelessWidget {
     AppTheme.init();
 
     return GetMaterialApp(
-      title: 'mOmulimisa',
+      title: 'MovieBox Luganda Translated Movies',
       debugShowCheckedModeBanner: false,
       theme: AppTheme.theme,
       home: OnBoardingScreen(),

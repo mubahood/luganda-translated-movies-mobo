@@ -57,10 +57,6 @@ class ResourceModel {
     obj.resource_category_id = Utils.to_str(m['resource_category_id'], '');
     obj.resource_category_text = Utils.to_str(m['resource_category_text'], '');
 
-    //obj.photo = '${AppConfig.STORAGE_URL}${obj.photo}';
-
-    //https://unified.m-omulimisa.com/storage/images/1.jpg
-    //https://unified.m-omulimisa.com/storage/images/31f64f521a91c5bbd4d653d015bd2d3c.jpg
     print(obj.photo);
     return obj;
   }

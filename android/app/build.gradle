@@ -5,11 +5,9 @@ plugins {
     id "dev.flutter.flutter-gradle-plugin"
 }
 
-
-
 android {
-    namespace = "movie-box.luganda-translated.movies"
-    compileSdk = flutter.compileSdkVersion
+    namespace = "moviebox.luganda.translated"
+    compileSdk = 34
     ndkVersion = flutter.ndkVersion
 
     compileOptions {
@@ -23,23 +21,13 @@ android {
 
     defaultConfig {
         // TODO: Specify your own unique Application ID (https://developer.android.com/studio/build/application-id.html).
-        applicationId = "movie-box.luganda-translated.movies"
+        applicationId = "moviebox.luganda.translated"
         // You can update the following values to match your application needs.
         // For more information, see: https://flutter.dev/to/review-gradle-config.
-        minSdk = 23
+        minSdk = flutter.minSdkVersion
         targetSdk = flutter.targetSdkVersion
         versionCode = flutter.versionCode
         versionName = flutter.versionName
-    }
-
-    signingConfigs {
-        release {
-            storeFile file("E://github/luganda-translated-movies-mobo/moviebox.jks")
-//            storeFile file("/Users/mac/Desktop/github/luganda-translated-movies-mobo/moviebox.jks")
-            storePassword "256Kampala+"
-            keyAlias "upload"
-            keyPassword "256Kampala+"
-        }
     }
 
     buildTypes {
@@ -47,7 +35,6 @@ android {
             // TODO: Add your own signing config for the release build.
             // Signing with the debug keys for now, so `flutter run --release` works.
             signingConfig = signingConfigs.debug
-//            signingConfig signingConfigs.release
         }
     }
 }

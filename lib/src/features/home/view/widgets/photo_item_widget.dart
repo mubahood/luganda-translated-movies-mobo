@@ -1,7 +1,8 @@
 import "package:flutter/material.dart";
+import 'package:html/parser.dart' as html_parser;
 
 import "../../../../../core/styles.dart";
-import 'package:html/parser.dart' as html_parser;
+
 class PhotoItemWidget extends StatelessWidget {
   final String title;
   final String description;
@@ -37,23 +38,6 @@ class PhotoItemWidget extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          ClipRRect(
-            borderRadius: const BorderRadius.only(
-              topLeft: Radius.circular(10),
-              topRight: Radius.circular(10),
-            ),
-            child: Container(
-              height: 200,
-              width: double.infinity,
-              decoration: BoxDecoration(
-                border: Border.all(color: Colors.grey),
-              ),
-              child: Image.network(
-                'https://unified.m-omulimisa.com/storage/images/logo.png', // Replace with your photo URL
-                fit: BoxFit.cover,
-              ),
-            ),
-          ),
           Padding(
             padding: const EdgeInsets.all(16),
             child: Column(
