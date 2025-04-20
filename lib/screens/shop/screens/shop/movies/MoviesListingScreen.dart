@@ -426,49 +426,6 @@ class _MoviesListingScreenState extends State<MoviesListingScreen> {
   //─────────────────────────────────────────────
   Widget _buildShimmerGrid() {
     return const ShimmerGrid();
-    return GridView.builder(
-      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-        crossAxisCount: 3,
-        crossAxisSpacing: 8,
-        mainAxisSpacing: 8,
-        childAspectRatio: 0.75,
-      ),
-      padding: const EdgeInsets.all(8),
-      itemCount: 9,
-      itemBuilder: (ctx, index) {
-        return Container(
-          decoration: BoxDecoration(
-            color: Colors.grey.shade900,
-            borderRadius: BorderRadius.circular(8),
-          ),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              Expanded(
-                child: ClipRRect(
-                  borderRadius: const BorderRadius.only(
-                    topLeft: Radius.circular(8),
-                    topRight: Radius.circular(8),
-                  ),
-                  child: ShimmerLoadingWidget(
-                      height: 80,
-                      width:
-                          double.infinity), // Custom shimmer widget for image
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.all(4),
-                child: ShimmerLoadingWidget(height: 16, width: double.infinity),
-              ),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 4),
-                child: ShimmerLoadingWidget(height: 14, width: 50),
-              ),
-            ],
-          ),
-        );
-      },
-    );
   }
 
   Widget buildMovieCard2(NewMovieModel item) {

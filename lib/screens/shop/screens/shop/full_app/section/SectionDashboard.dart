@@ -1,14 +1,10 @@
 import 'dart:async';
-import 'dart:io'; // Required for Platform check for Ad Unit IDs
-import 'dart:ui'; // For ImageFilter
 
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_feather_icons/flutter_feather_icons.dart';
 import 'package:flutx/flutx.dart'; // Assuming FxButton, FxContainer, FxText are used
 import 'package:get/get.dart';
-
 // Assuming these paths are correct - adjust if needed
 import 'package:ugflix/controllers/MainController.dart';
 import 'package:ugflix/models/ManifestModel.dart';
@@ -16,15 +12,13 @@ import 'package:ugflix/models/ManifestService.dart';
 import 'package:ugflix/models/NewMovieModel.dart';
 import 'package:ugflix/utils/AppConfig.dart'; // Assuming contains checkForUpdate
 import 'package:ugflix/utils/CustomTheme.dart';
-import 'package:ugflix/utils/SizeConfig.dart';
 import 'package:ugflix/utils/app_theme.dart';
-import 'package:ugflix/widget/widgets.dart';
 
-// Assuming navigation paths are correct
-import '../../../../../auth/login_screen.dart'; // Check if needed or remove
+import '../../../../../../utils/Utilities.dart';
 import '../../MoviesSearchScreen.dart';
 import '../../movies/MovieDetailScreen.dart';
 import '../../movies/MoviesListingScreen.dart';
+import '../AppUpdateScreen.dart' as AppUpdateScreen;
 
 class SectionDashboard extends StatefulWidget {
   const SectionDashboard({super.key});
@@ -53,9 +47,6 @@ class _SectionDashboardState extends State<SectionDashboard>
 
   // --- Ad Unit IDs (Use Test IDs for Development) ---
   // TODO: Replace with your actual AdMob Ad Unit IDs before publishing!
-  final String _bannerAdUnitId = Platform.isAndroid
-      ? 'ca-app-pub-9006886952721093~5692528968' // Android Test ID
-      : 'ca-app-pub-9006886952721093~5692528968'; // iOS Test ID
 
   // --- Constants ---
   static const double _kHorizontalPadding = 18.0;
@@ -118,8 +109,15 @@ class _SectionDashboardState extends State<SectionDashboard>
   Future<void> _initializeData() async {
     try {
       final data = await manifestService.getManifest();
+      manifestService.fetchManifestOnline();
       if (mounted) {
         manifestModel = ManifestModel.fromJson(data);
+        if (manifestModel.APP_VERSION != 0) {
+          if (manifestModel.APP_VERSION > AppConfig.APP_VERSION) {
+            Utils.toast("New App Version Available.");
+            Get.to(() => AppUpdateScreen.AppUpdateScreen(manifestModel));
+          }
+        }
       }
       // await mainController.getMovies(); // Consider if needed
     } catch (e) {
@@ -685,6 +683,12 @@ class _SectionDashboardState extends State<SectionDashboard>
                         color: Colors.grey[700],
                         borderRadius: BorderRadius.circular(2.5))),
                 _buildFilterBottomSheetHeader(),
+                ElevatedButton(
+                  onPressed: () {
+                    // Upgrader().checkVersion(context: context, showDialog: true),
+                  },
+                  child: const Text('Check for Updates'),
+                ),
                 const Divider(color: Colors.white12, height: 1, thickness: 1),
                 Flexible(
                   child: ListView.builder(

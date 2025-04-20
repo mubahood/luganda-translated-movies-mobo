@@ -1,14 +1,15 @@
 import 'dart:async';
+
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_feather_icons/flutter_feather_icons.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:flutx/flutx.dart';
 import 'package:get/get.dart';
+import 'package:shimmer/shimmer.dart';
 import 'package:ugflix/models/NewMovieModel.dart';
 import 'package:ugflix/screens/shop/screens/shop/movies/MovieDetailScreen.dart';
 import 'package:ugflix/utils/CustomTheme.dart';
-import 'package:ugflix/widget/widgets.dart';
 
 class MoviesSearchScreen extends StatefulWidget {
   final Map<String, dynamic> params;
@@ -392,4 +393,18 @@ class _MoviesSearchScreenState extends State<MoviesSearchScreen> {
       },
     );
   }
+}
+
+class ShimmerLoadingWidget extends StatelessWidget {
+  final double height, width;
+
+  const ShimmerLoadingWidget(
+      {required this.height, required this.width, super.key});
+
+  @override
+  Widget build(BuildContext c) => Shimmer.fromColors(
+        baseColor: Colors.white12,
+        highlightColor: Colors.white24,
+        child: Container(height: height, width: width, color: Colors.white),
+      );
 }

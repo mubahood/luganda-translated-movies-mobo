@@ -1,5 +1,3 @@
-import 'dart:convert';
-import 'package:sqflite/sqflite.dart';
 import '../utils/Utilities.dart';
 import 'RespondModel.dart';
 
@@ -325,6 +323,7 @@ class NewMovieModel {
     String? genreFilter,
     String? typeFilter,
     String? categoryIdFilter,
+    String? isFirstEpisode,
   }) async {
     // Construct query parameters for the dynamic-list API
     final Map<String, dynamic> params = {
@@ -352,6 +351,10 @@ class NewMovieModel {
     if (genreFilter != null && genreFilter.isNotEmpty) {
       // If your API expects genre_like, or genre=, adjust accordingly
       params["genre_like"] = genreFilter;
+    } // If user selected a Genre, we can do the same
+    if (isFirstEpisode != null && isFirstEpisode.isNotEmpty) {
+      // If your API expects genre_like, or genre=, adjust accordingly
+      params["is_first_episode"] = 'Yes';
     }
 
     // Now call your dynamic-list endpoint

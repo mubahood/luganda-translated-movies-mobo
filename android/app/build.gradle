@@ -5,6 +5,8 @@ plugins {
     id "dev.flutter.flutter-gradle-plugin"
 }
 
+
+
 android {
     namespace = "ugflix.com"
     compileSdk = flutter.compileSdkVersion
@@ -32,7 +34,8 @@ android {
 
     signingConfigs {
         release {
-            storeFile file("/Users/mac/Desktop/github/luganda-translated-movies-mobo/ugflix.jks")
+            storeFile file("E://github/luganda-translated-movies-mobo/ugflix.jks")
+//            storeFile file("/Users/mac/Desktop/github/luganda-translated-movies-mobo/ugflix.jks")
             storePassword "256Kampala+"
             keyAlias "upload"
             keyPassword "256Kampala+"

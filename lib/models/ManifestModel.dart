@@ -1,4 +1,3 @@
-import 'dart:convert';
 import 'package:ugflix/models/NewMovieModel.dart';
 import 'package:ugflix/utils/Utilities.dart';
 
@@ -7,6 +6,11 @@ class ManifestModel {
   final List<String> vj = [];
   final List<String> genres = [];
   final List<MovieCategoryList> lists = [];
+  int APP_VERSION = 0;
+  String IOS_LINK = '';
+  String ANDROID_LINK = '';
+  String WHATSAPP_CONTAT_NUMBER = '';
+  String UPDATE_NOTES = '';
 
   ManifestModel();
 
@@ -35,11 +39,44 @@ class ManifestModel {
           .map((e) => MovieCategoryList.fromJson(e))
           .toList();
     }
+
     ManifestModel m = ManifestModel();
     m.top_movie.addAll(topMovies);
     m.vj.addAll(vjList);
     m.genres.addAll(genresList);
     m.lists.addAll(categoryLists);
+    //if json['APP_VERSION']
+    if (json['UPDATE_NOTES'] != null) {
+      m.UPDATE_NOTES = Utils.to_str(json['UPDATE_NOTES'], "");
+    } else {
+      m.UPDATE_NOTES = "We have added new features and fixed bugs";
+    }
+    if (json['WHATSAPP_CONTAT_NUMBER'] != null) {
+      m.WHATSAPP_CONTAT_NUMBER =
+          Utils.to_str(json['WHATSAPP_CONTAT_NUMBER'], "+256783204665");
+    } else {
+      m.WHATSAPP_CONTAT_NUMBER = "+256783204665";
+    }
+    if (json['IOS_LINK'] != null) {
+      m.IOS_LINK = Utils.to_str(json['IOS_LINK'],
+          "https://play.google.com/store/apps/details?id=ugflix.com");
+    } else {
+      m.IOS_LINK = "https://play.google.com/store/apps/details?id=ugflix.com";
+    }
+    if (json['ANDROID_LINK'] != null) {
+      m.ANDROID_LINK = Utils.to_str(json['ANDROID_LINK'],
+          "https://play.google.com/store/apps/details?id=ugflix.com");
+    } else {
+      m.ANDROID_LINK =
+          "https://play.google.com/store/apps/details?id=ugflix.com";
+    }
+
+    if (json['APP_VERSION'] != null) {
+      m.APP_VERSION = Utils.int_parse(json['APP_VERSION']);
+    } else {
+      m.APP_VERSION = 0;
+    }
+
     return m;
   }
 }

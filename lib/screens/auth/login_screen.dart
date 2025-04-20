@@ -5,7 +5,6 @@ import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:flutx/flutx.dart'; // Assuming FxButton, FxText are used
 import 'package:form_builder_validators/form_builder_validators.dart';
 import 'package:get/get.dart';
-import 'package:in_app_update/in_app_update.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter_feather_icons/flutter_feather_icons.dart'; // For icons
 
@@ -580,7 +579,7 @@ class LoginScreenState extends State<LoginScreen> {
 }
 
 Future<void> checkForUpdate() async {
-  InAppUpdate.checkForUpdate().then((info) {
+/*  InAppUpdate.checkForUpdate().then((info) {
     try {
       if (info.updateAvailability == UpdateAvailability.updateAvailable) {
         InAppUpdate.performImmediateUpdate().catchError((e) {
@@ -590,5 +589,5 @@ Future<void> checkForUpdate() async {
     } catch (e) {
       print(e);
     }
-  }).catchError((e) {});
+  }).catchError((e) {});*/
 }

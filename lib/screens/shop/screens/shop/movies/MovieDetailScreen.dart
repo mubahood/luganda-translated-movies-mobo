@@ -1,9 +1,6 @@
 import 'dart:async';
-import 'dart:math';
-import 'dart:ui'; // For ImageFilter
 
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:chewie/chewie.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_feather_icons/flutter_feather_icons.dart';
 import 'package:flutx/flutx.dart'; // For FxText, FxButton, etc.
@@ -14,12 +11,10 @@ import 'package:ugflix/controllers/MainController.dart';
 import 'package:ugflix/models/ManifestModel.dart';
 import 'package:ugflix/models/ManifestService.dart';
 import 'package:ugflix/models/NewMovieModel.dart';
+import 'package:ugflix/screens/gardens/VideoPlayerScreen.dart';
 import 'package:ugflix/utils/CustomTheme.dart';
-import 'package:ugflix/utils/SizeConfig.dart';
-import 'package:ugflix/utils/app_theme.dart';
 import 'package:ugflix/utils/Utilities.dart';
 import 'package:ugflix/widget/widgets.dart';
-import 'package:ugflix/screens/gardens/VideoPlayerScreen.dart';
 
 /// MovieDetailScreen displays details for a given movie. When the movie is
 /// of type "Series", it loads and displays all episodes (which share the same
@@ -67,7 +62,7 @@ class _MovieDetailScreenState extends State<MovieDetailScreen>
   bool _isSeries = false;
 
   // Episodes (for series) and related movies (for films)
-  final RxBool _isEpisodesLoading = false.obs;
+  final RxBool _isEpisodesLoading = true.obs;
   final RxBool _isRelatedLoading = false.obs;
   List<NewMovieModel> _episodes = [];
   List<NewMovieModel> _relatedMovies = [];
@@ -139,7 +134,6 @@ class _MovieDetailScreenState extends State<MovieDetailScreen>
 
   /// Load episodes based on the category_id.
   Future<void> _loadEpisodes(String categoryId) async {
-    Utils.toast("message $categoryId");
     _isEpisodesLoading.value = true;
     try {
       List<NewMovieModel> eps =
@@ -573,7 +567,7 @@ class _MovieDetailScreenState extends State<MovieDetailScreen>
         NewMovieModel episode = _episodes[index];
         bool isSelected = (episode.id == _movie?.id);
         return _buildEpisodeListTile(episode, index + 1, textTheme, isSelected);
-      }, childCount: _episodes.length)),
+      }, childCount: _episodes.isEmpty ? 10 : _episodes.length)),
     );
   }
 
@@ -934,7 +928,7 @@ class MovieService {
   Future<List<NewMovieModel>> getMovieEpisodes(String categoryId) async {
     //get movies by category_id
 
-    Utils.toast("Loading Episodes for $categoryId...");
+    Utils.toast("Loading Episodes...");
 
     List<NewMovieModel> fetched = await NewMovieModel.getMoviesOnline(
       page: 1,
