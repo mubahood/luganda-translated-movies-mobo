@@ -1,9 +1,9 @@
 import 'dart:ui';
 
 class AppConfig {
-  static const String BASE_URL = "http://10.0.2.2/katogo";
+  // static const String BASE_URL = "http://10.0.2.2/katogo";
 
-  // static const String BASE_URL = "https://katogo.schooldynamics.ug";
+  static const String BASE_URL = "https://katogo.schooldynamics.ug";
   static const String MAIN_SITE_URL = BASE_URL;
   static String API_BASE_URL = "${BASE_URL}/api";
   static const String DASHBOARD_URL = "https://katogo.schooldynamics.ug";
