@@ -124,7 +124,10 @@ class _AccountSectionState extends State<AccountSection> {
                       fontWeight: 600,
                       color: CustomTheme.color,
                     ),
-                    onTap: () {},
+                    onTap: () {
+                      Utils.toast("Coming soon!");
+                      return;
+                    },
                     subtitle: FxText.bodySmall(
                       "Update your password",
                       color: CustomTheme.color3,
@@ -146,7 +149,10 @@ class _AccountSectionState extends State<AccountSection> {
                       fontWeight: 600,
                       color: CustomTheme.color,
                     ),
-                    onTap: () {},
+                    onTap: () {
+                      Utils.toast("Coming soon!");
+                      return;
+                    },
                     subtitle: FxText.bodySmall(
                       "Manage your subscription",
                       color: CustomTheme.color3,
@@ -168,7 +174,10 @@ class _AccountSectionState extends State<AccountSection> {
                       fontWeight: 600,
                       color: CustomTheme.color,
                     ),
-                    onTap: () {},
+                    onTap: () {
+                      Utils.toast("Coming soon!");
+                      return;
+                    },
                     subtitle: FxText.bodySmall(
                       "Learn how the app works",
                       color: CustomTheme.color3,
@@ -190,7 +199,10 @@ class _AccountSectionState extends State<AccountSection> {
                       fontWeight: 600,
                       color: CustomTheme.color,
                     ),
-                    onTap: () {},
+                    onTap: () {
+                      Utils.toast("Coming soon!");
+                      return;
+                    },
                     subtitle: FxText.bodySmall(
                       "Get in touch with us",
                       color: CustomTheme.color3,

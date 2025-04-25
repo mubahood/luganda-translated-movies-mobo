@@ -1,4 +1,4 @@
-package m.omulimisa.uganda
+package ugflix.com
 
 import io.flutter.embedding.android.FlutterActivity
 

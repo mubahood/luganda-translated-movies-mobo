@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutx/flutx.dart';
 import 'package:get/get.dart';
+import 'package:keep_screen_on/keep_screen_on.dart';
 import 'package:omulimisa2/utils/CustomTheme.dart';
 import 'package:omulimisa2/utils/Utilities.dart';
 import 'package:video_player/video_player.dart';
@@ -84,10 +85,12 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen> {
   @override
   void initState() {
     super.initState();
+    KeepScreenOn.turnOn();
     //SystemChrome.setEnabledSystemUIMode(SystemUiMode.manual, overlays: []);
     initProgressUploader();
 
     widget.item.get_video_url();
+    Utils.toast(widget.item.video_url);
     _controller =
         VideoPlayerController.networkUrl(Uri.parse(widget.item.video_url))
           ..initialize().then((_) {

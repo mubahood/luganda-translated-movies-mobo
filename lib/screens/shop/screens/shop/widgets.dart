@@ -226,6 +226,26 @@ Widget productUi2(Product pro) {
   );
 }
 
+Widget roundedImage3(String url, double w, double h,
+    {String no_image = AppConfig.NO_IMAGE, double radius = 10}) {
+  return ClipRRect(
+    borderRadius: BorderRadius.circular(radius),
+    child: CachedNetworkImage(
+      fit: BoxFit.cover,
+      imageUrl: url,
+      width: (w),
+      height: (h),
+      placeholder: (context, url) => ShimmerLoadingWidget(height: h, width: w),
+      errorWidget: (context, url, error) => Image(
+        image: AssetImage(no_image),
+        fit: BoxFit.cover,
+        width: (w),
+        height: (h),
+      ),
+    ),
+  );
+}
+
 Widget roundedImage2(String url, double w, double h,
     {String no_image = AppConfig.NO_IMAGE, double radius = 10}) {
   return ClipRRect(
@@ -817,28 +837,28 @@ Widget titleWidget(String title, Function onTap,
       onTap();
     },
     child: Container(
-      padding: const EdgeInsets.only(left: 5, top: 14, right: 5, bottom: 14),
+      padding: const EdgeInsets.only(left: 5, top: 5, right: 5, bottom: 2),
       child: Flex(
         direction: Axis.horizontal,
         children: [
           const FxContainer(
-            height: 15,
+            height: 13,
             width: 8,
             color: Colors.yellow,
             borderRadiusAll: 0,
           ),
-          SizedBox(width: 5,),
+          const SizedBox(width: 3,),
           FxText.titleMedium(
             title.toUpperCase(),
             fontWeight: 800,
             color: CustomTheme.accent,
-            fontSize: 22,
+            fontSize: 16,
           ),
           const Spacer(),
           true?Icon(
             icon,
             color: Colors.yellow,
-            size: 25,
+            size: 15,
           ):Row(
             children: [
               FxText.bodyLarge(
@@ -853,7 +873,7 @@ Widget titleWidget(String title, Function onTap,
               ),
             ],
           ),
-          SizedBox(width: 3,),
+          const SizedBox(width: 3,),
         ],
       ),
     ),

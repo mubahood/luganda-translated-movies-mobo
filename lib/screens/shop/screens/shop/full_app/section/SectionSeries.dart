@@ -76,7 +76,7 @@ class _SectionSeriesState extends State<SectionSeries> {
               Get.to(() => ProductSearchScreen());
             },
           ),
-          IconButton(
+          /*IconButton(
             icon: const Icon(
               FeatherIcons.filter,
               color: CustomTheme.accent,
@@ -84,7 +84,7 @@ class _SectionSeriesState extends State<SectionSeries> {
             onPressed: () {
               showBottomSheetCategoryPicker();
             },
-          ),
+          ),*/
         ],
       ),
       body: FutureBuilder(

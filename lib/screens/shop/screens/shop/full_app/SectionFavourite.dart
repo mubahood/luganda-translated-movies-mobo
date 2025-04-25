@@ -77,13 +77,13 @@ class _SectionFavouriteState extends State<SectionFavourite> {
               ),
               onPressed: () {},
             ),
-            IconButton(
+           /* IconButton(
               icon: const Icon(
                 FeatherIcons.filter,
                 color: CustomTheme.accent,
               ),
               onPressed: () {},
-            ),
+            ),*/
           ],
         ),
         body: Column(

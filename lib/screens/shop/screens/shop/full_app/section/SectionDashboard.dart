@@ -16,9 +16,7 @@ import '../../../../../../utils/SizeConfig.dart';
 import '../../../../../../utils/app_theme.dart';
 import '../../../../../../widget/widgets.dart';
 import '../../../../../gardens/video_player_screen.dart';
-import '../../../../models/ProductCategory.dart';
 import '../../ProductSearchScreen.dart';
-import '../../ProductsScreen.dart';
 import '../../cart/CartScreen.dart';
 import '../../widgets.dart';
 class SectionDashboard extends StatefulWidget {
@@ -71,17 +69,26 @@ class _SectionDashboardState extends State<SectionDashboard> {
   Future<dynamic> myInit() async {
     await mainController.getMovies();
     mainController.movies.shuffle();
-    if (mainController.movies.length < 4) {}
-    if (mainController.movies.isNotEmpty) {
-      mainController.movies.shuffle();
-      topMovie = mainController.movies[0];
-      if (mainController.movies.length > 10) {
+
+    if (cat.isNotEmpty) {
+      mainController.movies = mainController.movies
+          .where((element) => element.genre == cat)
+          .toList();
+      setState(() {});
+    } else {
+      if (mainController.movies.length < 4) {}
+      if (mainController.movies.isNotEmpty) {
         mainController.movies.shuffle();
-        recentMovies = mainController.movies.sublist(1, 10);
-        recentMovies.shuffle();
+        topMovie = mainController.movies[0];
+        if (mainController.movies.length > 10) {
+          mainController.movies.shuffle();
+          recentMovies = mainController.movies.sublist(1, 15);
+          recentMovies.shuffle();
       }
     }
-    mainController.movies.sort((b, a) => a.id.compareTo(b.id));
+    }
+
+    mainController.movies.sort((b, a) => a.updated_at.compareTo(b.updated_at));
     setState(() {});
 
     return;
@@ -169,10 +176,48 @@ class _SectionDashboardState extends State<SectionDashboard> {
             ],
           ),
         ),
-
+        cat.isEmpty
+            ? const SizedBox()
+            : FxContainer(
+                width: double.infinity,
+                margin: const EdgeInsets.only(
+                  left: 15,
+                  right: 15,
+                  top: 5,
+                  bottom: 5,
+                ),
+                padding: const EdgeInsets.only(
+                  left: 10,
+                  top: 5,
+                  bottom: 5,
+                  right: 10,
+                ),
+                child: Row(
+                  children: [
+                    Expanded(
+                        child: FxText.bodySmall(
+                      "Filter by VJ: $cat",
+                      fontWeight: 900,
+                      color: Colors.black,
+                    )),
+                    InkWell(
+                      onTap: () {
+                        cat = '';
+                        setState(() {});
+                        myInit();
+                      },
+                      child: const Icon(
+                        FeatherIcons.x,
+                        color: CustomTheme.accent,
+                        size: 20,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
         Expanded(
           child: Container(
-            padding: const EdgeInsets.only(left: 10, top: 5, right: 10),
+            padding: const EdgeInsets.only(left: 10, top: 0, right: 10),
             child: RefreshIndicator(
               onRefresh: doRefresh,
               color: CustomTheme.primary,
@@ -183,13 +228,16 @@ class _SectionDashboardState extends State<SectionDashboard> {
                     SliverList(
                       delegate: SliverChildBuilderDelegate(
                         (BuildContext context, int index) {
+                          if (cat.isNotEmpty) {
+                            return SizedBox();
+                          }
                           return Padding(
                             padding: const EdgeInsets.only(
-                                left: 10, right: 10, top: 0, bottom: 0),
+                                left: 0, right: 10, top: 0, bottom: 0),
                             child: Row(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                roundedImage(topMovie.getThumbnail(), 3, 2.2),
+                                roundedImage3(topMovie.getThumbnail(), 110, 150),
                                 const SizedBox(
                                   width: 10,
                                 ),
@@ -212,6 +260,7 @@ class _SectionDashboardState extends State<SectionDashboard> {
                                           textAlign: TextAlign.start,
                                           overflow: TextOverflow.ellipsis,
                                           height: 1,
+                                          fontSize: 15,
                                           color: Colors.white,
                                         ),
                                       ),
@@ -371,27 +420,8 @@ class _SectionDashboardState extends State<SectionDashboard> {
                             ),
                           );
 
-/*                          return CarouselSlider(
-                            options: CarouselOptions(
-                              autoPlay: true,
-                              viewportFraction: 1,
-                              initialPage: 0,
-                              enableInfiniteScroll: true,
-                              autoPlayInterval: const Duration(seconds: 6),
-                              autoPlayAnimationDuration:
-                              const Duration(milliseconds: 800),
-                              autoPlayCurve: Curves.fastOutSlowIn,
-                              enlargeCenterPage: true,
-                              enlargeFactor: 0.3,
-                              scrollDirection: Axis.horizontal,
-                            ),
-                            items: banners
-                                .map(
-                                  (item) => InkWell(
-                                onTap: () => {
-                                  Get.to(() => ProductsScreen(
-                                      {'category': item}))
-                                },
+/*
+
                                 child: CachedNetworkImage(
                                   fit: BoxFit.contain,
                                   height: Get.width / 2,
@@ -420,6 +450,9 @@ class _SectionDashboardState extends State<SectionDashboard> {
                     SliverList(
                       delegate: SliverChildBuilderDelegate(
                         (BuildContext context, int index) {
+                          if (cat.isNotEmpty) {
+                            return SizedBox();
+                          }
                           return titleWidget('Trending', () {});
                         },
                         childCount: 1, // 1000 list items
@@ -428,13 +461,16 @@ class _SectionDashboardState extends State<SectionDashboard> {
                     SliverList(
                       delegate: SliverChildBuilderDelegate(
                         (BuildContext context, int index) {
+                          if (cat.isNotEmpty) {
+                            return const SizedBox();
+                          }
                           return CarouselSlider(
                             options: CarouselOptions(
-                              autoPlay: false,
-                              viewportFraction: .42,
+                              autoPlay: true,
+                              viewportFraction: .28,
                               initialPage: 1,
-                              enableInfiniteScroll: false,
-                              height: Get.width / 2,
+                              enableInfiniteScroll: true,
+                              height: 140,
                               autoPlayInterval: const Duration(seconds: 6),
                               autoPlayAnimationDuration:
                                   const Duration(milliseconds: 800),
@@ -460,6 +496,11 @@ class _SectionDashboardState extends State<SectionDashboard> {
                     SliverList(
                       delegate: SliverChildBuilderDelegate(
                             (BuildContext context, int index) {
+                          if (cat.isNotEmpty) {
+                            return const SizedBox(
+                              height: 5,
+                            );
+                          }
                           return titleWidget('Recently Uploaded', () {},
                               icon: FeatherIcons.tv);
                         },
@@ -469,10 +510,10 @@ class _SectionDashboardState extends State<SectionDashboard> {
                     SliverGrid(
                       gridDelegate:
                           const SliverGridDelegateWithFixedCrossAxisCount(
-                        crossAxisCount: 2,
-                        crossAxisSpacing: 10,
+                        crossAxisCount: 3,
+                        crossAxisSpacing: 0,
                         mainAxisSpacing: 10,
-                        childAspectRatio: 0.7,
+                        childAspectRatio: 0.8,
                       ),
                       delegate: SliverChildBuilderDelegate(
                             (BuildContext context, int index) {
@@ -537,6 +578,7 @@ class _SectionDashboardState extends State<SectionDashboard> {
     );
   }
 
+  String cat = "";
   void showBottomSheetCategoryPicker() {
     showModalBottomSheet(
         context: context,
@@ -580,22 +622,25 @@ class _SectionDashboardState extends State<SectionDashboard> {
                   const Divider(),
                   Expanded(
                     child: ListView.builder(
-                        itemCount: mainController.categories.length,
+                        itemCount: AppConfig.VJs.length,
                         itemBuilder: (context, position) {
-                          ProductCategory cat =
-                              mainController.categories[position];
+                          String data = AppConfig.VJs[position];
                           return ListTile(
                             onTap: () {
                               Navigator.pop(context);
-                              Get.to(() => ProductsScreen({'category': cat}));
+                              cat = AppConfig.VJs[position];
+                              setState(() {});
+                              myInit();
+                              setState(() {});
+                              //Get.to(() => ProductsScreen({'category': cat}));
                             },
                             title: FxText.titleMedium(
-                              cat.category,
+                              data,
                               color: CustomTheme.primary,
                               maxLines: 1,
                               fontWeight: 700,
                             ),
-                            trailing: true
+                            trailing: cat != data
                                 ? const SizedBox()
                                 : const Icon(
                                     Icons.check_circle,
@@ -617,8 +662,9 @@ class _SectionDashboardState extends State<SectionDashboard> {
   Widget movieUi2(MovieModel item) {
     return Container(
         padding: const EdgeInsets.only(
-          right: 5,
-          left: 5,
+          right: 3,
+          left: 3,
+          top:0
         ),
         child: Stack(
           children: [
@@ -629,6 +675,8 @@ class _SectionDashboardState extends State<SectionDashboard> {
                 gradient: LinearGradient(
                   begin: Alignment.bottomCenter,
                   end: Alignment.topCenter,
+                  /*change ratio*/
+                  stops: [0.2, 0.6],
                   colors: [
                     CustomTheme.accent.withOpacity(.9),
                     Colors.transparent
@@ -644,31 +692,32 @@ class _SectionDashboardState extends State<SectionDashboard> {
               right: 0,
               child: Container(
                 padding: const EdgeInsets.only(
-                  left: 8,
-                  right: 5,
+                  left: 4,
+                  right: 3,
                   top: 5,
-                  bottom: 5,
+                  bottom: 2,
                 ),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     FxText.bodyMedium(
                       "${item.title} ",
-                      height: 1.1,
+                      height: 1,
                       fontWeight: 600,
                       maxLines: 2,
+                      fontSize: 8,
                       color: Colors.white,
                       overflow: TextOverflow.ellipsis,
                     ),
                     const SizedBox(
-                      height: 1,
+                      height: 0,
                     ),
                     Row(
                       children: [
                         const Icon(
                           FeatherIcons.mic,
                           color: Colors.white,
-                          size: 14,
+                          size: 10,
                         ),
                         const SizedBox(
                           width: 1,
@@ -680,7 +729,7 @@ class _SectionDashboardState extends State<SectionDashboard> {
                             fontWeight: 800,
                             maxLines: 1,
                             overflow: TextOverflow.ellipsis,
-                            fontSize: 16,
+                            fontSize: 10,
                           ),
                         ),
                       ],
@@ -695,6 +744,7 @@ class _SectionDashboardState extends State<SectionDashboard> {
 
   Widget movieUi(MovieModel item) {
     double h = Get.width / 2;
+    return roundedImage3(item.getThumbnail(), 100, 140);
     return Container(
       padding: const EdgeInsets.only(
         right: 5,
@@ -719,15 +769,6 @@ class _SectionDashboardState extends State<SectionDashboard> {
                   ),
                   height: h,
                   width: double.infinity,
-                  /* color: [
-                    Colors.red,
-                    Colors.green,
-                    Colors.blue,
-                    Colors.yellow,
-                    Colors.purple,
-                    Colors.orange,
-                    Colors.pink,
-                  ][Random().nextInt(7)].withOpacity(.5),*/
                 ),
                 Positioned(
                   bottom: 0,

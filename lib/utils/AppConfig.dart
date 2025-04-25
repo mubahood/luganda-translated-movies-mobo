@@ -9,7 +9,7 @@ class AppConfig {
   static String API_BASE_URL = "${BASE_URL}/api";
   static const String DASHBOARD_URL = "https://m.schooldynamics.ug";
   static const String ONESIGNAL_APP_ID = "3f223c2e-7191-4f2d-a1c1-bd7ae47625ce";
-  static const String APP_NAME = "Luganda Movies";
+  static const String APP_NAME = "UGFlix";
   static const String APP_VERSION = "10";
   static const String DATABASE_PATH = "movies_${12}";
   static const String STORAGE_URL = "$BASE_URL/storage/";
@@ -23,6 +23,19 @@ class AppConfig {
       "AIzaSyBbXYigCGL7Du8zAiJ9ZWP1a0mw1zOJevw";
 
   //list of nice background solid colors
+  static const List<String> VJs = [
+    'Junior',
+    'Jingo',
+    'Muba',
+    'Kevo',
+    'Baros',
+    'Ulio',
+    'Emmy',
+    'Ice p',
+    'Ivo',
+    'Shao Khani Lee',
+    'Unknown'
+  ];
   static const  List<Color> nice_colors = [
     Color(0xFFE57373),
     Color(0xFFF06292),
