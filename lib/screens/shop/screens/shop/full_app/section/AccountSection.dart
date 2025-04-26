@@ -101,7 +101,7 @@ class _AccountSectionState extends State<AccountSection> {
                       color: CustomTheme.color,
                     ),
                     onTap: () {
-                      Get.to(()=>AccountEdit());
+                      Get.to(() => AccountEdit());
                     },
                     subtitle: FxText.bodySmall(
                       "View and edit your profile",

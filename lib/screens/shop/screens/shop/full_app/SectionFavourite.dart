@@ -5,14 +5,14 @@ import 'package:flutter_feather_icons/flutter_feather_icons.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:flutx/flutx.dart';
 import 'package:get/get.dart';
-import 'package:omulimisa2/models/MovieModel.dart';
+import 'package:ugflix/models/MovieModel.dart';
 
 import '../../../../../controllers/MainController.dart';
 import '../../../../../utils/CustomTheme.dart';
 import '../../../../../utils/Utilities.dart';
 import '../../../../../utils/my_colors.dart';
 import '../../../../../widget/widgets.dart';
-import '../../../../gardens/video_player_screen.dart';
+import '../../../../gardens/VideoPlayerScreen.dart';
 import '../widgets.dart';
 
 class SectionFavourite extends StatefulWidget {
@@ -77,7 +77,7 @@ class _SectionFavouriteState extends State<SectionFavourite> {
               ),
               onPressed: () {},
             ),
-           /* IconButton(
+            /* IconButton(
               icon: const Icon(
                 FeatherIcons.filter,
                 color: CustomTheme.accent,
@@ -118,7 +118,8 @@ class _SectionFavouriteState extends State<SectionFavourite> {
                                   mainController.watchedMovies[index];
                               return InkWell(
                                 onTap: () {
-                                  Get.to(() => VideoPlayerScreen(item));
+                                  Get.to(() =>
+                                      VideoPlayerScreen({'video_item': item}));
                                 },
                                 child: Column(
                                   children: [

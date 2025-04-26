@@ -2,7 +2,7 @@ import 'dart:async';
 
 import "package:flutter/material.dart";
 import 'package:get/get.dart';
-import 'package:omulimisa2/utils/AppConfig.dart';
+import 'package:ugflix/utils/AppConfig.dart';
 
 import '../../../../controllers/MainController.dart';
 import "../../../../core/styles.dart";
@@ -38,7 +38,7 @@ class _SplashScreenState extends State<SplashScreen> {
       return;
     }
 
-    await Utils.initOneSignal(mainController.loggedInUser);
+    // await Utils.initOneSignal(mainController.loggedInUser);
     Get.offAll(() => const HomeScreen());
     return;
     // Perform initialization logic here

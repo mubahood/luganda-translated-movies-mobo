@@ -1,8 +1,8 @@
 // ignore: file_names
 // ignore: file_names
 import 'package:get/get.dart';
-import 'package:omulimisa2/models/LoggedInUserModel.dart';
-import 'package:omulimisa2/models/MovieModel.dart';
+import 'package:ugflix/models/LoggedInUserModel.dart';
+import 'package:ugflix/models/MovieModel.dart';
 
 import '../../../utils/Utilities.dart';
 import '../models/CartItem.dart';

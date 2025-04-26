@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:omulimisa2/screens/shop/screens/shop/widgets.dart';
-import 'package:omulimisa2/utils/CustomTheme.dart';
-import 'package:omulimisa2/utils/Utilities.dart';
+import 'package:ugflix/screens/shop/screens/shop/widgets.dart';
+import 'package:ugflix/utils/CustomTheme.dart';
+import 'package:ugflix/utils/Utilities.dart';
 
 import '../../models/TrainingCompletedModel.dart';
 

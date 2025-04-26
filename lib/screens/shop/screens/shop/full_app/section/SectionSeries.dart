@@ -1,54 +1,113 @@
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_feather_icons/flutter_feather_icons.dart';
 import 'package:flutx/flutx.dart';
 import 'package:get/get.dart';
-import 'package:omulimisa2/models/MovieModel.dart';
-import 'package:omulimisa2/models/SeriesModel.dart';
-
-import '../../../../../../controllers/MainController.dart';
-import '../../../../../../utils/AppConfig.dart';
-import '../../../../../../utils/CustomTheme.dart';
-import '../../../../../../utils/SizeConfig.dart';
-import '../../../../../../utils/Utilities.dart';
-import '../../../../../../utils/app_theme.dart';
-import '../../../../../../widget/widgets.dart';
-import '../../../../models/ProductCategory.dart';
-import '../../ProductSearchScreen.dart';
-import '../../ProductsScreen.dart';
-import '../../cart/CartScreen.dart';
-import '../../widgets.dart';
-import 'SeriesScreen.dart';
+import 'package:shimmer/shimmer.dart';
+import 'package:ugflix/models/NewMovieModel.dart';
+import 'package:ugflix/screens/shop/screens/shop/movies/MovieDetailScreen.dart';
+import 'package:ugflix/utils/CustomTheme.dart';
 
 class SectionSeries extends StatefulWidget {
   const SectionSeries({Key? key}) : super(key: key);
 
   @override
-  _SectionSeriesState createState() => _SectionSeriesState();
+  State<SectionSeries> createState() => _SectionSeriesState();
 }
 
 class _SectionSeriesState extends State<SectionSeries> {
-  late ThemeData theme;
+  static const int _perPage = 50;
+  static const double _cardHeight = 200.0;
+  static const double _cardRadius = 16.0;
+
+  final ScrollController _ctrl = ScrollController();
+  final List<NewMovieModel> _episodes = [];
+
+  bool _loading = false;
+  bool _initial = true;
+  bool _hasMore = true;
+  int _page = 1;
+  String? _error;
+
+  late Color _accent, _primary, _shimmerBase, _shimmerHighlight;
 
   @override
   void initState() {
     super.initState();
-    theme = AppTheme.shoppingManagerTheme;
-    doRefresh();
+    _accent = CustomTheme.accent;
+    _primary = CustomTheme.primary;
+    _shimmerBase = Colors.grey[850]!;
+    _shimmerHighlight = Colors.grey[800]!;
+
+    _fetchSeries(refresh: true);
+    _ctrl.addListener(_onScroll);
   }
 
-  final MainController mainController = Get.find<MainController>();
+  @override
+  void dispose() {
+    _ctrl.dispose();
+    super.dispose();
+  }
+
+  void _onScroll() {
+    if (!_loading &&
+        _hasMore &&
+        _ctrl.position.pixels > _ctrl.position.maxScrollExtent - 300) {
+      _fetchSeries();
+    }
+  }
+
+  Future<void> _fetchSeries({bool refresh = false}) async {
+    if (_loading) return;
+    setState(() {
+      _loading = true;
+      if (refresh) {
+        _initial = true;
+        _page = 1;
+        _hasMore = true;
+        _episodes.clear();
+        _error = null;
+      }
+    });
+
+    try {
+      final fetched = await NewMovieModel.getMoviesOnline(
+        page: _page,
+        perPage: _perPage,
+        typeFilter: 'Series',
+        isFirstEpisode: 'yes',
+      );
+      if (!mounted) return;
+      setState(() {
+        _episodes.addAll(fetched);
+        _hasMore = fetched.length == _perPage;
+        if (_hasMore) _page++;
+      });
+    } catch (e) {
+      setState(() => _error = "Couldn't load series.");
+      Get.snackbar(
+        "Error",
+        _error!,
+        snackPosition: SnackPosition.BOTTOM,
+        backgroundColor: Colors.redAccent,
+        colorText: Colors.white,
+      );
+    } finally {
+      if (mounted)
+        setState(() {
+          _loading = false;
+          _initial = false;
+        });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
+    final txt = Theme.of(context).textTheme;
     return Scaffold(
-      backgroundColor: CustomTheme.primary,
+      backgroundColor: _primary,
       appBar: AppBar(
-        backgroundColor: CustomTheme.primary,
-        systemOverlayStyle: Utils.overlay(),
-        elevation: .5,
-        automaticallyImplyLeading: false,
+        backgroundColor: _primary,
         title: Row(
           children: [
             const FxContainer(
@@ -66,460 +125,200 @@ class _SectionSeriesState extends State<SectionSeries> {
             ),
           ],
         ),
-        actions: [
-          IconButton(
-            icon: const Icon(
-              FeatherIcons.search,
-              color: CustomTheme.accent,
-            ),
-            onPressed: () {
-              Get.to(() => ProductSearchScreen());
-            },
-          ),
-          /*IconButton(
-            icon: const Icon(
-              FeatherIcons.filter,
-              color: CustomTheme.accent,
-            ),
-            onPressed: () {
-              showBottomSheetCategoryPicker();
-            },
-          ),*/
-        ],
+        elevation: 1,
       ),
-      body: FutureBuilder(
-          future: futureInit,
-          builder: (context, snapshot) {
-            switch (snapshot.connectionState) {
-              case ConnectionState.waiting:
-                return const Center(
-                  child: Text("⌛ Loading..."),
-                );
-              default:
-                return mainWidget();
-            }
-          }),
+      body: RefreshIndicator(
+        color: _accent,
+        onRefresh: () => _fetchSeries(refresh: true),
+        child: _buildBody(txt),
+      ),
     );
   }
 
-  late Future<dynamic> futureInit;
+  Widget _buildBody(TextTheme txt) {
+    if (_initial) return _buildShimmer();
+    if (_error != null && _episodes.isEmpty) return _buildError();
+    if (!_loading && _episodes.isEmpty) return _buildEmpty();
 
-  Future<dynamic> doRefresh() async {
-    futureInit = myInit();
-    setState(() {});
+    return ListView.builder(
+      controller: _ctrl,
+      padding: const EdgeInsets.symmetric(vertical: 16),
+      itemCount: _episodes.length + (_hasMore ? 1 : 0),
+      itemBuilder: (ctx, i) {
+        if (i == _episodes.length) return _buildLoader();
+        return Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+          child: _buildSeriesCard(_episodes[i], txt),
+        );
+      },
+    );
   }
 
-  MovieModel topMovie = MovieModel();
-  List<MovieModel> recentMovies = [];
-
-  Future<dynamic> myInit() async {
-    await mainController.getMovies();
-    mainController.series.shuffle();
-
-    setState(() {});
-
-    return;
-    await mainController.getProducts();
-
-    return "Done";
-  }
-
-  Widget mainWidget() {
-    return Column(
-      children: [
-        const Divider(
-          height: 2,
-          thickness: 2,
-          color: CustomTheme.secondary,
+  Widget _buildSeriesCard(NewMovieModel m, TextTheme txt) {
+    return SizedBox(
+      height: _cardHeight,
+      child: Card(
+        color: Colors.black,
+        elevation: 6,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(_cardRadius),
         ),
-        Expanded(
-          child: Container(
-            padding: const EdgeInsets.only(left: 10, top: 5, right: 10),
-            child: RefreshIndicator(
-              onRefresh: doRefresh,
-              color: CustomTheme.primary,
-              backgroundColor: Colors.white,
-              child: SafeArea(
-                child: CustomScrollView(
-                  slivers: [
-                    SliverList(
-                      delegate: SliverChildBuilderDelegate(
-                        (BuildContext context, int index) {
-                          return titleWidget('Recently added', () {});
-                        },
-                        childCount: 1, // 1000 list items
-                      ),
-                    ),
-                    SliverList(
-                      delegate: SliverChildBuilderDelegate(
-                        (BuildContext context, int index) {
-                          return CarouselSlider(
-                            options: CarouselOptions(
-                              autoPlay: false,
-                              viewportFraction: .42,
-                              initialPage: 1,
-                              enableInfiniteScroll: false,
-                              height: Get.width / 2,
-                              autoPlayInterval: const Duration(seconds: 6),
-                              autoPlayAnimationDuration:
-                                  const Duration(milliseconds: 800),
-                              autoPlayCurve: Curves.fastOutSlowIn,
-                              enlargeCenterPage: true,
-                              enlargeFactor: 0,
-                              scrollDirection: Axis.horizontal,
-                            ),
-                            items: mainController.series
-                                .map(
-                                  (item) => InkWell(
-                                    onTap: () =>
-                                        {Get.to(() => SeriesScreen(item))},
-                                    child: seriesUi(item),
-                                  ),
-                                )
-                                .toList(),
-                          );
-                        },
-                        childCount: 1, // 1000 list items
-                      ),
-                    ),
-                    SliverList(
-                      delegate: SliverChildBuilderDelegate(
-                        (BuildContext context, int index) {
-                          return titleWidget('POPULAR SERIES', () {});
-                        },
-                        childCount: 1, // 1000 list items
-                      ),
-                    ),
-                    SliverGrid(
-                      gridDelegate:
-                          const SliverGridDelegateWithFixedCrossAxisCount(
-                        crossAxisCount: 2,
-                        crossAxisSpacing: 10,
-                        mainAxisSpacing: 10,
-                        childAspectRatio: 0.7,
-                      ),
-                      delegate: SliverChildBuilderDelegate(
-                        (BuildContext context, int index) {
-                          SeriesModel pro = mainController.series[index];
-                          return InkWell(
-                              onTap: () {
-                                Get.to(() => SeriesScreen(pro));
-                              },
-                              child: seriesUi2(pro));
-                        },
-                        childCount: mainController.series.length,
-                      ),
-                    ),
-                  ],
-                ),
+        clipBehavior: Clip.antiAlias,
+        child: InkWell(
+          onTap: () => Get.to(() => MovieDetailScreen({'movie': m})),
+          child: Stack(children: [
+            // Background image
+            Positioned.fill(
+              child: CachedNetworkImage(
+                imageUrl: m.getThumbnail(),
+                fit: BoxFit.cover,
+                placeholder: (_, __) => Container(color: _shimmerBase),
+                errorWidget: (_, __, ___) => Container(color: _shimmerBase),
               ),
             ),
-          ),
-        ),
-        (mainController.cartItems.isEmpty)
-            ? const SizedBox()
-            : InkWell(
-                onTap: () {
-                  Get.to(() => const CartScreen());
-                },
-                child: Container(
-                  color: CustomTheme.primary,
-                  child: Row(
-                    children: [
-                      FxSpacing.width(8),
-                      FxText.titleSmall(
-                        "You have ${mainController.cartItems.length} items in cart.",
-                        color: Colors.white,
-                      ),
-                      const Spacer(),
-                      FxContainer(
-                        margin:
-                            const EdgeInsets.only(right: 5, top: 5, bottom: 5),
-                        color: Colors.grey.shade200,
-                        padding: const EdgeInsets.only(
-                            left: 10, right: 5, top: 4, bottom: 2),
-                        child: Row(
-                          children: [
-                            FxText.bodySmall(
-                              "CHECKOUT",
-                              fontWeight: 900,
-                              color: CustomTheme.primaryDark,
-                            ),
-                            const Icon(
-                              FeatherIcons.chevronRight,
-                              color: CustomTheme.primaryDark,
-                              size: 16,
-                            )
-                          ],
-                        ),
-                      )
+            // Dark gradient
+            Positioned.fill(
+              child: Container(
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    colors: [
+                      Colors.black.withOpacity(0.2),
+                      Colors.black.withOpacity(0.8)
                     ],
+                    begin: Alignment.topCenter,
+                    end: Alignment.bottomCenter,
                   ),
                 ),
               ),
-      ],
-    );
-  }
-
-  void showBottomSheetCategoryPicker() {
-    showModalBottomSheet(
-        context: context,
-        barrierColor: CustomTheme.primary.withOpacity(.5),
-        builder: (BuildContext buildContext) {
-          return Container(
-            decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.only(
-                topLeft: Radius.circular(MySize.size16),
-                topRight: Radius.circular(MySize.size16),
+            ),
+            // SERIES badge
+            Positioned(
+              top: 12,
+              left: 12,
+              child: Container(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                decoration: BoxDecoration(
+                  color: _accent.withOpacity(0.9),
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: FxText.bodySmall(
+                  "SERIES",
+                  color: Colors.white,
+                  fontWeight: 700,
+                ),
               ),
             ),
-            child: Container(
-              padding: const EdgeInsets.only(top: 15),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
+            // Title & play icon
+            Positioned(
+              bottom: 16,
+              left: 16,
+              right: 16,
+              child: Row(
                 children: [
-                  Container(
-                    margin: const EdgeInsets.only(left: 15, right: 15),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        FxText.titleMedium(
-                          'Filter by categories',
-                          color: Colors.black,
-                        ),
-                        InkWell(
-                          onTap: () {
-                            Navigator.pop(context);
-                            setState(() {});
-                          },
-                          child: const Icon(
-                            FeatherIcons.x,
-                            color: Colors.red,
-                          ),
-                        )
-                      ],
+                  Expanded(
+                    child: FxText.bodyLarge(
+                      m.category,
+                      color: Colors.white,
+                      fontWeight: 800,
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
                     ),
                   ),
-                  const Divider(),
-                  Expanded(
-                    child: ListView.builder(
-                        itemCount: mainController.categories.length,
-                        itemBuilder: (context, position) {
-                          ProductCategory cat =
-                              mainController.categories[position];
-                          return ListTile(
-                            onTap: () {
-                              Navigator.pop(context);
-                              Get.to(() => ProductsScreen({'category': cat}));
-                            },
-                            title: FxText.titleMedium(
-                              cat.category,
-                              color: CustomTheme.primary,
-                              maxLines: 1,
-                              fontWeight: 700,
-                            ),
-                            trailing: true
-                                ? const SizedBox()
-                                : const Icon(
-                                    Icons.check_circle,
-                                    color: CustomTheme.primary,
-                                    size: 30,
-                                  ),
-                            visualDensity: VisualDensity.compact,
-                            dense: true,
-                          );
-                        }),
+                  const SizedBox(width: 8),
+                  Container(
+                    padding: const EdgeInsets.all(8),
+                    decoration: BoxDecoration(
+                      color: Colors.white.withOpacity(0.2),
+                      shape: BoxShape.circle,
+                    ),
+                    child: Icon(
+                      FeatherIcons.play,
+                      color: _accent,
+                      size: 20,
+                    ),
                   ),
                 ],
               ),
             ),
-          );
-        });
-  }
-
-  Widget seriesUi2(SeriesModel item) {
-    return Container(
-        padding: const EdgeInsets.only(
-          right: 5,
-          left: 5,
+          ]),
         ),
-        child: Stack(
-          children: [
-            roundedImage2(item.getThumbnail(), 1, 1),
-            Container(
-              //gradient: color with opacity
-              decoration: BoxDecoration(
-                gradient: LinearGradient(
-                  begin: Alignment.bottomCenter,
-                  end: Alignment.topCenter,
-                  colors: [
-                    CustomTheme.secondary.withOpacity(.9),
-                    Colors.transparent
-                  ],
-                ),
-                borderRadius: BorderRadius.circular(10.0),
-              ),
-              width: double.infinity,
-            ),
-            Positioned(
-              bottom: 0,
-              left: 0,
-              right: 0,
-              child: Container(
-                padding: const EdgeInsets.only(
-                  left: 8,
-                  right: 5,
-                  top: 5,
-                  bottom: 5,
-                ),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    FxText.bodyMedium(
-                      "${item.title} ",
-                      height: 1.1,
-                      fontWeight: 600,
-                      maxLines: 2,
-                      color: Colors.black,
-                      overflow: TextOverflow.ellipsis,
-                    ),
-                    const SizedBox(
-                      height: 1,
-                    ),
-                    Row(
-                      children: [
-                        const Icon(
-                          FeatherIcons.server,
-                          color: Colors.black,
-                          size: 14,
-                        ),
-                        const SizedBox(
-                          width: 1,
-                        ),
-                        Expanded(
-                          child: FxText(
-                            item.Category,
-                            color: CustomTheme.accent,
-                            fontWeight: 800,
-                            maxLines: 1,
-                            overflow: TextOverflow.ellipsis,
-                            fontSize: 16,
-                          ),
-                        ),
-                      ],
-                    )
-                  ],
-                ),
-              ),
-            ),
-          ],
-        ));
-  }
-
-  Widget seriesUi(SeriesModel item) {
-    double h = Get.width / 2;
-    return Container(
-      padding: const EdgeInsets.only(
-        right: 5,
-        left: 5,
       ),
-      child: true
-          ? Stack(
-              children: [
-                roundedImage2(item.getThumbnail(), 2, 2),
-                Container(
-                  //gradient: color with opacity
-                  decoration: BoxDecoration(
-                    gradient: LinearGradient(
-                      begin: Alignment.bottomCenter,
-                      end: Alignment.topCenter,
-                      colors: [
-                        CustomTheme.secondary.withOpacity(.5),
-                        Colors.white.withOpacity(.1)
-                      ],
-                    ),
-                    borderRadius: BorderRadius.circular(10.0),
-                  ),
-                  height: h,
-                  width: double.infinity,
-                  /* color: [
-                    Colors.red,
-                    Colors.green,
-                    Colors.blue,
-                    Colors.yellow,
-                    Colors.purple,
-                    Colors.orange,
-                    Colors.pink,
-                  ][Random().nextInt(7)].withOpacity(.5),*/
-                ),
-                Positioned(
-                  bottom: 0,
-                  left: 0,
-                  right: 0,
-                  child: Container(
-                    padding: const EdgeInsets.only(
-                      left: 8,
-                      right: 5,
-                      top: 5,
-                      bottom: 5,
-                    ),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        FxText.bodyMedium(
-                          "${item.title} ",
-                          height: 1,
-                          fontWeight: 800,
-                          maxLines: 2,
-                          color: Colors.black,
-                          overflow: TextOverflow.ellipsis,
-                        ),
-                        const SizedBox(
-                          height: 1,
-                        ),
-                        Row(
-                          children: [
-                            const Icon(
-                              FeatherIcons.monitor,
-                              color: Colors.black,
-                              size: 14,
-                            ),
-                            const SizedBox(
-                              width: 1,
-                            ),
-                            Expanded(
-                              child: FxText(
-                                item.Category,
-                                color: CustomTheme.accent,
-                                fontWeight: 800,
-                                maxLines: 1,
-                                overflow: TextOverflow.ellipsis,
-                                fontSize: 16,
-                              ),
-                            ),
-                          ],
-                        )
-                      ],
-                    ),
-                  ),
-                ),
-              ],
-            )
-          : CachedNetworkImage(
-              fit: BoxFit.contain,
-              height: h,
-              imageUrl: item.getThumbnail(),
-              placeholder: (context, url) =>
-                  ShimmerLoadingWidget(height: Get.width / 2),
-              errorWidget: (context, url, error) => Image(
-                image: const AssetImage(
-                  AppConfig.NO_IMAGE,
-                ),
-                fit: BoxFit.cover,
-                height: Get.width / 2,
-              ),
-            ),
     );
   }
+
+  Widget _buildShimmer() => Shimmer.fromColors(
+        baseColor: _shimmerBase,
+        highlightColor: _shimmerHighlight,
+        child: ListView.builder(
+          itemCount: 5,
+          padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 16),
+          itemBuilder: (_, __) => Padding(
+            padding: const EdgeInsets.only(bottom: 16),
+            child: Container(
+              height: _cardHeight,
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(_cardRadius),
+              ),
+            ),
+          ),
+        ),
+      );
+
+  Widget _buildLoader() => Padding(
+        padding: const EdgeInsets.symmetric(vertical: 24),
+        child: Center(
+          child: SizedBox(
+            width: 30,
+            height: 30,
+            child: CircularProgressIndicator(
+              color: _accent,
+              strokeWidth: 3.5,
+            ),
+          ),
+        ),
+      );
+
+  Widget _buildError() => Center(
+        child: Padding(
+          padding: const EdgeInsets.all(24),
+          child: Column(mainAxisSize: MainAxisSize.min, children: [
+            const Icon(FeatherIcons.alertCircle,
+                color: Colors.redAccent, size: 50),
+            const SizedBox(height: 16),
+            FxText.titleMedium("Oops!", color: _accent, fontWeight: 700),
+            const SizedBox(height: 8),
+            FxText(_error!, color: Colors.white70, textAlign: TextAlign.center),
+            const SizedBox(height: 16),
+            FxButton.outlined(
+              onPressed: () => _fetchSeries(refresh: true),
+              borderColor: _accent,
+              borderRadiusAll: 8,
+              child: FxText("Retry", color: _accent),
+            ),
+          ]),
+        ),
+      );
+
+  Widget _buildEmpty() => Center(
+        child: Padding(
+          padding: const EdgeInsets.all(24),
+          child: Column(mainAxisSize: MainAxisSize.min, children: [
+            const Icon(FeatherIcons.film, size: 60, color: Colors.white30),
+            const SizedBox(height: 16),
+            FxText.titleMedium("No series found",
+                color: Colors.white70, fontWeight: 600),
+            const SizedBox(height: 8),
+            FxText("Check back later!", color: Colors.white54),
+            const SizedBox(height: 16),
+            FxButton.outlined(
+              onPressed: () => _fetchSeries(refresh: true),
+              borderColor: _accent,
+              borderRadiusAll: 8,
+              child: FxText("Refresh", color: _accent),
+            ),
+          ]),
+        ),
+      );
 }

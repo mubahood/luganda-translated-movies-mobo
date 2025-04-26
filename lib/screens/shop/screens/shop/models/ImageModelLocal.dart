@@ -1,7 +1,7 @@
 import 'dart:io';
 
 import 'package:dio/dio.dart';
-import 'package:omulimisa2/utils/Utilities.dart';
+import 'package:ugflix/utils/Utilities.dart';
 import 'package:sqflite/sqflite.dart';
 
 import '../../../../../models/RespondModel.dart';

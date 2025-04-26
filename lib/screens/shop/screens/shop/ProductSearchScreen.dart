@@ -4,14 +4,13 @@ import 'package:flutter_feather_icons/flutter_feather_icons.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:flutx/flutx.dart';
 import 'package:get/get.dart';
-import 'package:omulimisa2/models/MovieModel.dart';
-import 'package:omulimisa2/screens/gardens/video_player_screen.dart';
+import 'package:ugflix/models/MovieModel.dart';
 
 import '../../../../controllers/MainController.dart';
 import '../../../../utils/AppConfig.dart';
 import '../../../../utils/CustomTheme.dart';
 import '../../../../widget/widgets.dart';
-
+import '../../../gardens/VideoPlayerScreen.dart';
 
 class ProductSearchScreen extends StatefulWidget {
   const ProductSearchScreen({Key? key}) : super(key: key);
@@ -69,7 +68,7 @@ class _ProductSearchScreenState extends State<ProductSearchScreen> {
                   },
                   child: const Icon(
                     FeatherIcons.x,
-                    color :CustomTheme.primary,
+                    color: CustomTheme.primary,
                   ),
                 ),
                 hintText: 'Search...',
@@ -126,7 +125,7 @@ class _ProductSearchScreenState extends State<ProductSearchScreen> {
             padding: const EdgeInsets.only(left: 10, top: 5, right: 10),
             child: RefreshIndicator(
               onRefresh: doRefresh,
-              color :CustomTheme.primary,
+              color: CustomTheme.primary,
               backgroundColor: CustomTheme.primary,
               child: SafeArea(
                 child: products.isEmpty
@@ -140,8 +139,8 @@ class _ProductSearchScreenState extends State<ProductSearchScreen> {
                               keyWord.length > 1
                                   ? 'No search results for "$keyWord"'
                                   : 'Type at least 3 characters\nto search.',
-                              fontWeight : 800,
-                              color :Colors.black,
+                              fontWeight: 800,
+                              color: Colors.black,
                               textAlign: TextAlign.center,
                             ),
                             const SizedBox(
@@ -160,7 +159,8 @@ class _ProductSearchScreenState extends State<ProductSearchScreen> {
                                   borderColor: CustomTheme.primaryDark,
                                   bordered: false,
                                   onTap: () {
-                                    Get.to(() => VideoPlayerScreen(pro));
+                                    Get.to(() =>
+                                        VideoPlayerScreen({'video_item': pro}));
                                   },
                                   margin: const EdgeInsets.only(bottom: 15),
                                   borderRadiusAll: 8,
@@ -206,7 +206,7 @@ class _ProductSearchScreenState extends State<ProductSearchScreen> {
                                           FxText.titleMedium(
                                             pro.title,
                                             height: 1.2,
-                                            fontWeight : 700,
+                                            fontWeight: 700,
                                             maxLines: 2,
                                             color: Colors.grey.shade100,
                                             overflow: TextOverflow.ellipsis,
@@ -220,13 +220,13 @@ class _ProductSearchScreenState extends State<ProductSearchScreen> {
                                                 right: 10,
                                                 top: 1,
                                                 bottom: 2),
-                                            color :CustomTheme.primary,
+                                            color: CustomTheme.primary,
                                             child: FxText.titleMedium(
                                               "${pro.genre} ",
                                               height: 1.2,
-                                              fontWeight : 900,
+                                              fontWeight: 900,
                                               maxLines: 2,
-                                              color :Colors.white,
+                                              color: Colors.white,
                                               overflow: TextOverflow.ellipsis,
                                             ),
                                           ),

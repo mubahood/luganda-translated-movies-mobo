@@ -11,10 +11,9 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 import 'package:internet_connection_checker/internet_connection_checker.dart';
 import 'package:intl/intl.dart';
-import 'package:omulimisa2/models/DistrictModel.dart';
-import 'package:omulimisa2/screens/auth/login_screen.dart';
-import 'package:omulimisa2/screens/shop/models/ProductCategory.dart';
-import 'package:onesignal_flutter/onesignal_flutter.dart';
+import 'package:ugflix/models/DistrictModel.dart';
+import 'package:ugflix/screens/auth/login_screen.dart';
+import 'package:ugflix/screens/shop/models/ProductCategory.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sqflite/sqflite.dart';
@@ -32,7 +31,6 @@ import '../models/SubcountyModel.dart';
 import '../screens/shop/models/ChatHead.dart';
 import '../screens/shop/models/Product.dart';
 import '../screens/shop/screens/shop/chat/ChatsScreen.dart';
-import '../screens/shop/screens/shop/chat/chat_screen.dart';
 import 'AppConfig.dart';
 import 'CustomTheme.dart';
 
@@ -127,7 +125,7 @@ class Utils {
     return fileNames;
   }
 
-  static Future<void> initOneSignal(LoggedInUserModel u) async {
+/*  static Future<void> initOneSignal(LoggedInUserModel u) async {
     OneSignal.shared.setAppId(AppConfig.ONESIGNAL_APP_ID);
 
     if (u.id > 0) {
@@ -171,10 +169,7 @@ class Utils {
                   chatHead = chatHeads[0];
                 }
                 if (chatHead.id > 0) {
-                  Get.to(() => ChatScreen(
-                        chatHead,
-                        Product(),
-                      ));
+
                 } else {
                   Get.to(() => const ChatsScreen());
                 }
@@ -201,7 +196,7 @@ class Utils {
       // Will be called whenever then user's email subscription changes
       // (ie. OneSignal.setEmail(email) is called and the user gets registered
     });
-  }
+  }*/
 
   static Future<Database> getDb() async {
     return await openDatabase(AppConfig.DATABASE_PATH,
@@ -233,7 +228,6 @@ class Utils {
       ),
     );
   }
-
 
   static String to_date(dynamic updatedAt) {
     String dateText = "--:--";
@@ -397,14 +391,14 @@ class Utils {
 
   static Future<dynamic> http_post(
       String path, Map<String, dynamic> body) async {
-    bool isOnline = await Utils.is_connected();
-    if (!isOnline) {
+    if (!await Utils.is_connected()) {
       return {
         'code': 0,
         'message': 'You are not connected to internet.',
         'data': null
       };
     }
+
     dynamic response;
     var dio = Dio();
     (dio.httpClientAdapter as DefaultHttpClientAdapter).onHttpClientCreate =
@@ -414,46 +408,44 @@ class Utils {
       return client;
     };
 
+    // Retrieve token from SharedPreferences
+    final prefs = await SharedPreferences.getInstance();
+    final token = prefs.getString('token') ?? '';
+
     LoggedInUserModel userModel = await LoggedInUserModel.getLoggedInUser();
-    // String token = userModel.token;
-    // body['user_id'] = LoggedInUserModel.id;
     body['logged_in_user_id'] = userModel.id.toString();
-    print(userModel.id.toString());
-    var da = dioPackage.FormData.fromMap(body); //.fromMap();
+    var formData = dioPackage.FormData.fromMap(body);
+
     try {
-      print("${AppConfig.API_BASE_URL}/$path");
-      response = await dio.post("${AppConfig.API_BASE_URL}/$path",
-          data: da,
-          options: Options(
-            headers: <String, String>{
-              "Content-Type": "application/json",
-              "Accept": "application/json",
-              "logged_in_user_id": userModel.id.toString(),
-            },
-          ));
+      response = await dio.post(
+        "${AppConfig.API_BASE_URL}/$path",
+        data: formData,
+        options: Options(
+          headers: <String, String>{
+            "Content-Type": "application/json",
+            "Accept": "application/json",
+            "Authorization": "Bearer $token",
+            "logged_in_user_id": userModel.id.toString(),
+          },
+        ),
+      );
       return response.data;
     } on DioException catch (e) {
-      if (e.response?.data != null) {
-        if (e.response?.data.runtimeType.toString() ==
-            '_Map<String, dynamic>') {
-          return e.response?.data;
-        }
+      if (e.response?.data != null &&
+          e.response?.data.runtimeType.toString() == '_Map<String, dynamic>') {
+        return e.response?.data;
       }
-      Map<String, dynamic> map = {
+      return jsonEncode({
         'status': 0,
-        'message': "Failed because ${e.message.toString()}"
-      };
-      return jsonEncode(map);
+        'message': "Failed because ${e.message.toString()}",
+      });
     }
   }
 
   static Future<dynamic> http_get(String path, Map<String, dynamic> body,
       {bool addBase = true}) async {
     LoggedInUserModel u = await LoggedInUserModel.getLoggedInUser();
-    // body['user_id'] = u.id;
-
-    bool isOnline = await Utils.is_connected();
-    if (!isOnline) {
+    if (!await Utils.is_connected()) {
       return {
         'code': 0,
         'message': 'You are not connected to internet.',
@@ -461,9 +453,12 @@ class Utils {
       };
     }
 
-    dioPackage.Response response;
-    var dio = Dio()..interceptors;
+    // Retrieve token from SharedPreferences
+    final prefs = await SharedPreferences.getInstance();
+    final token = prefs.getString('token') ?? '';
 
+    dioPackage.Response response;
+    var dio = Dio();
     (dio.httpClientAdapter as DefaultHttpClientAdapter).onHttpClientCreate =
         (HttpClient client) {
       client.badCertificateCallback =
@@ -473,26 +468,27 @@ class Utils {
 
     body['logged_in_user_id'] = u.id.toString();
     try {
-      response =
-      await dio.get(addBase ? "${AppConfig.API_BASE_URL}/$path" : path,
-              queryParameters: body,
-              options: Options(
-                headers: {
-                  "authorization": "Bearer ${u.token}",
-                  //  "User-Id": '${u.id}',
-                  "logged_in_user_id": '${u.id}',
-                  'Content-Type': 'application/json; charset=UTF-8',
-                  'accept': 'application/json',
-                },
-              ));
-
+      response = await dio.get(
+        addBase ? "${AppConfig.API_BASE_URL}/$path" : path,
+        queryParameters: body,
+        options: Options(
+          headers: {
+            "Authorization": "Bearer $token",
+            "logged_in_user_id": u.id.toString(),
+            'Content-Type': 'application/json; charset=UTF-8',
+            'accept': 'application/json',
+          },
+        ),
+      );
+    /*  print("==========================");
+      print( "${AppConfig.API_BASE_URL}/$path");
+      Utils.log(response.data.toString());
+      print("==========================");*/
       return response.data;
     } on DioException catch (e) {
-      if (e.response?.data != null) {
-        if (e.response?.data.runtimeType.toString() ==
-            '_Map<String, dynamic>') {
-          return e.response?.data;
-        }
+      if (e.response?.data != null &&
+          e.response?.data.runtimeType.toString() == '_Map<String, dynamic>') {
+        return e.response?.data;
       }
       return {
         'status': 0,
@@ -504,7 +500,14 @@ class Utils {
   }
 
   static Future<bool> is_connected() async {
-    return await InternetConnectionChecker().hasConnection;
+    //check using internet_connection_checker
+    final connectionChecker = InternetConnectionChecker.instance;
+    bool isConnected = await connectionChecker.hasConnection;
+    if (isConnected) {
+      return true;
+    } else {
+      return false;
+    }
     // bool is_connected = false;
     // var connectivityResult = await (Connectivity().checkConnectivity());
     //

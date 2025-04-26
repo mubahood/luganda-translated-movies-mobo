@@ -2,9 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutx/widgets/container/container.dart';
 import 'package:flutx/widgets/text/text.dart';
 import 'package:get/get.dart';
-import 'package:omulimisa2/screens/gardens/video_player_screen.dart';
-import 'package:omulimisa2/utils/CustomTheme.dart';
-import 'package:omulimisa2/utils/Utilities.dart';
+import 'package:ugflix/utils/CustomTheme.dart';
+import 'package:ugflix/utils/Utilities.dart';
 
 import '../../models/MovieModel.dart';
 import '../shop/screens/shop/full_app/full_app.dart';
@@ -150,7 +149,6 @@ class _GardensScreenState extends State<GardensScreen> {
                           onTap: () {
                             print(item.video_url);
                             print(item.thumbnail_url);
-                            Get.to(() => VideoPlayerScreen(item));
                           },
                           color: item.video_is_downloaded_to_server == 'yes'
                               ? Colors.green.shade100

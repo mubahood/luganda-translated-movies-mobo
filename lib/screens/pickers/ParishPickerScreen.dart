@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:omulimisa2/models/ParishModel.dart';
-import 'package:omulimisa2/utils/CustomTheme.dart';
+import 'package:ugflix/models/ParishModel.dart';
+import 'package:ugflix/utils/CustomTheme.dart';
 
 
 class ParishPickerScreen extends StatefulWidget {

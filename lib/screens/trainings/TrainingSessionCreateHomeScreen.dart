@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutx/flutx.dart';
 import 'package:get/get.dart';
-import 'package:omulimisa2/models/RespondModel.dart';
-import 'package:omulimisa2/utils/Utilities.dart';
-import 'package:omulimisa2/utils/my_colors.dart';
+import 'package:ugflix/models/RespondModel.dart';
+import 'package:ugflix/utils/Utilities.dart';
+import 'package:ugflix/utils/my_colors.dart';
 
 import '../../models/TrainingModel.dart';
 import '../../models/TrainingSessionLocalModel.dart';

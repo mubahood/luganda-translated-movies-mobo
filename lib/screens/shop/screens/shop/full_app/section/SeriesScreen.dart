@@ -4,13 +4,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:flutx/flutx.dart';
 import 'package:get/get.dart';
-import 'package:omulimisa2/models/SeriesModel.dart';
-import 'package:omulimisa2/utils/CustomTheme.dart';
-import 'package:omulimisa2/utils/Utilities.dart';
-import 'package:omulimisa2/utils/my_colors.dart';
+import 'package:ugflix/models/SeriesModel.dart';
+import 'package:ugflix/utils/CustomTheme.dart';
+import 'package:ugflix/utils/Utilities.dart';
+import 'package:ugflix/utils/my_colors.dart';
 
 import '../../../../../../models/MovieModel.dart';
-import '../../../../../gardens/video_player_screen.dart';
 import '../../widgets.dart';
 
 class SeriesScreen extends StatefulWidget {
@@ -87,7 +86,6 @@ class _SeriesScreenState extends State<SeriesScreen> {
               MovieModel item = episodes[index];
               return InkWell(
                 onTap: () {
-                  Get.to(() => VideoPlayerScreen(item));
                 },
                 child: Column(
                   children: [

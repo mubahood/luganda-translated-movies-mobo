@@ -1,11 +1,11 @@
 // import "package:flutter/material.dart";
 // import "package:get/get.dart";
-// import "package:omulimisa2/src/features/home/view/widgets/video_item_widget.dart";
+// import "package:ugflix/src/features/home/view/widgets/video_item_widget.dart";
 // import 'package:loading_animation_widget/loading_animation_widget.dart';
 // import "../../../../core/styles.dart";
 // import "../controller/resource_controller.dart";
-// import "package:omulimisa2/src/features/home/view/widgets/photo_item_widget.dart";
-// import "package:omulimisa2/src/features/home/view/widgets/document_card.dart";
+// import "package:ugflix/src/features/home/view/widgets/photo_item_widget.dart";
+// import "package:ugflix/src/features/home/view/widgets/document_card.dart";
 // class ResourceScreen extends StatefulWidget {
 //   const ResourceScreen({super.key});
 //

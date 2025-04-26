@@ -1,4 +1,4 @@
-import 'package:omulimisa2/utils/AppConfig.dart';
+import 'package:ugflix/utils/AppConfig.dart';
 import 'package:sqflite/sqflite.dart';
 
 import '../utils/Utilities.dart';
@@ -85,6 +85,7 @@ class MovieModel {
   }
 
   String getThumbnail() {
+    return thumbnail_url;
     //print("==> ${AppConfig.STORAGE_URL + thumbnail_url} <==");
     if (thumbnail_url.length > 3) {
       return AppConfig.STORAGE_URL + thumbnail_url;

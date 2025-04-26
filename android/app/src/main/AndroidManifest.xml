@@ -19,9 +19,14 @@
     <application
         android:name="${applicationName}"
         android:icon="@drawable/logo"
-        android:usesCleartextTraffic="true"
         android:label="Ugflix Translated Movies"
         android:screenOrientation="portrait"
+        android:usesCleartextTraffic="true"
+<<<<<<< HEAD
+        android:label="Ugflix Translated Movies"
+        android:screenOrientation="portrait"
+=======
+>>>>>>> 98c4f64d908af097d855ed741d21a6f2bc56a5ad
         tools:ignore="DiscouragedApi">
 
         <!-- Place your Google Map API KEY here at value -->

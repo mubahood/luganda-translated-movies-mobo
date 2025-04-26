@@ -1,842 +1,762 @@
-import 'dart:math';
+import 'dart:async';
 
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_feather_icons/flutter_feather_icons.dart';
-import 'package:flutter_rating_bar/flutter_rating_bar.dart';
-import 'package:flutx/flutx.dart';
+import 'package:flutx/flutx.dart'; // Assuming FxButton, FxContainer, FxText are used
 import 'package:get/get.dart';
-import 'package:omulimisa2/models/MovieModel.dart';
+// Assuming these paths are correct - adjust if needed
+import 'package:ugflix/controllers/MainController.dart';
+import 'package:ugflix/models/ManifestModel.dart';
+import 'package:ugflix/models/ManifestService.dart';
+import 'package:ugflix/models/NewMovieModel.dart';
+import 'package:ugflix/utils/AppConfig.dart'; // Assuming contains checkForUpdate
+import 'package:ugflix/utils/CustomTheme.dart';
+import 'package:ugflix/utils/app_theme.dart';
 
-import '../../../../../../controllers/MainController.dart';
-import '../../../../../../utils/AppConfig.dart';
-import '../../../../../../utils/CustomTheme.dart';
-import '../../../../../../utils/SizeConfig.dart';
-import '../../../../../../utils/app_theme.dart';
-import '../../../../../../widget/widgets.dart';
-import '../../../../../gardens/video_player_screen.dart';
-import '../../ProductSearchScreen.dart';
-import '../../cart/CartScreen.dart';
-import '../../widgets.dart';
+import '../../../../../../utils/Utilities.dart';
+import '../../MoviesSearchScreen.dart';
+import '../../movies/MovieDetailScreen.dart';
+import '../../movies/MoviesListingScreen.dart';
+import '../AppUpdateScreen.dart' as AppUpdateScreen;
+
 class SectionDashboard extends StatefulWidget {
-  const SectionDashboard({Key? key}) : super(key: key);
+  const SectionDashboard({super.key});
 
   @override
   _SectionDashboardState createState() => _SectionDashboardState();
 }
 
-class _SectionDashboardState extends State<SectionDashboard> {
+class _SectionDashboardState extends State<SectionDashboard>
+    with SingleTickerProviderStateMixin {
+  // --- State Variables ---
   late ThemeData theme;
+  final MainController mainController = Get.find<MainController>();
+  final ManifestService manifestService = ManifestService();
+  ManifestModel manifestModel = ManifestModel();
+  late Future<void> _futureInit;
+  String _selectedVjFilter = "";
+
+  // --- Animation ---
+  late AnimationController _animationController;
+  late Animation<double> _fadeAnimation;
+
+  // --- Ads State ---
+  // BannerAd? _bannerAd;
+  bool _isBannerAdReady = false;
+
+  // --- Ad Unit IDs (Use Test IDs for Development) ---
+  // TODO: Replace with your actual AdMob Ad Unit IDs before publishing!
+
+  // --- Constants ---
+  static const double _kHorizontalPadding = 18.0;
+  static const double _kVerticalPadding = 14.0;
+  static const double _kCardBorderRadius = 14.0;
+  static const double _kHeroBorderRadius = 22.0;
+  static const double _kChipBorderRadius = 18.0;
 
   @override
   void initState() {
     super.initState();
-    theme = AppTheme.shoppingManagerTheme;
-  doRefresh();
+    theme = AppTheme.shoppingManagerTheme; // Assuming this theme exists
+
+    _animationController = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 600),
+    );
+    _fadeAnimation = CurvedAnimation(
+      parent: _animationController,
+      curve: Curves.easeInOut,
+    );
+
+    _loadData();
+    _loadBannerAd(); // Load the banner ad on init
   }
 
-  final MainController mainController = Get.find<MainController>();
+  @override
+  void dispose() {
+    _animationController.dispose();
+    // _bannerAd?.dispose(); // Dispose banner ad
+    super.dispose();
+  }
 
+  // --- Data Loading ---
+  void _loadData() {
+    // AppConfig.checkForUpdate(); // Assuming this exists and is needed
+    _futureInit = _initializeData();
+    _futureInit.then((_) {
+      if (mounted) {
+        _animationController.forward();
+      }
+    }).catchError((_) {
+      // Handle error
+    });
+  }
+
+  Future<void> _refreshData() async {
+    _animationController.reset();
+    // Optionally reload banner ad on refresh? Usually not necessary.
+    // _loadBannerAd();
+    setState(() {
+      _futureInit = _initializeData(); // Re-run the initialization future
+    });
+    await _futureInit; // Wait for refresh to complete
+    if (mounted) {
+      _animationController.forward();
+    }
+  }
+
+  Future<void> _initializeData() async {
+    try {
+      final data = await manifestService.getManifest();
+      manifestService.fetchManifestOnline();
+      if (mounted) {
+        manifestModel = ManifestModel.fromJson(data);
+        if (manifestModel.APP_VERSION != 0) {
+          if (manifestModel.APP_VERSION > AppConfig.APP_VERSION) {
+            Utils.toast("New App Version Available.");
+            Get.to(() => AppUpdateScreen.AppUpdateScreen(manifestModel));
+          }
+        }
+      }
+      // await mainController.getMovies(); // Consider if needed
+    } catch (e) {
+      if (mounted) {
+        Get.snackbar('Error', 'Failed to load content. Please try again.',
+            snackPosition: SnackPosition.BOTTOM,
+            backgroundColor: Colors.redAccent,
+            colorText: Colors.white);
+      }
+      rethrow; // Rethrow for FutureBuilder error state
+    }
+  }
+
+  // --- Ad Loading ---
+  void _loadBannerAd() {
+
+  }
+
+  // --- Build Method ---
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: CustomTheme.primary,
-      body: FutureBuilder(
-          future: futureInit,
-          builder: (context, snapshot) {
-            switch (snapshot.connectionState) {
-              case ConnectionState.waiting:
-                return const Center(
-                  child: Text("⌛ Loading..."),
-                );
-              default:
-                return mainWidget();
-            }
-          }),
+      body: Column(
+        // Main column for Header, Content, and Banner Ad
+        children: [
+          // --- Header ---
+          _buildHeaderBar(),
+          // --- Main Content Area ---
+          Expanded(
+            child: FutureBuilder<void>(
+              future: _futureInit,
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  // Use a more thematic shimmer or loading indicator here
+                  return _buildContentLoadingIndicator();
+                } else if (snapshot.hasError) {
+                  return _buildContentErrorView();
+                } else {
+                  // Content loaded successfully
+                  return _buildMainContent();
+                }
+              },
+            ),
+          ),
+
+        ],
+      ),
     );
   }
 
-  late Future<dynamic> futureInit;
-
-  Future<dynamic> doRefresh() async {
-    futureInit = myInit();
-    setState(() {});
+  Widget _buildContentLoadingIndicator() {
+    // You can replace this with a more elaborate shimmer effect
+    // similar to the MovieDetailScreen shimmer if desired.
+    return Center(
+      child: CircularProgressIndicator(color: Colors.yellowAccent[700]),
+    );
   }
 
-  MovieModel topMovie = MovieModel();
-  List<MovieModel> recentMovies = [];
-  Future<dynamic> myInit() async {
-    await mainController.getMovies();
-    mainController.movies.shuffle();
-
-    if (cat.isNotEmpty) {
-      mainController.movies = mainController.movies
-          .where((element) => element.genre == cat)
-          .toList();
-      setState(() {});
-    } else {
-      if (mainController.movies.length < 4) {}
-      if (mainController.movies.isNotEmpty) {
-        mainController.movies.shuffle();
-        topMovie = mainController.movies[0];
-        if (mainController.movies.length > 10) {
-          mainController.movies.shuffle();
-          recentMovies = mainController.movies.sublist(1, 15);
-          recentMovies.shuffle();
-      }
-    }
-    }
-
-    mainController.movies.sort((b, a) => a.updated_at.compareTo(b.updated_at));
-    setState(() {});
-
-    return;
-    await mainController.getProducts();
-
-    return "Done";
+  Widget _buildContentErrorView() {
+    return Center(
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          const Icon(FeatherIcons.wifiOff, color: Colors.white30, size: 48),
+          const SizedBox(height: 16),
+          FxText.bodyLarge('Could not connect', color: Colors.white70),
+          FxText.bodySmall('Please check your connection and retry',
+              color: Colors.white54),
+          const SizedBox(height: 24),
+          FxButton.outlined(
+            onPressed: _refreshData,
+            child: FxText('Retry', color: Colors.yellowAccent[700]),
+            borderColor: Colors.yellow.shade700,
+            splashColor: Colors.yellowAccent[700]?.withOpacity(0.2),
+            borderRadiusAll: _kChipBorderRadius,
+          ),
+        ],
+      ),
+    );
   }
 
-  Widget mainWidget() {
-    return Column(
-      children: [
-        Container(
-          color: CustomTheme.primary,
-          padding: const EdgeInsets.only(
-            left: 10,
-            right: 15,
-            top: 18,
-            bottom: 10,
-          ),
-          child: Flex(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            direction: Axis.horizontal,
-            children: [
-              InkWell(
-                onTap: () {
-                  Get.back();
-                },
-                child: const Icon(
-                  FeatherIcons.home,
-                  color: CustomTheme.accent,
-                  size: 30,
-                ),
-              ),
-              const SizedBox(
-                width: 5,
-              ),
-              Expanded(
-                  child: FxContainer(
-                onTap: () {
-                  Get.to(() => const ProductSearchScreen());
-                },
-                color: CustomTheme.primary,
-                bordered: true,
-                borderRadiusAll: 8,
-                borderColor: CustomTheme.accent,
-                margin: const EdgeInsets.only(left: 5),
-                padding: const EdgeInsets.only(left: 5, top: 8, bottom: 8),
-                child: Row(
-                  children: [
-                    const SizedBox(
-                      width: 2,
-                    ),
-                    const Icon(
-                      FeatherIcons.search,
-                      color: CustomTheme.accent,
-                      size: 18,
-                    ),
-                    const SizedBox(
-                      width: 5,
-                    ),
-                    FxText(
-                      'Search Luganda translated movies...',
-                      fontWeight: 400,
-                      color: CustomTheme.color,
-                    ),
-                  ],
-                ),
-              )),
-              const SizedBox(
-                width: 10,
-              ),
-              InkWell(
-                onTap: () {
-                  showBottomSheetCategoryPicker();
-                },
-                child: const Icon(
-                  FeatherIcons.mic,
-                  color: CustomTheme.accent,
-                  size: 35,
-                ),
-              ),
-              const SizedBox(
-                width: 5,
-              ),
-            ],
-          ),
-        ),
-        cat.isEmpty
-            ? const SizedBox()
-            : FxContainer(
-                width: double.infinity,
-                margin: const EdgeInsets.only(
-                  left: 15,
-                  right: 15,
-                  top: 5,
-                  bottom: 5,
-                ),
-                padding: const EdgeInsets.only(
-                  left: 10,
-                  top: 5,
-                  bottom: 5,
-                  right: 10,
-                ),
-                child: Row(
-                  children: [
-                    Expanded(
-                        child: FxText.bodySmall(
-                      "Filter by VJ: $cat",
-                      fontWeight: 900,
-                      color: Colors.black,
-                    )),
-                    InkWell(
-                      onTap: () {
-                        cat = '';
-                        setState(() {});
-                        myInit();
-                      },
-                      child: const Icon(
-                        FeatherIcons.x,
-                        color: CustomTheme.accent,
-                        size: 20,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-        Expanded(
-          child: Container(
-            padding: const EdgeInsets.only(left: 10, top: 0, right: 10),
-            child: RefreshIndicator(
-              onRefresh: doRefresh,
-              color: CustomTheme.primary,
-              backgroundColor: Colors.white,
-              child: SafeArea(
-                child: CustomScrollView(
-                  slivers: [
-                    SliverList(
-                      delegate: SliverChildBuilderDelegate(
-                        (BuildContext context, int index) {
-                          if (cat.isNotEmpty) {
-                            return SizedBox();
-                          }
-                          return Padding(
-                            padding: const EdgeInsets.only(
-                                left: 0, right: 10, top: 0, bottom: 0),
-                            child: Row(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                roundedImage3(topMovie.getThumbnail(), 110, 150),
-                                const SizedBox(
-                                  width: 10,
-                                ),
-                                Expanded(
-                                  child: Column(
-                                    mainAxisAlignment: MainAxisAlignment.start,
-                                    mainAxisSize: MainAxisSize.min,
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      Padding(
-                                        padding: const EdgeInsets.only(
-                                          left: 5,
-                                        ),
-                                        child: FxText.titleLarge(
-                                          topMovie.title,
-                                          fontWeight: 600,
-                                          maxLines: 3,
-                                          letterSpacing: .2,
-                                          textAlign: TextAlign.start,
-                                          overflow: TextOverflow.ellipsis,
-                                          height: 1,
-                                          fontSize: 15,
-                                          color: Colors.white,
-                                        ),
-                                      ),
-                                      const SizedBox(
-                                        height: 10,
-                                      ),
-                                      RatingBar(
-                                        initialRating:
-                                            Random().nextDouble() * 5,
-                                        itemSize: 25,
-                                        direction: Axis.horizontal,
-                                        allowHalfRating: true,
-                                        itemCount: 5,
-                                        ratingWidget: RatingWidget(
-                                          full: const Icon(
-                                            Icons.star,
-                                            color: Colors.amber,
-                                          ),
-                                          half: const Icon(
-                                            Icons.star_half,
-                                            color: Colors.amber,
-                                          ),
-                                          empty: const Icon(
-                                            Icons.star_border,
-                                            color: Colors.amber,
-                                          ),
-                                        ),
-                                        itemPadding: const EdgeInsets.symmetric(
-                                            horizontal: 4.0),
-                                        onRatingUpdate: (rating) {
-                                          print(rating);
-                                        },
-                                      ),
-                                      const SizedBox(
-                                        height: 5,
-                                      ),
-                                      Row(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.center,
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.start,
-                                        children: [
-                                          SizedBox(
-                                            width: 8,
-                                          ),
-                                          Icon(
-                                            FeatherIcons.eye,
-                                            color: Colors.grey,
-                                            size: 14,
-                                          ),
-                                          const SizedBox(
-                                            width: 5,
-                                          ),
-                                          FxText.bodySmall(
-                                            "${Random().nextInt(1000)}",
-                                            color: Colors.grey,
-                                          ),
-                                          const SizedBox(
-                                            width: 15,
-                                          ),
-                                          Icon(
-                                            FeatherIcons.heart,
-                                            color: Colors.grey,
-                                            size: 14,
-                                          ),
-                                          const SizedBox(
-                                            width: 5,
-                                          ),
-                                          FxText.bodySmall(
-                                            "${Random().nextInt(1000)}",
-                                            color: Colors.grey,
-                                          ),
-                                          const SizedBox(
-                                            width: 15,
-                                          ),
-                                          Icon(
-                                            FeatherIcons.download,
-                                            color: Colors.grey,
-                                            size: 14,
-                                          ),
-                                          const SizedBox(
-                                            width: 5,
-                                          ),
-                                          FxText.bodySmall(
-                                            "${Random().nextInt(1000)}",
-                                            color: Colors.grey,
-                                          ),
-                                        ],
-                                      ),
-                                      const SizedBox(
-                                        height: 10,
-                                      ),
-                                      Row(
-                                        children: [
-                                          const SizedBox(
-                                            height: 10,
-                                          ),
-                                          //watch now button
-                                          FxButton.outlined(
-                                            onPressed: () {
-                                              Get.to(() =>
-                                                  VideoPlayerScreen(topMovie));
-                                            },
-                                            borderRadiusAll: 8,
-                                            borderColor: Colors.white,
-                                            block: false,
-                                            padding: const EdgeInsets.symmetric(
-                                                vertical: 10, horizontal: 20),
-                                            child: Row(
-                                              crossAxisAlignment:
-                                                  CrossAxisAlignment.center,
-                                              mainAxisAlignment:
-                                                  MainAxisAlignment.center,
-                                              children: [
-                                                const Icon(
-                                                  FeatherIcons.play,
-                                                  color: Colors.white,
-                                                  size: 15,
-                                                ),
-                                                FxText.bodyMedium(
-                                                  "Watch Now",
-                                                  color: Colors.white,
-                                                  fontWeight: 800,
-                                                ),
-                                              ],
-                                            ),
-                                          ),
-                                          //icon button add to watchlist
-                                          const SizedBox(
-                                            height: 10,
-                                          ),
-                                          SizedBox(
-                                            width: 10,
-                                          ),
-                                          FxButton.outlined(
-                                            onPressed: () {
-                                              Get.to(() =>
-                                                  VideoPlayerScreen(topMovie));
-                                            },
-                                            borderRadiusAll: 8,
-                                            borderColor: Colors.white,
-                                            block: false,
-                                            padding: const EdgeInsets.symmetric(
-                                                vertical: 10, horizontal: 20),
-                                            child: const Icon(
-                                              FeatherIcons.heart,
-                                              color: Colors.white,
-                                              size: 20,
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ],
-                            ),
-                          );
+  Widget _buildMainContent() {
+    final textTheme = Theme.of(context).textTheme; // Get theme for consistency
 
-/*
-
-                                child: CachedNetworkImage(
-                                  fit: BoxFit.contain,
-                                  height: Get.width / 2,
-                                  imageUrl:
-                                  "${AppConfig.MAIN_SITE_URL}/${item.banner_image}",
-                                  placeholder: (context, url) =>
-                                      ShimmerLoadingWidget(
-                                          height: Get.width / 2),
-                                  errorWidget: (context, url, error) =>
-                                      Image(
-                                        image: const AssetImage(
-                                          AppConfig.NO_IMAGE,
-                                        ),
-                                        fit: BoxFit.cover,
-                                        height: Get.width / 2,
-                                      ),
-                                ),
-                              ),
-                            )
-                                .toList(),
-                          );*/
-                        },
-                        childCount: 1, // 1000 list items
-                      ),
-                    ),
-                    SliverList(
-                      delegate: SliverChildBuilderDelegate(
-                        (BuildContext context, int index) {
-                          if (cat.isNotEmpty) {
-                            return SizedBox();
-                          }
-                          return titleWidget('Trending', () {});
-                        },
-                        childCount: 1, // 1000 list items
-                      ),
-                    ),
-                    SliverList(
-                      delegate: SliverChildBuilderDelegate(
-                        (BuildContext context, int index) {
-                          if (cat.isNotEmpty) {
-                            return const SizedBox();
-                          }
-                          return CarouselSlider(
-                            options: CarouselOptions(
-                              autoPlay: true,
-                              viewportFraction: .28,
-                              initialPage: 1,
-                              enableInfiniteScroll: true,
-                              height: 140,
-                              autoPlayInterval: const Duration(seconds: 6),
-                              autoPlayAnimationDuration:
-                                  const Duration(milliseconds: 800),
-                              autoPlayCurve: Curves.fastOutSlowIn,
-                              enlargeCenterPage: true,
-                              enlargeFactor: 0,
-                              scrollDirection: Axis.horizontal,
-                            ),
-                            items: recentMovies
-                                .map(
-                                  (item) => InkWell(
-                                    onTap: () =>
-                                        {Get.to(() => VideoPlayerScreen(item))},
-                                    child: movieUi(item),
-                                  ),
-                                )
-                                .toList(),
-                          );
-                        },
-                        childCount: 1, // 1000 list items
-                      ),
-                    ),
-                    SliverList(
-                      delegate: SliverChildBuilderDelegate(
-                            (BuildContext context, int index) {
-                          if (cat.isNotEmpty) {
-                            return const SizedBox(
-                              height: 5,
-                            );
-                          }
-                          return titleWidget('Recently Uploaded', () {},
-                              icon: FeatherIcons.tv);
-                        },
-                        childCount: 1, // 1000 list items
-                      ),
-                    ),
-                    SliverGrid(
-                      gridDelegate:
-                          const SliverGridDelegateWithFixedCrossAxisCount(
-                        crossAxisCount: 3,
-                        crossAxisSpacing: 0,
-                        mainAxisSpacing: 10,
-                        childAspectRatio: 0.8,
-                      ),
-                      delegate: SliverChildBuilderDelegate(
-                            (BuildContext context, int index) {
-                          MovieModel pro = mainController.movies[index];
-                          return InkWell(
-                              onTap: () {
-                                Get.to(() => VideoPlayerScreen(pro));
-                              },
-                              child: movieUi2(pro));
-                        },
-                        childCount: mainController.movies.length,
-                      ),
-                    ),
-                  ],
+    return RefreshIndicator(
+      onRefresh: _refreshData,
+      color: CustomTheme.primary,
+      backgroundColor: Colors.yellowAccent[700] ?? Colors.yellow,
+      child: CustomScrollView(
+        physics: const BouncingScrollPhysics(
+            parent: AlwaysScrollableScrollPhysics()),
+        slivers: [
+          // --- Top Hero Movie ---
+          SliverPadding(
+            padding: const EdgeInsets.only(
+                left: _kHorizontalPadding,
+                right: _kHorizontalPadding,
+                top: _kVerticalPadding,
+                bottom: _kVerticalPadding * 1.5),
+            sliver: SliverToBoxAdapter(
+              child: FadeTransition(
+                opacity: _fadeAnimation,
+                child: _buildTopMovieHero(
+                  manifestModel.top_movie.isNotEmpty
+                      ? manifestModel.top_movie[0]
+                      : NewMovieModel(), // Handle empty case
                 ),
               ),
             ),
           ),
+          // --- Genres Section ---
+          if (manifestModel.genres.isNotEmpty)
+            SliverToBoxAdapter(
+              child: FadeTransition(
+                opacity: _fadeAnimation,
+                child: _buildGenreSection(manifestModel.genres),
+              ),
+            ),
+
+          const SliverPadding(padding: EdgeInsets.only(top: _kVerticalPadding)),
+
+          // --- Movie Category Sections ---
+          // TODO: Consider inserting Native Ads here periodically
+          ...manifestModel.lists
+              .where((list) => list.movies.isNotEmpty)
+              .map((list) {
+            // int index = manifestModel.lists.indexOf(list); // Index for staggering?
+            return SliverPadding(
+              padding: const EdgeInsets.only(bottom: _kVerticalPadding * 1.8),
+              sliver: SliverToBoxAdapter(
+                child: FadeTransition(
+                  opacity: _fadeAnimation,
+                  child: _buildMovieCategorySection(list, textTheme),
+                ),
+              ),
+            );
+          }).toList(),
+
+          // --- Browse All Button ---
+          SliverPadding(
+            padding: const EdgeInsets.symmetric(
+                horizontal: _kHorizontalPadding * 1.5,
+                vertical: _kVerticalPadding * 2),
+            sliver: SliverToBoxAdapter(
+              child: FadeTransition(
+                opacity: _fadeAnimation,
+                child: _buildBrowseAllButton(textTheme),
+              ),
+            ),
+          ),
+
+          // Add final padding at the very bottom (adjust if banner is present)
+          // The SafeArea around the banner handles bottom padding when ad is ready
+          // SliverPadding(padding: EdgeInsets.only(bottom: MediaQuery.of(context).padding.bottom)),
+        ],
+      ),
+    );
+  }
+
+  // --- Header, Search, Hero, Sections, Cards, Buttons (Keep implementations from previous version) ---
+  // (Make sure to pass textTheme where appropriate for consistent styling)
+
+  Widget _buildHeaderBar() {
+    return Container(
+      color: CustomTheme.primary.withOpacity(0.9),
+      padding: EdgeInsets.only(
+        left: _kHorizontalPadding,
+        right: _kHorizontalPadding,
+        top: MediaQuery.of(context).padding.top + _kVerticalPadding * 0.8,
+        bottom: _kVerticalPadding * 0.8,
+      ),
+      child: Row(
+        children: [
+          Expanded(
+            child: _buildSearchBar(
+              hint: 'Search movies, VJs...',
+              onTap: () => Get.to(() => const MoviesSearchScreen({})),
+            ),
+          ),
+          const SizedBox(width: 14),
+          InkWell(
+            onTap: _showVjFilterBottomSheet,
+            customBorder: const CircleBorder(),
+            child: Container(
+              padding: const EdgeInsets.all(8.0),
+              decoration: BoxDecoration(
+                  color: Colors.white.withOpacity(0.1), shape: BoxShape.circle),
+              child: Icon(FeatherIcons.mic, color: Colors.yellow, size: 24),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildSearchBar({required String hint, required VoidCallback onTap}) {
+    return GestureDetector(
+      onTap: onTap,
+      child: FxContainer(
+        color: Colors.white.withOpacity(0.1),
+        bordered: false,
+        borderRadiusAll: _kChipBorderRadius,
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+        child: Row(
+          children: [
+            Icon(FeatherIcons.search,
+                color: Colors.yellow, size: 20), // Accent search icon
+            const SizedBox(width: 10),
+            Expanded(
+              child: FxText(hint,
+                  fontWeight: 400,
+                  color: Colors.white70,
+                  overflow: TextOverflow.ellipsis),
+            ),
+          ],
         ),
-        (mainController.cartItems.isEmpty)
-            ? const SizedBox()
-            : InkWell(
-                onTap: () {
-                  Get.to(() => const CartScreen());
-                },
-                child: Container(
-                  color: CustomTheme.primary,
-                  child: Row(
-                    children: [
-                      FxSpacing.width(8),
-                      FxText.titleSmall(
-                        "You have ${mainController.cartItems.length} items in cart.",
-                        color: Colors.white,
-                      ),
-                      const Spacer(),
-                      FxContainer(
-                        margin:
-                            const EdgeInsets.only(right: 5, top: 5, bottom: 5),
-                        color: Colors.grey.shade200,
-                        padding: const EdgeInsets.only(
-                            left: 10, right: 5, top: 4, bottom: 2),
-                        child: Row(
-                          children: [
-                            FxText.bodySmall(
-                              "CHECKOUT",
-                              fontWeight: 900,
-                              color: CustomTheme.primaryDark,
-                            ),
-                            const Icon(
-                              FeatherIcons.chevronRight,
-                              color: CustomTheme.primaryDark,
-                              size: 16,
-                            )
-                          ],
-                        ),
-                      )
+      ),
+    );
+  }
+
+  Widget _buildTopMovieHero(NewMovieModel movie) {
+    if (movie.id <= 0) {
+      // Check for valid movie ID
+      return const SizedBox(
+          height: 200,
+          child: Center(
+              child: Text("No featured movie",
+                  style: TextStyle(
+                      color: Colors.white54)))); // Placeholder or empty state
+    }
+    return AspectRatio(
+      aspectRatio: 16 / 9.5,
+      child: FxContainer(
+        borderRadiusAll: _kHeroBorderRadius,
+        clipBehavior: Clip.antiAlias,
+        bordered: true,
+        borderColor: Colors.yellow,
+        // Subtle accent border
+        paddingAll: 0,
+        child: InkWell(
+          onTap: () => Get.to(() => MovieDetailScreen({'movie': movie})),
+          child: Stack(
+            fit: StackFit.expand,
+            children: [
+              ClipRRect(
+                // Ensure image respects border radius
+                borderRadius: BorderRadius.circular(_kHeroBorderRadius - 1),
+                // Inner radius for image
+                child: CachedNetworkImage(
+                  imageUrl: movie.getThumbnail(),
+                  fit: BoxFit.cover,
+                  placeholder: (context, url) =>
+                      Container(color: Colors.grey[900]),
+                  errorWidget: (context, url, error) => Container(
+                      color: Colors.grey[900],
+                      child: const Center(
+                          child: Icon(FeatherIcons.image,
+                              color: Colors.white24, size: 48))),
+                  fadeInDuration: const Duration(milliseconds: 400),
+                ),
+              ),
+              Container(
+                // Gradient
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(_kHeroBorderRadius - 1),
+                  gradient: LinearGradient(
+                    begin: Alignment.bottomCenter,
+                    end: Alignment.topCenter,
+                    stops: const [0.0, 0.7, 1.0],
+                    colors: [
+                      Colors.black.withOpacity(0.95),
+                      Colors.black.withOpacity(0.5),
+                      Colors.transparent
                     ],
                   ),
                 ),
               ),
+              Positioned(
+                // Content
+                bottom: _kVerticalPadding * 1.2,
+                left: _kHorizontalPadding,
+                right: _kHorizontalPadding,
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    FxText.bodyLarge(movie.title,
+                        fontWeight: 800,
+                        color: Colors.white,
+                        textAlign: TextAlign.center,
+                        maxLines: 2,
+                        overflow: TextOverflow.ellipsis),
+                    const SizedBox(height: 6),
+                    if (movie.vj.isNotEmpty)
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Icon(FeatherIcons.mic,
+                              color: Colors.yellow, size: 16),
+                          const SizedBox(width: 5),
+                          FxText.bodyLarge(movie.vj,
+                              color: CustomTheme.accent,
+                              fontWeight: 700,
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis),
+                        ],
+                      ),
+                    const SizedBox(height: 16),
+                    FxButton(
+                      onPressed: () =>
+                          Get.to(() => MovieDetailScreen({'movie': movie})),
+                      elevation: 2,
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 20, vertical: 10),
+                      backgroundColor: Colors.yellow,
+                      borderRadiusAll: _kChipBorderRadius,
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          const Icon(FeatherIcons.play,
+                              color: Colors.black, size: 18),
+                          const SizedBox(width: 8),
+                          FxText.bodyMedium("Watch Now",
+                              fontWeight: 900, color: Colors.black),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildGenreSection(List<String> genres) {
+    return SizedBox(
+      height: 38, // Slightly taller chips
+      child: ListView.builder(
+        scrollDirection: Axis.horizontal,
+        itemCount: genres.length,
+        physics: const BouncingScrollPhysics(),
+        padding: const EdgeInsets.symmetric(horizontal: _kHorizontalPadding),
+        itemBuilder: (context, index) {
+          String genre = genres[index];
+          return Padding(
+            padding:
+                EdgeInsets.only(right: index < genres.length - 1 ? 10.0 : 0.0),
+            child: FxButton.outlined(
+              // Use outlined for genres
+              onPressed: () =>
+                  Get.to(() => MoviesListingScreen({'genre': genre})),
+              borderRadiusAll: _kChipBorderRadius,
+              padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 8),
+              borderColor: Colors.yellow.withOpacity(0.6),
+              // Accent border
+              splashColor: CustomTheme.accent.withOpacity(0.1),
+              child: FxText.bodyMedium(genre,
+                  color: Colors.yellow, fontWeight: 500), // Accent text
+            ),
+          );
+        },
+      ),
+    );
+  }
+
+  Widget _buildMovieCategorySection(
+      MovieCategoryList categoryList, TextTheme textTheme) {
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: _kHorizontalPadding)
+              .copyWith(bottom: _kVerticalPadding * 0.8),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              FxText(categoryList.title,
+                  style: textTheme.titleLarge?.copyWith(
+                      color: CustomTheme.accent, fontWeight: FontWeight.w700)),
+              // Use theme
+              FxButton.text(
+                onPressed: () => Get.to(() => MoviesListingScreen({
+                      'category': categoryList.title,
+                      'movies': categoryList.movies
+                    })),
+                padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 2),
+                splashColor: CustomTheme.accent.withOpacity(0.1),
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    FxText('View All', color: Colors.yellow, fontWeight: 600),
+                    const SizedBox(width: 4),
+                    Icon(FeatherIcons.arrowRight,
+                        color: Colors.yellow, size: 18),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        ),
+        SizedBox(
+          // Horizontal Movie List
+          height: (Get.width / 2.8) * 1.5 + 10, // Adjust height as needed
+          child: ListView.builder(
+            scrollDirection: Axis.horizontal,
+            itemCount: categoryList.movies.length,
+            physics: const BouncingScrollPhysics(),
+            padding:
+                const EdgeInsets.symmetric(horizontal: _kHorizontalPadding),
+            itemBuilder: (context, index) {
+              NewMovieModel movie = categoryList.movies[index];
+              return Padding(
+                padding: EdgeInsets.only(
+                    right: index < categoryList.movies.length - 1 ? 12.0 : 0.0),
+                child: _buildMovieCard(movie, textTheme), // Pass theme
+              );
+            },
+          ),
+        ),
       ],
     );
   }
 
-  String cat = "";
-  void showBottomSheetCategoryPicker() {
-    showModalBottomSheet(
-        context: context,
-        barrierColor: CustomTheme.primary.withOpacity(.5),
-        builder: (BuildContext buildContext) {
-          return Container(
-            decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.only(
-                topLeft: Radius.circular(MySize.size16),
-                topRight: Radius.circular(MySize.size16),
+  Widget _buildMovieCard(NewMovieModel item, TextTheme textTheme) {
+    double cardWidth = Get.width / 2.8;
+    double cardHeight = cardWidth * 1.5;
+
+    return SizedBox(
+      width: cardWidth,
+      height: cardHeight,
+      child: FxContainer(
+        borderRadiusAll: _kCardBorderRadius,
+        paddingAll: 0,
+        child: InkWell(
+          onTap: () => Get.to(() => MovieDetailScreen({'movie': item})),
+          child: Stack(
+            fit: StackFit.expand,
+            children: [
+              ClipRRect(
+                borderRadius: BorderRadius.circular(_kCardBorderRadius),
+                child: CachedNetworkImage(
+                  imageUrl: item.getThumbnail(),
+                  fit: BoxFit.cover,
+                  placeholder: (context, url) =>
+                      Container(color: Colors.grey[850]),
+                  errorWidget: (context, url, error) => Container(
+                      color: Colors.grey[850],
+                      child: const Center(
+                          child: Icon(FeatherIcons.film,
+                              color: Colors.white24, size: 30))),
+                  fadeInDuration: const Duration(milliseconds: 300),
+                ),
               ),
-            ),
-            child: Container(
-              padding: const EdgeInsets.only(top: 15),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Container(
-                    margin: const EdgeInsets.only(left: 15, right: 15),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              Container(
+                // Gradient
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(_kCardBorderRadius),
+                  gradient: LinearGradient(
+                    begin: Alignment.bottomCenter,
+                    end: Alignment.center,
+                    stops: const [0.0, 1.0],
+                    colors: [Colors.black.withOpacity(0.9), Colors.transparent],
+                  ),
+                ),
+              ),
+              Positioned(
+                bottom: 10,
+                left: 10,
+                right: 10,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    FxText(item.title,
+                        style: textTheme.bodyMedium?.copyWith(
+                            color: Colors.white,
+                            fontWeight: FontWeight.w700,
+                            height: 1.25),
+                        maxLines: 2,
+                        overflow: TextOverflow.ellipsis),
+                    const SizedBox(height: 4),
+                    Row(
                       children: [
-                        FxText.titleMedium(
-                          'Filter by VJ',
-                          color: Colors.black,
-                        ),
-                        InkWell(
-                          onTap: () {
-                            Navigator.pop(context);
-                            setState(() {});
-                          },
-                          child: const Icon(
-                            FeatherIcons.x,
-                            color: Colors.red,
+                        Icon(FeatherIcons.mic, color: Colors.yellow, size: 12),
+                        const SizedBox(width: 4),
+                        Expanded(
+                          child: FxText(
+                            item.vj.isNotEmpty
+                                ? item.vj
+                                : (item.genre.isNotEmpty ? item.genre : '-'),
+                            style: textTheme.bodySmall?.copyWith(
+                                color: CustomTheme.accent,
+                                fontWeight: FontWeight.w700),
+                            // Use theme
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
                           ),
-                        )
+                        ),
                       ],
                     ),
-                  ),
-                  const Divider(),
-                  Expanded(
-                    child: ListView.builder(
-                        itemCount: AppConfig.VJs.length,
-                        itemBuilder: (context, position) {
-                          String data = AppConfig.VJs[position];
-                          return ListTile(
-                            onTap: () {
-                              Navigator.pop(context);
-                              cat = AppConfig.VJs[position];
-                              setState(() {});
-                              myInit();
-                              setState(() {});
-                              //Get.to(() => ProductsScreen({'category': cat}));
-                            },
-                            title: FxText.titleMedium(
-                              data,
-                              color: CustomTheme.primary,
-                              maxLines: 1,
-                              fontWeight: 700,
-                            ),
-                            trailing: cat != data
-                                ? const SizedBox()
-                                : const Icon(
-                                    Icons.check_circle,
-                                    color: CustomTheme.primary,
-                                    size: 30,
-                                  ),
-                            visualDensity: VisualDensity.compact,
-                            dense: true,
-                          );
-                        }),
-                  ),
-                ],
+                  ],
+                ),
               ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildBrowseAllButton(TextTheme textTheme) {
+    return FxButton(
+      onPressed: () => Get.to(() => const MoviesListingScreen({})),
+      elevation: 3,
+      padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 24),
+      backgroundColor: Colors.yellow,
+      borderRadiusAll: _kChipBorderRadius * 1.5,
+      child: Row(
+        mainAxisSize: MainAxisSize.max,
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          const Icon(FeatherIcons.film, color: Colors.black, size: 20),
+          const SizedBox(width: 10),
+          FxText("Browse All Movies",
+              style: textTheme.bodyLarge
+                  ?.copyWith(fontWeight: FontWeight.w800, color: Colors.black)),
+        ],
+      ),
+    );
+  }
+
+  void _showVjFilterBottomSheet() {
+    // Keep implementation from previous version
+    showModalBottomSheet(
+      context: context,
+      backgroundColor: Colors.transparent,
+      isScrollControlled: true,
+      builder: (BuildContext buildContext) {
+        return StatefulBuilder(
+            builder: (BuildContext context, StateSetter setModalState) {
+          return Container(
+            constraints: BoxConstraints(
+                maxHeight: MediaQuery.of(context).size.height * 0.6),
+            decoration: BoxDecoration(
+                color: Colors.grey[900],
+                borderRadius: const BorderRadius.only(
+                    topLeft: Radius.circular(_kHeroBorderRadius),
+                    topRight: Radius.circular(_kHeroBorderRadius))),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Container(
+                    height: 5,
+                    width: 45,
+                    margin: const EdgeInsets.symmetric(vertical: 10),
+                    decoration: BoxDecoration(
+                        color: Colors.grey[700],
+                        borderRadius: BorderRadius.circular(2.5))),
+                _buildFilterBottomSheetHeader(),
+                ElevatedButton(
+                  onPressed: () {
+                    // Upgrader().checkVersion(context: context, showDialog: true),
+                  },
+                  child: const Text('Check for Updates'),
+                ),
+                const Divider(color: Colors.white12, height: 1, thickness: 1),
+                Flexible(
+                  child: ListView.builder(
+                    shrinkWrap: true,
+                    padding: const EdgeInsets.only(bottom: 8),
+                    itemCount: AppConfig.VJs.length,
+                    // Ensure AppConfig.VJs exists
+                    itemBuilder: (context, position) {
+                      String data = AppConfig.VJs[position];
+                      bool isSelected = _selectedVjFilter == data;
+                      return ListTile(
+                        onTap: () {
+                          setModalState(() {
+                            _selectedVjFilter = data;
+                          });
+                          Navigator.pop(context);
+                          Get.to(() => MoviesListingScreen({'vj': data}));
+                        },
+                        contentPadding: const EdgeInsets.symmetric(
+                            horizontal: _kHorizontalPadding + 4),
+                        title: FxText.bodyLarge(data,
+                            color: isSelected
+                                ? CustomTheme.accent
+                                : Colors.white.withOpacity(0.8),
+                            fontWeight: isSelected ? 700 : 500),
+                        trailing: !isSelected
+                            ? null
+                            : Icon(FeatherIcons.checkCircle,
+                                color: CustomTheme.accent, size: 24),
+                        dense: false,
+                      );
+                    },
+                  ),
+                ),
+                SizedBox(height: MediaQuery.of(context).padding.bottom + 5),
+              ],
             ),
           );
         });
+      },
+    );
   }
 
-  Widget movieUi2(MovieModel item) {
+  Widget _buildFilterBottomSheetHeader() {
+    // Keep implementation from previous version
     return Container(
-        padding: const EdgeInsets.only(
-          right: 3,
-          left: 3,
-          top:0
-        ),
-        child: Stack(
-          children: [
-            roundedImage2(item.getThumbnail(), 1, 1),
-            Container(
-              //gradient: color with opacity
-              decoration: BoxDecoration(
-                gradient: LinearGradient(
-                  begin: Alignment.bottomCenter,
-                  end: Alignment.topCenter,
-                  /*change ratio*/
-                  stops: [0.2, 0.6],
-                  colors: [
-                    CustomTheme.accent.withOpacity(.9),
-                    Colors.transparent
-                  ],
-                ),
-                borderRadius: BorderRadius.circular(10.0),
-              ),
-              width: double.infinity,
-            ),
-            Positioned(
-              bottom: 0,
-              left: 0,
-              right: 0,
+      padding: EdgeInsets.only(
+          left: _kHorizontalPadding,
+          right: _kHorizontalPadding,
+          bottom: _kVerticalPadding * 0.8,
+          top: 4),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          FxText.titleLarge('Filter by VJ',
+              color: Colors.white, fontWeight: 700),
+          InkWell(
+              onTap: () => Navigator.pop(context),
+              customBorder: const CircleBorder(),
               child: Container(
-                padding: const EdgeInsets.only(
-                  left: 4,
-                  right: 3,
-                  top: 5,
-                  bottom: 2,
-                ),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    FxText.bodyMedium(
-                      "${item.title} ",
-                      height: 1,
-                      fontWeight: 600,
-                      maxLines: 2,
-                      fontSize: 8,
-                      color: Colors.white,
-                      overflow: TextOverflow.ellipsis,
-                    ),
-                    const SizedBox(
-                      height: 0,
-                    ),
-                    Row(
-                      children: [
-                        const Icon(
-                          FeatherIcons.mic,
-                          color: Colors.white,
-                          size: 10,
-                        ),
-                        const SizedBox(
-                          width: 1,
-                        ),
-                        Expanded(
-                          child: FxText(
-                            "VJ ${item.genre}",
-                            color: Colors.yellow,
-                            fontWeight: 800,
-                            maxLines: 1,
-                            overflow: TextOverflow.ellipsis,
-                            fontSize: 10,
-                          ),
-                        ),
-                      ],
-                    )
-                  ],
-                ),
-              ),
-            ),
-          ],
-        ));
-  }
-
-  Widget movieUi(MovieModel item) {
-    double h = Get.width / 2;
-    return roundedImage3(item.getThumbnail(), 100, 140);
-    return Container(
-      padding: const EdgeInsets.only(
-        right: 5,
-        left: 5,
-      ),
-      child: true
-          ? Stack(
-              children: [
-                roundedImage2(item.getThumbnail(), 2, 2),
-                Container(
-                  //gradient: color with opacity
+                  padding: const EdgeInsets.all(5.0),
                   decoration: BoxDecoration(
-                    gradient: LinearGradient(
-                      begin: Alignment.bottomCenter,
-                      end: Alignment.topCenter,
-                      colors: [
-                        CustomTheme.accent.withOpacity(.5),
-                        Colors.white.withOpacity(.1)
-                      ],
-                    ),
-                    borderRadius: BorderRadius.circular(10.0),
-                  ),
-                  height: h,
-                  width: double.infinity,
-                ),
-                Positioned(
-                  bottom: 0,
-                  left: 0,
-                  right: 0,
-                  child: Container(
-                    padding: const EdgeInsets.only(
-                      left: 8,
-                      right: 5,
-                      top: 5,
-                      bottom: 5,
-                    ),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        FxText.bodyMedium(
-                          "${item.title} ",
-                          height: 1.1,
-                          fontWeight: 600,
-                          maxLines: 2,
-                          color: Colors.white,
-                          overflow: TextOverflow.ellipsis,
-                        ),
-                        const SizedBox(
-                          height: 1,
-                        ),
-                        Row(
-                          children: [
-                            const Icon(
-                              FeatherIcons.mic,
-                              color: Colors.white,
-                              size: 14,
-                            ),
-                            const SizedBox(
-                              width: 1,
-                            ),
-                            Expanded(
-                              child: FxText(
-                                "VJ ${item.genre}",
-                                color: Colors.yellow,
-                                fontWeight: 800,
-                                maxLines: 1,
-                                overflow: TextOverflow.ellipsis,
-                                fontSize: 16,
-                              ),
-                            ),
-                          ],
-                        )
-                      ],
-                    ),
-                  ),
-                ),
-              ],
-            )
-          : CachedNetworkImage(
-              fit: BoxFit.contain,
-              height: h,
-              imageUrl: item.getThumbnail(),
-              placeholder: (context, url) =>
-                  ShimmerLoadingWidget(height: Get.width / 2),
-              errorWidget: (context, url, error) => Image(
-                image: const AssetImage(
-                  AppConfig.NO_IMAGE,
-                ),
-                fit: BoxFit.cover,
-                height: Get.width / 2,
-              ),
-            ),
+                      color: Colors.white.withOpacity(0.1),
+                      shape: BoxShape.circle),
+                  child: const Icon(FeatherIcons.x,
+                      color: Colors.white70, size: 20))),
+        ],
+      ),
     );
   }
 }
