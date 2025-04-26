@@ -73,7 +73,7 @@ class _GardensScreenState extends State<GardensScreen> {
           title: searchMode
               ? FxContainer(
                   paddingAll: 0,
-                  padding: EdgeInsets.only(left: 10, right: 10),
+                  padding: const EdgeInsets.only(left: 10, right: 10),
                   child: TextField(
                     decoration: const InputDecoration(
                       hintText: "Search",
@@ -84,7 +84,7 @@ class _GardensScreenState extends State<GardensScreen> {
                       keyword = v.toString();
                       prepare_data();
                     },
-                    style: TextStyle(color: Colors.black),
+                    style: const TextStyle(color: Colors.black),
                   ),
                 )
               : FxText.titleLarge(

@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_feather_icons/flutter_feather_icons.dart';
 import 'package:flutx/flutx.dart';
@@ -8,13 +7,8 @@ import 'package:shimmer/shimmer.dart';
 import 'package:ugflix/models/ManifestModel.dart';
 import 'package:ugflix/models/ManifestService.dart';
 import 'package:ugflix/models/NewMovieModel.dart';
-import 'package:ugflix/utils/AppConfig.dart';
 import 'package:ugflix/utils/CustomTheme.dart';
-import 'package:ugflix/utils/SizeConfig.dart';
-import 'package:ugflix/utils/app_theme.dart';
 import 'package:ugflix/widget/widgets.dart';
-import '../../../../../utils/Utilities.dart';
-import '../../../../gardens/VideoPlayerScreen.dart';
 import '../MoviesSearchScreen.dart';
 import '../widgets.dart';
 import 'MovieDetailScreen.dart';
@@ -31,7 +25,7 @@ class MoviesListingScreen extends StatefulWidget {
 }
 
 class _MoviesListingScreenState extends State<MoviesListingScreen> {
-  List<NewMovieModel> _movies = [];
+  final List<NewMovieModel> _movies = [];
   bool _hasMore = true;
   bool _isLoading = false;
   int _page = 1;

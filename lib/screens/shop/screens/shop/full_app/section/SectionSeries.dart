@@ -91,10 +91,11 @@ class _SectionSeriesState extends State<SectionSeries> {
         _all
           ..clear()
           ..addAll(map.values);
-        if (fetched.length < _perPage)
+        if (fetched.length < _perPage) {
           _hasMore = false;
-        else
+        } else {
           _page++;
+        }
       });
     } catch (e) {
       _error = "Couldn’t load series.";
@@ -103,11 +104,12 @@ class _SectionSeriesState extends State<SectionSeries> {
           backgroundColor: Colors.redAccent,
           colorText: Colors.white);
     } finally {
-      if (mounted)
+      if (mounted) {
         setState(() {
           _loading = false;
           _initial = false;
         });
+      }
     }
   }
 

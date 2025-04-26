@@ -1,10 +1,9 @@
 import 'dart:async';
 import 'dart:io'; // Required for Platform check for Ad Unit IDs
-import 'dart:ui'; // For ImageFilter
+// For ImageFilter
 
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_feather_icons/flutter_feather_icons.dart';
 import 'package:flutx/flutx.dart'; // Assuming FxButton, FxContainer, FxText are used
 import 'package:get/get.dart';
@@ -16,12 +15,11 @@ import 'package:ugflix/models/ManifestService.dart';
 import 'package:ugflix/models/NewMovieModel.dart';
 import 'package:ugflix/utils/AppConfig.dart'; // Assuming contains checkForUpdate
 import 'package:ugflix/utils/CustomTheme.dart';
-import 'package:ugflix/utils/SizeConfig.dart';
 import 'package:ugflix/utils/app_theme.dart';
-import 'package:ugflix/widget/widgets.dart';
 
 // Assuming navigation paths are correct
-import '../../../../../auth/login_screen.dart'; // Check if needed or remove
+// Check if needed or remove
+import '../../../../../SampleOverlay.dart';
 import '../../MoviesSearchScreen.dart';
 import '../../movies/MovieDetailScreen.dart';
 import '../../movies/MoviesListingScreen.dart';
@@ -49,13 +47,14 @@ class _SectionDashboardState extends State<SectionDashboard>
 
   // --- Ads State ---
   // BannerAd? _bannerAd;
-  bool _isBannerAdReady = false;
+  final bool _isBannerAdReady = false;
 
   // --- Ad Unit IDs (Use Test IDs for Development) ---
   // TODO: Replace with your actual AdMob Ad Unit IDs before publishing!
-  final String _bannerAdUnitId = Platform.isAndroid
-      ? 'ca-app-pub-9006886952721093~5692528968' // Android Test ID
-      : 'ca-app-pub-9006886952721093~5692528968'; // iOS Test ID
+  final String _bannerAdUnitId =
+      Platform.isAndroid
+          ? 'ca-app-pub-9006886952721093~5692528968' // Android Test ID
+          : 'ca-app-pub-9006886952721093~5692528968'; // iOS Test ID
 
   // --- Constants ---
   static const double _kHorizontalPadding = 18.0;
@@ -93,13 +92,15 @@ class _SectionDashboardState extends State<SectionDashboard>
   void _loadData() {
     // AppConfig.checkForUpdate(); // Assuming this exists and is needed
     _futureInit = _initializeData();
-    _futureInit.then((_) {
-      if (mounted) {
-        _animationController.forward();
-      }
-    }).catchError((_) {
-      // Handle error
-    });
+    _futureInit
+        .then((_) {
+          if (mounted) {
+            _animationController.forward();
+          }
+        })
+        .catchError((_) {
+          // Handle error
+        });
   }
 
   Future<void> _refreshData() async {
@@ -124,19 +125,20 @@ class _SectionDashboardState extends State<SectionDashboard>
       // await mainController.getMovies(); // Consider if needed
     } catch (e) {
       if (mounted) {
-        Get.snackbar('Error', 'Failed to load content. Please try again.',
-            snackPosition: SnackPosition.BOTTOM,
-            backgroundColor: Colors.redAccent,
-            colorText: Colors.white);
+        Get.snackbar(
+          'Error',
+          'Failed to load content. Please try again.',
+          snackPosition: SnackPosition.BOTTOM,
+          backgroundColor: Colors.redAccent,
+          colorText: Colors.white,
+        );
       }
       rethrow; // Rethrow for FutureBuilder error state
     }
   }
 
   // --- Ad Loading ---
-  void _loadBannerAd() {
-
-  }
+  void _loadBannerAd() {}
 
   // --- Build Method ---
   @override
@@ -148,6 +150,13 @@ class _SectionDashboardState extends State<SectionDashboard>
         children: [
           // --- Header ---
           _buildHeaderBar(),
+          FxButton.block(
+            backgroundColor: Colors.white,
+            onPressed: () {
+              Get.to(() => SampleOverlay());
+            },
+            child: FxText.bodyLarge("TEST", color: Colors.black),
+          ),
           // --- Main Content Area ---
           Expanded(
             child: FutureBuilder<void>(
@@ -165,7 +174,6 @@ class _SectionDashboardState extends State<SectionDashboard>
               },
             ),
           ),
-
         ],
       ),
     );
@@ -187,15 +195,17 @@ class _SectionDashboardState extends State<SectionDashboard>
           const Icon(FeatherIcons.wifiOff, color: Colors.white30, size: 48),
           const SizedBox(height: 16),
           FxText.bodyLarge('Could not connect', color: Colors.white70),
-          FxText.bodySmall('Please check your connection and retry',
-              color: Colors.white54),
+          FxText.bodySmall(
+            'Please check your connection and retry',
+            color: Colors.white54,
+          ),
           const SizedBox(height: 24),
           FxButton.outlined(
             onPressed: _refreshData,
-            child: FxText('Retry', color: Colors.yellowAccent[700]),
             borderColor: Colors.yellow.shade700,
             splashColor: Colors.yellowAccent[700]?.withOpacity(0.2),
             borderRadiusAll: _kChipBorderRadius,
+            child: FxText('Retry', color: Colors.yellowAccent[700]),
           ),
         ],
       ),
@@ -211,15 +221,17 @@ class _SectionDashboardState extends State<SectionDashboard>
       backgroundColor: Colors.yellowAccent[700] ?? Colors.yellow,
       child: CustomScrollView(
         physics: const BouncingScrollPhysics(
-            parent: AlwaysScrollableScrollPhysics()),
+          parent: AlwaysScrollableScrollPhysics(),
+        ),
         slivers: [
           // --- Top Hero Movie ---
           SliverPadding(
             padding: const EdgeInsets.only(
-                left: _kHorizontalPadding,
-                right: _kHorizontalPadding,
-                top: _kVerticalPadding,
-                bottom: _kVerticalPadding * 1.5),
+              left: _kHorizontalPadding,
+              right: _kHorizontalPadding,
+              top: _kVerticalPadding,
+              bottom: _kVerticalPadding * 1.5,
+            ),
             sliver: SliverToBoxAdapter(
               child: FadeTransition(
                 opacity: _fadeAnimation,
@@ -244,9 +256,9 @@ class _SectionDashboardState extends State<SectionDashboard>
 
           // --- Movie Category Sections ---
           // TODO: Consider inserting Native Ads here periodically
-          ...manifestModel.lists
-              .where((list) => list.movies.isNotEmpty)
-              .map((list) {
+          ...manifestModel.lists.where((list) => list.movies.isNotEmpty).map((
+            list,
+          ) {
             // int index = manifestModel.lists.indexOf(list); // Index for staggering?
             return SliverPadding(
               padding: const EdgeInsets.only(bottom: _kVerticalPadding * 1.8),
@@ -262,8 +274,9 @@ class _SectionDashboardState extends State<SectionDashboard>
           // --- Browse All Button ---
           SliverPadding(
             padding: const EdgeInsets.symmetric(
-                horizontal: _kHorizontalPadding * 1.5,
-                vertical: _kVerticalPadding * 2),
+              horizontal: _kHorizontalPadding * 1.5,
+              vertical: _kVerticalPadding * 2,
+            ),
             sliver: SliverToBoxAdapter(
               child: FadeTransition(
                 opacity: _fadeAnimation,
@@ -307,8 +320,14 @@ class _SectionDashboardState extends State<SectionDashboard>
             child: Container(
               padding: const EdgeInsets.all(8.0),
               decoration: BoxDecoration(
-                  color: Colors.white.withOpacity(0.1), shape: BoxShape.circle),
-              child: Icon(FeatherIcons.mic, color: Colors.yellow, size: 24),
+                color: Colors.white.withOpacity(0.1),
+                shape: BoxShape.circle,
+              ),
+              child: const Icon(
+                FeatherIcons.mic,
+                color: Colors.yellow,
+                size: 24,
+              ),
             ),
           ),
         ],
@@ -326,14 +345,19 @@ class _SectionDashboardState extends State<SectionDashboard>
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
         child: Row(
           children: [
-            Icon(FeatherIcons.search,
-                color: Colors.yellow, size: 20), // Accent search icon
+            const Icon(
+              FeatherIcons.search,
+              color: Colors.yellow,
+              size: 20,
+            ), // Accent search icon
             const SizedBox(width: 10),
             Expanded(
-              child: FxText(hint,
-                  fontWeight: 400,
-                  color: Colors.white70,
-                  overflow: TextOverflow.ellipsis),
+              child: FxText(
+                hint,
+                fontWeight: 400,
+                color: Colors.white70,
+                overflow: TextOverflow.ellipsis,
+              ),
             ),
           ],
         ),
@@ -345,11 +369,14 @@ class _SectionDashboardState extends State<SectionDashboard>
     if (movie.id <= 0) {
       // Check for valid movie ID
       return const SizedBox(
-          height: 200,
-          child: Center(
-              child: Text("No featured movie",
-                  style: TextStyle(
-                      color: Colors.white54)))); // Placeholder or empty state
+        height: 200,
+        child: Center(
+          child: Text(
+            "No featured movie",
+            style: TextStyle(color: Colors.white54),
+          ),
+        ),
+      ); // Placeholder or empty state
     }
     return AspectRatio(
       aspectRatio: 16 / 9.5,
@@ -372,13 +399,19 @@ class _SectionDashboardState extends State<SectionDashboard>
                 child: CachedNetworkImage(
                   imageUrl: movie.getThumbnail(),
                   fit: BoxFit.cover,
-                  placeholder: (context, url) =>
-                      Container(color: Colors.grey[900]),
-                  errorWidget: (context, url, error) => Container(
-                      color: Colors.grey[900],
-                      child: const Center(
-                          child: Icon(FeatherIcons.image,
-                              color: Colors.white24, size: 48))),
+                  placeholder:
+                      (context, url) => Container(color: Colors.grey[900]),
+                  errorWidget:
+                      (context, url, error) => Container(
+                        color: Colors.grey[900],
+                        child: const Center(
+                          child: Icon(
+                            FeatherIcons.image,
+                            color: Colors.white24,
+                            size: 48,
+                          ),
+                        ),
+                      ),
                   fadeInDuration: const Duration(milliseconds: 400),
                 ),
               ),
@@ -393,7 +426,7 @@ class _SectionDashboardState extends State<SectionDashboard>
                     colors: [
                       Colors.black.withOpacity(0.95),
                       Colors.black.withOpacity(0.5),
-                      Colors.transparent
+                      Colors.transparent,
                     ],
                   ),
                 ),
@@ -407,44 +440,60 @@ class _SectionDashboardState extends State<SectionDashboard>
                   mainAxisSize: MainAxisSize.min,
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    FxText.bodyLarge(movie.title,
-                        fontWeight: 800,
-                        color: Colors.white,
-                        textAlign: TextAlign.center,
-                        maxLines: 2,
-                        overflow: TextOverflow.ellipsis),
+                    FxText.bodyLarge(
+                      movie.title,
+                      fontWeight: 800,
+                      color: Colors.white,
+                      textAlign: TextAlign.center,
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
+                    ),
                     const SizedBox(height: 6),
                     if (movie.vj.isNotEmpty)
                       Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          Icon(FeatherIcons.mic,
-                              color: Colors.yellow, size: 16),
+                          const Icon(
+                            FeatherIcons.mic,
+                            color: Colors.yellow,
+                            size: 16,
+                          ),
                           const SizedBox(width: 5),
-                          FxText.bodyLarge(movie.vj,
-                              color: CustomTheme.accent,
-                              fontWeight: 700,
-                              maxLines: 1,
-                              overflow: TextOverflow.ellipsis),
+                          FxText.bodyLarge(
+                            movie.vj,
+                            color: CustomTheme.accent,
+                            fontWeight: 700,
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                          ),
                         ],
                       ),
                     const SizedBox(height: 16),
                     FxButton(
-                      onPressed: () =>
-                          Get.to(() => MovieDetailScreen({'movie': movie})),
+                      onPressed:
+                          () =>
+                              Get.to(() => MovieDetailScreen({'movie': movie})),
                       elevation: 2,
                       padding: const EdgeInsets.symmetric(
-                          horizontal: 20, vertical: 10),
+                        horizontal: 20,
+                        vertical: 10,
+                      ),
                       backgroundColor: Colors.yellow,
                       borderRadiusAll: _kChipBorderRadius,
                       child: Row(
                         mainAxisSize: MainAxisSize.min,
                         children: [
-                          const Icon(FeatherIcons.play,
-                              color: Colors.black, size: 18),
+                          const Icon(
+                            FeatherIcons.play,
+                            color: Colors.black,
+                            size: 18,
+                          ),
                           const SizedBox(width: 8),
-                          FxText.bodyMedium("Watch Now",
-                              fontWeight: 900, color: Colors.black),
+                          FxText.bodyMedium(
+                            "Watch Now",
+                            fontWeight: 900,
+                            color: Colors.black,
+                          ),
                         ],
                       ),
                     ),
@@ -469,19 +518,23 @@ class _SectionDashboardState extends State<SectionDashboard>
         itemBuilder: (context, index) {
           String genre = genres[index];
           return Padding(
-            padding:
-                EdgeInsets.only(right: index < genres.length - 1 ? 10.0 : 0.0),
+            padding: EdgeInsets.only(
+              right: index < genres.length - 1 ? 10.0 : 0.0,
+            ),
             child: FxButton.outlined(
               // Use outlined for genres
-              onPressed: () =>
-                  Get.to(() => MoviesListingScreen({'genre': genre})),
+              onPressed:
+                  () => Get.to(() => MoviesListingScreen({'genre': genre})),
               borderRadiusAll: _kChipBorderRadius,
               padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 8),
               borderColor: Colors.yellow.withOpacity(0.6),
               // Accent border
               splashColor: CustomTheme.accent.withOpacity(0.1),
-              child: FxText.bodyMedium(genre,
-                  color: Colors.yellow, fontWeight: 500), // Accent text
+              child: FxText.bodyMedium(
+                genre,
+                color: Colors.yellow,
+                fontWeight: 500,
+              ), // Accent text
             ),
           );
         },
@@ -490,27 +543,37 @@ class _SectionDashboardState extends State<SectionDashboard>
   }
 
   Widget _buildMovieCategorySection(
-      MovieCategoryList categoryList, TextTheme textTheme) {
+    MovieCategoryList categoryList,
+    TextTheme textTheme,
+  ) {
     return Column(
       mainAxisSize: MainAxisSize.min,
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Padding(
-          padding: const EdgeInsets.symmetric(horizontal: _kHorizontalPadding)
-              .copyWith(bottom: _kVerticalPadding * 0.8),
+          padding: const EdgeInsets.symmetric(
+            horizontal: _kHorizontalPadding,
+          ).copyWith(bottom: _kVerticalPadding * 0.8),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              FxText(categoryList.title,
-                  style: textTheme.titleLarge?.copyWith(
-                      color: CustomTheme.accent, fontWeight: FontWeight.w700)),
+              FxText(
+                categoryList.title,
+                style: textTheme.titleLarge?.copyWith(
+                  color: CustomTheme.accent,
+                  fontWeight: FontWeight.w700,
+                ),
+              ),
               // Use theme
               FxButton.text(
-                onPressed: () => Get.to(() => MoviesListingScreen({
-                      'category': categoryList.title,
-                      'movies': categoryList.movies
-                    })),
+                onPressed:
+                    () => Get.to(
+                      () => MoviesListingScreen({
+                        'category': categoryList.title,
+                        'movies': categoryList.movies,
+                      }),
+                    ),
                 padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 2),
                 splashColor: CustomTheme.accent.withOpacity(0.1),
                 child: Row(
@@ -518,8 +581,11 @@ class _SectionDashboardState extends State<SectionDashboard>
                   children: [
                     FxText('View All', color: Colors.yellow, fontWeight: 600),
                     const SizedBox(width: 4),
-                    Icon(FeatherIcons.arrowRight,
-                        color: Colors.yellow, size: 18),
+                    const Icon(
+                      FeatherIcons.arrowRight,
+                      color: Colors.yellow,
+                      size: 18,
+                    ),
                   ],
                 ),
               ),
@@ -533,13 +599,15 @@ class _SectionDashboardState extends State<SectionDashboard>
             scrollDirection: Axis.horizontal,
             itemCount: categoryList.movies.length,
             physics: const BouncingScrollPhysics(),
-            padding:
-                const EdgeInsets.symmetric(horizontal: _kHorizontalPadding),
+            padding: const EdgeInsets.symmetric(
+              horizontal: _kHorizontalPadding,
+            ),
             itemBuilder: (context, index) {
               NewMovieModel movie = categoryList.movies[index];
               return Padding(
                 padding: EdgeInsets.only(
-                    right: index < categoryList.movies.length - 1 ? 12.0 : 0.0),
+                  right: index < categoryList.movies.length - 1 ? 12.0 : 0.0,
+                ),
                 child: _buildMovieCard(movie, textTheme), // Pass theme
               );
             },
@@ -569,13 +637,19 @@ class _SectionDashboardState extends State<SectionDashboard>
                 child: CachedNetworkImage(
                   imageUrl: item.getThumbnail(),
                   fit: BoxFit.cover,
-                  placeholder: (context, url) =>
-                      Container(color: Colors.grey[850]),
-                  errorWidget: (context, url, error) => Container(
-                      color: Colors.grey[850],
-                      child: const Center(
-                          child: Icon(FeatherIcons.film,
-                              color: Colors.white24, size: 30))),
+                  placeholder:
+                      (context, url) => Container(color: Colors.grey[850]),
+                  errorWidget:
+                      (context, url, error) => Container(
+                        color: Colors.grey[850],
+                        child: const Center(
+                          child: Icon(
+                            FeatherIcons.film,
+                            color: Colors.white24,
+                            size: 30,
+                          ),
+                        ),
+                      ),
                   fadeInDuration: const Duration(milliseconds: 300),
                 ),
               ),
@@ -599,17 +673,24 @@ class _SectionDashboardState extends State<SectionDashboard>
                   crossAxisAlignment: CrossAxisAlignment.start,
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    FxText(item.title,
-                        style: textTheme.bodyMedium?.copyWith(
-                            color: Colors.white,
-                            fontWeight: FontWeight.w700,
-                            height: 1.25),
-                        maxLines: 2,
-                        overflow: TextOverflow.ellipsis),
+                    FxText(
+                      item.title,
+                      style: textTheme.bodyMedium?.copyWith(
+                        color: Colors.white,
+                        fontWeight: FontWeight.w700,
+                        height: 1.25,
+                      ),
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
+                    ),
                     const SizedBox(height: 4),
                     Row(
                       children: [
-                        Icon(FeatherIcons.mic, color: Colors.yellow, size: 12),
+                        const Icon(
+                          FeatherIcons.mic,
+                          color: Colors.yellow,
+                          size: 12,
+                        ),
                         const SizedBox(width: 4),
                         Expanded(
                           child: FxText(
@@ -617,8 +698,9 @@ class _SectionDashboardState extends State<SectionDashboard>
                                 ? item.vj
                                 : (item.genre.isNotEmpty ? item.genre : '-'),
                             style: textTheme.bodySmall?.copyWith(
-                                color: CustomTheme.accent,
-                                fontWeight: FontWeight.w700),
+                              color: CustomTheme.accent,
+                              fontWeight: FontWeight.w700,
+                            ),
                             // Use theme
                             maxLines: 1,
                             overflow: TextOverflow.ellipsis,
@@ -649,9 +731,13 @@ class _SectionDashboardState extends State<SectionDashboard>
         children: [
           const Icon(FeatherIcons.film, color: Colors.black, size: 20),
           const SizedBox(width: 10),
-          FxText("Browse All Movies",
-              style: textTheme.bodyLarge
-                  ?.copyWith(fontWeight: FontWeight.w800, color: Colors.black)),
+          FxText(
+            "Browse All Movies",
+            style: textTheme.bodyLarge?.copyWith(
+              fontWeight: FontWeight.w800,
+              color: Colors.black,
+            ),
+          ),
         ],
       ),
     );
@@ -665,65 +751,79 @@ class _SectionDashboardState extends State<SectionDashboard>
       isScrollControlled: true,
       builder: (BuildContext buildContext) {
         return StatefulBuilder(
-            builder: (BuildContext context, StateSetter setModalState) {
-          return Container(
-            constraints: BoxConstraints(
-                maxHeight: MediaQuery.of(context).size.height * 0.6),
-            decoration: BoxDecoration(
+          builder: (BuildContext context, StateSetter setModalState) {
+            return Container(
+              constraints: BoxConstraints(
+                maxHeight: MediaQuery.of(context).size.height * 0.6,
+              ),
+              decoration: BoxDecoration(
                 color: Colors.grey[900],
                 borderRadius: const BorderRadius.only(
-                    topLeft: Radius.circular(_kHeroBorderRadius),
-                    topRight: Radius.circular(_kHeroBorderRadius))),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Container(
+                  topLeft: Radius.circular(_kHeroBorderRadius),
+                  topRight: Radius.circular(_kHeroBorderRadius),
+                ),
+              ),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Container(
                     height: 5,
                     width: 45,
                     margin: const EdgeInsets.symmetric(vertical: 10),
                     decoration: BoxDecoration(
-                        color: Colors.grey[700],
-                        borderRadius: BorderRadius.circular(2.5))),
-                _buildFilterBottomSheetHeader(),
-                const Divider(color: Colors.white12, height: 1, thickness: 1),
-                Flexible(
-                  child: ListView.builder(
-                    shrinkWrap: true,
-                    padding: const EdgeInsets.only(bottom: 8),
-                    itemCount: AppConfig.VJs.length,
-                    // Ensure AppConfig.VJs exists
-                    itemBuilder: (context, position) {
-                      String data = AppConfig.VJs[position];
-                      bool isSelected = _selectedVjFilter == data;
-                      return ListTile(
-                        onTap: () {
-                          setModalState(() {
-                            _selectedVjFilter = data;
-                          });
-                          Navigator.pop(context);
-                          Get.to(() => MoviesListingScreen({'vj': data}));
-                        },
-                        contentPadding: const EdgeInsets.symmetric(
-                            horizontal: _kHorizontalPadding + 4),
-                        title: FxText.bodyLarge(data,
-                            color: isSelected
-                                ? CustomTheme.accent
-                                : Colors.white.withOpacity(0.8),
-                            fontWeight: isSelected ? 700 : 500),
-                        trailing: !isSelected
-                            ? null
-                            : Icon(FeatherIcons.checkCircle,
-                                color: CustomTheme.accent, size: 24),
-                        dense: false,
-                      );
-                    },
+                      color: Colors.grey[700],
+                      borderRadius: BorderRadius.circular(2.5),
+                    ),
                   ),
-                ),
-                SizedBox(height: MediaQuery.of(context).padding.bottom + 5),
-              ],
-            ),
-          );
-        });
+                  _buildFilterBottomSheetHeader(),
+                  const Divider(color: Colors.white12, height: 1, thickness: 1),
+                  Flexible(
+                    child: ListView.builder(
+                      shrinkWrap: true,
+                      padding: const EdgeInsets.only(bottom: 8),
+                      itemCount: AppConfig.VJs.length,
+                      // Ensure AppConfig.VJs exists
+                      itemBuilder: (context, position) {
+                        String data = AppConfig.VJs[position];
+                        bool isSelected = _selectedVjFilter == data;
+                        return ListTile(
+                          onTap: () {
+                            setModalState(() {
+                              _selectedVjFilter = data;
+                            });
+                            Navigator.pop(context);
+                            Get.to(() => MoviesListingScreen({'vj': data}));
+                          },
+                          contentPadding: const EdgeInsets.symmetric(
+                            horizontal: _kHorizontalPadding + 4,
+                          ),
+                          title: FxText.bodyLarge(
+                            data,
+                            color:
+                                isSelected
+                                    ? CustomTheme.accent
+                                    : Colors.white.withOpacity(0.8),
+                            fontWeight: isSelected ? 700 : 500,
+                          ),
+                          trailing:
+                              !isSelected
+                                  ? null
+                                  : const Icon(
+                                    FeatherIcons.checkCircle,
+                                    color: CustomTheme.accent,
+                                    size: 24,
+                                  ),
+                          dense: false,
+                        );
+                      },
+                    ),
+                  ),
+                  SizedBox(height: MediaQuery.of(context).padding.bottom + 5),
+                ],
+              ),
+            );
+          },
+        );
       },
     );
   }
@@ -731,26 +831,36 @@ class _SectionDashboardState extends State<SectionDashboard>
   Widget _buildFilterBottomSheetHeader() {
     // Keep implementation from previous version
     return Container(
-      padding: EdgeInsets.only(
-          left: _kHorizontalPadding,
-          right: _kHorizontalPadding,
-          bottom: _kVerticalPadding * 0.8,
-          top: 4),
+      padding: const EdgeInsets.only(
+        left: _kHorizontalPadding,
+        right: _kHorizontalPadding,
+        bottom: _kVerticalPadding * 0.8,
+        top: 4,
+      ),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          FxText.titleLarge('Filter by VJ',
-              color: Colors.white, fontWeight: 700),
+          FxText.titleLarge(
+            'Filter by VJ',
+            color: Colors.white,
+            fontWeight: 700,
+          ),
           InkWell(
-              onTap: () => Navigator.pop(context),
-              customBorder: const CircleBorder(),
-              child: Container(
-                  padding: const EdgeInsets.all(5.0),
-                  decoration: BoxDecoration(
-                      color: Colors.white.withOpacity(0.1),
-                      shape: BoxShape.circle),
-                  child: const Icon(FeatherIcons.x,
-                      color: Colors.white70, size: 20))),
+            onTap: () => Navigator.pop(context),
+            customBorder: const CircleBorder(),
+            child: Container(
+              padding: const EdgeInsets.all(5.0),
+              decoration: BoxDecoration(
+                color: Colors.white.withOpacity(0.1),
+                shape: BoxShape.circle,
+              ),
+              child: const Icon(
+                FeatherIcons.x,
+                color: Colors.white70,
+                size: 20,
+              ),
+            ),
+          ),
         ],
       ),
     );

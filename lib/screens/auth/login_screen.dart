@@ -12,7 +12,7 @@ import 'package:flutter_feather_icons/flutter_feather_icons.dart'; // For icons
 // Assuming these paths are correct - adjust if needed
 import 'package:ugflix/screens/auth/password_reset_screen.dart';
 import 'package:ugflix/screens/auth/register_screen.dart';
-import '../../core/styles.dart'; // Assuming AppStyles is here
+// Assuming AppStyles is here
 import '../../models/LoggedInUserModel.dart';
 import '../../models/RespondModel.dart';
 

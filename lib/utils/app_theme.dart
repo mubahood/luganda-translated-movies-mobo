@@ -310,35 +310,35 @@ class AppTheme {
 
     /// CheckBox theme
     checkboxTheme: CheckboxThemeData(
-      checkColor: MaterialStateProperty.all(const Color(0xffeeeeee)),
-      fillColor: MaterialStateProperty.all(CustomTheme.primary),
+      checkColor: WidgetStateProperty.all(const Color(0xffeeeeee)),
+      fillColor: WidgetStateProperty.all(CustomTheme.primary),
     ),
 
     /// Radio theme
     radioTheme: RadioThemeData(
-      fillColor: MaterialStateProperty.all(CustomTheme.primary),
+      fillColor: WidgetStateProperty.all(CustomTheme.primary),
     ),
 
     ///Switch Theme
     switchTheme: SwitchThemeData(
-      trackColor: MaterialStateProperty.resolveWith((state) {
-        const Set<MaterialState> interactiveStates = <MaterialState>{
-          MaterialState.pressed,
-          MaterialState.hovered,
-          MaterialState.focused,
-          MaterialState.selected,
+      trackColor: WidgetStateProperty.resolveWith((state) {
+        const Set<WidgetState> interactiveStates = <WidgetState>{
+          WidgetState.pressed,
+          WidgetState.hovered,
+          WidgetState.focused,
+          WidgetState.selected,
         };
         if (state.any(interactiveStates.contains)) {
           return const Color(0xffabb3ea);
         }
         return null;
       }),
-      thumbColor: MaterialStateProperty.resolveWith((state) {
-        const Set<MaterialState> interactiveStates = <MaterialState>{
-          MaterialState.pressed,
-          MaterialState.hovered,
-          MaterialState.focused,
-          MaterialState.selected,
+      thumbColor: WidgetStateProperty.resolveWith((state) {
+        const Set<WidgetState> interactiveStates = <WidgetState>{
+          WidgetState.pressed,
+          WidgetState.hovered,
+          WidgetState.focused,
+          WidgetState.selected,
         };
         if (state.any(interactiveStates.contains)) {
           return CustomTheme.primary;
@@ -374,9 +374,8 @@ class AppTheme {
             secondary: CustomTheme.primary,
             onSecondary: Color(0xffeeeeee),
             surface: Color(0xffeeeeee),
-            background: Color(0xffeeeeee),
-            onBackground: Color(0xff495057))
-        .copyWith(background: const Color(0xffffffff))
+            onSurface: Color(0xff495057))
+        .copyWith(surface: const Color(0xffffffff))
         .copyWith(error: const Color(0xfff0323c)),
   );
 
@@ -443,24 +442,24 @@ class AppTheme {
 
     ///Switch Theme
     switchTheme: SwitchThemeData(
-      trackColor: MaterialStateProperty.resolveWith((state) {
-        const Set<MaterialState> interactiveStates = <MaterialState>{
-          MaterialState.pressed,
-          MaterialState.hovered,
-          MaterialState.focused,
-          MaterialState.selected,
+      trackColor: WidgetStateProperty.resolveWith((state) {
+        const Set<WidgetState> interactiveStates = <WidgetState>{
+          WidgetState.pressed,
+          WidgetState.hovered,
+          WidgetState.focused,
+          WidgetState.selected,
         };
         if (state.any(interactiveStates.contains)) {
           return const Color(0xffabb3ea);
         }
         return null;
       }),
-      thumbColor: MaterialStateProperty.resolveWith((state) {
-        const Set<MaterialState> interactiveStates = <MaterialState>{
-          MaterialState.pressed,
-          MaterialState.hovered,
-          MaterialState.focused,
-          MaterialState.selected,
+      thumbColor: WidgetStateProperty.resolveWith((state) {
+        const Set<WidgetState> interactiveStates = <WidgetState>{
+          WidgetState.pressed,
+          WidgetState.hovered,
+          WidgetState.focused,
+          WidgetState.selected,
         };
         if (state.any(interactiveStates.contains)) {
           return const Color(0xff3C4EC5);
@@ -492,7 +491,7 @@ class AppTheme {
     highlightColor: Colors.white.withAlpha(28),
     splashColor: Colors.white.withAlpha(56),
     colorScheme: ColorScheme.fromSeed(seedColor: const Color(0xff069DEF), brightness: Brightness.dark)
-        .copyWith(background: const Color(0xff161616))
+        .copyWith(surface: const Color(0xff161616))
         .copyWith(error: Colors.orange),
   );
 

@@ -58,7 +58,7 @@ class MovieModel {
   String liked_movie = "";
 
   double getProgress() {
-    if (watch_progress.length < 1) {
+    if (watch_progress.isEmpty) {
       return 0;
     }
     double progress = 0;
@@ -94,7 +94,7 @@ class MovieModel {
   }
 
   static fromJson(dynamic m) {
-    MovieModel obj = new MovieModel();
+    MovieModel obj = MovieModel();
     if (m == null) {
       return obj;
     }
@@ -221,7 +221,7 @@ class MovieModel {
     List<MovieModel> data = [];
 
     RespondModel resp =
-        RespondModel(await Utils.http_get('${MovieModel.end_point}', {
+        RespondModel(await Utils.http_get(MovieModel.end_point, {
       'logged_in_user_id': '1',
     }));
 
@@ -415,7 +415,7 @@ class MovieModel {
   //submit view progress
   Future submitViewProgress(
     int progress,
-    int max_progress, {
+    int maxProgress, {
     status = 'Active',
   }) async {
     RespondModel resp = RespondModel(await Utils.http_post(
@@ -423,7 +423,7 @@ class MovieModel {
       {
         'movie_id': id.toString(),
         'progress': progress.toString(),
-        'max_progress': max_progress.toString(),
+        'max_progress': maxProgress.toString(),
         'status': status,
       },
     ));

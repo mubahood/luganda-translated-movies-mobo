@@ -53,7 +53,7 @@ class AccountEditState extends State<AccountEdit>
           onTap: () {
             Navigator.of(context).pop();
           },
-          child:  Icon(
+          child:  const Icon(
             Icons.arrow_back_outlined,
             color : CustomTheme.accent
           ),

@@ -260,7 +260,7 @@ Widget roundedImage2(String url, double w, double h,
           width: (Get.width / w),
           height: (Get.width / h),
           fit: BoxFit.cover,
-          image: AssetImage('assets/images/bg.jpg')),
+          image: const AssetImage('assets/images/bg.jpg')),
     ),
   );
 }

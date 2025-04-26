@@ -108,10 +108,10 @@ class _ProductScreenState extends State<ProductScreen> {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             direction: Axis.horizontal,
             children: [
-              Image(
+              const Image(
                 width: 70,
                 fit: BoxFit.cover,
-                image: const AssetImage(AppConfig.logo_1),
+                image: AssetImage(AppConfig.logo_1),
               ),
               const SizedBox(
                 width: 3,

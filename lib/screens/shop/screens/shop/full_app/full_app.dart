@@ -101,12 +101,12 @@ class _HomeScreenState extends State<HomeScreen>
                           child: TabBarView(
                             physics: const NeverScrollableScrollPhysics(),
                             controller: controller.tabController,
-                            children: <Widget>[
-                              const SectionDashboard(),
-                              const SectionSeries(),
+                            children: const <Widget>[
+                              SectionDashboard(),
+                              SectionSeries(),
                               SectionResume(),
                               SectionFavourite(),
-                              const AccountSection(),
+                              AccountSection(),
                             ],
                           ),
                         ),

@@ -16,7 +16,6 @@ class RespondModel {
     if (raw == null) {
       return;
     }
-    print(raw);
     Map<String, dynamic> resp = {};
     if (raw.runtimeType.toString() != '_Map<String, dynamic>') {
       try {

@@ -115,7 +115,7 @@ Widget emptyListWidget(title, subtitle, Function onTap) {
   return Center(
     child: Container(
       alignment: Alignment.center,
-      padding: EdgeInsets.symmetric(
+      padding: const EdgeInsets.symmetric(
         horizontal: 45,
       ),
       child: Column(

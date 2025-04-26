@@ -20,7 +20,7 @@ class CreateAccountScreen extends StatefulWidget {
 
 class _CreateAccountScreenState extends State<CreateAccountScreen> {
   CreateAccountScreenController controller = CreateAccountScreenController();
-  bool _isLoaderVisible = false;
+  final bool _isLoaderVisible = false;
   @override
   void dispose(){
     super.dispose();

@@ -1,4 +1,3 @@
-import 'dart:convert';
 import 'package:ugflix/models/NewMovieModel.dart';
 import 'package:ugflix/utils/Utilities.dart';
 

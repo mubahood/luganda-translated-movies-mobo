@@ -5,7 +5,7 @@ class AppConfig {
 
   static const String BASE_URL = "https://katogo.schooldynamics.ug";
   static const String MAIN_SITE_URL = BASE_URL;
-  static String API_BASE_URL = "${BASE_URL}/api";
+  static String API_BASE_URL = "$BASE_URL/api";
   static const String DASHBOARD_URL = "https://katogo.schooldynamics.ug";
   static const String ONESIGNAL_APP_ID = "3f223c2e-7191-4f2d-a1c1-bd7ae47625ce";
   static const String APP_NAME = "UGFlix";

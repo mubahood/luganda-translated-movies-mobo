@@ -67,7 +67,7 @@ class _AccountSectionState extends State<AccountSection> {
               color: CustomTheme.accent,
             ),
             onPressed: () {
-              Get.to(() => ProductSearchScreen());
+              Get.to(() => const ProductSearchScreen());
             },
           ),
           IconButton(
@@ -81,7 +81,7 @@ class _AccountSectionState extends State<AccountSection> {
       ),
       body: Column(
         children: [
-          Divider(
+          const Divider(
             height: .5,
             color: CustomTheme.accent,
           ),
@@ -101,7 +101,7 @@ class _AccountSectionState extends State<AccountSection> {
                       color: CustomTheme.color,
                     ),
                     onTap: () {
-                      Get.to(() => AccountEdit());
+                      Get.to(() => const AccountEdit());
                     },
                     subtitle: FxText.bodySmall(
                       "View and edit your profile",

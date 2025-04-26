@@ -257,7 +257,7 @@ class ConsultationPaymentScreenState extends State<ConsultationPaymentScreen> {
                   ),
                 ),
                 _keyboardVisible
-                    ? SizedBox()
+                    ? const SizedBox()
                     : isLoading
                         ? const Padding(
                             padding: EdgeInsets.only(bottom: 15),

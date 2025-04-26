@@ -157,7 +157,7 @@ class PaymentRecord {
     List<PaymentRecord> data = [];
 
     RespondModel resp =
-        RespondModel(await Utils.http_get('${PaymentRecord.end_point}', {
+        RespondModel(await Utils.http_get(PaymentRecord.end_point, {
       'is_not_private': '1',
     }));
 

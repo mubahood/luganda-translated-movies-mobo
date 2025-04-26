@@ -1,17 +1,12 @@
-import 'dart:math';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_feather_icons/flutter_feather_icons.dart';
-import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:flutx/flutx.dart';
-import 'package:flutx/widgets/text/text.dart';
 import 'package:get/get.dart';
 import 'package:ugflix/utils/AppConfig.dart';
 import 'package:ugflix/utils/CustomTheme.dart';
 import 'package:ugflix/utils/SizeConfig.dart';
-import 'package:ugflix/utils/app_theme.dart';
-import 'package:ugflix/widget/widgets.dart';
 
 import '../../../../../../models/ManifestModel.dart';
 import '../../../../../../models/ManifestService.dart';
@@ -99,7 +94,7 @@ class _SectionDashboardNewState extends State<SectionDashboardNew> {
               Expanded(
                 child: FxContainer(
                   onTap: () {
-                    Get.to(() => ProductSearchScreen());
+                    Get.to(() => const ProductSearchScreen());
                   },
                   color: CustomTheme.primary,
                   bordered: true,

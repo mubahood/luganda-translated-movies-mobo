@@ -1,9 +1,7 @@
 import 'dart:async';
-import 'dart:math';
-import 'dart:ui'; // For ImageFilter
+// For ImageFilter
 
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:chewie/chewie.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_feather_icons/flutter_feather_icons.dart';
 import 'package:flutx/flutx.dart'; // For FxText, FxButton, etc.
@@ -15,8 +13,6 @@ import 'package:ugflix/models/ManifestModel.dart';
 import 'package:ugflix/models/ManifestService.dart';
 import 'package:ugflix/models/NewMovieModel.dart';
 import 'package:ugflix/utils/CustomTheme.dart';
-import 'package:ugflix/utils/SizeConfig.dart';
-import 'package:ugflix/utils/app_theme.dart';
 import 'package:ugflix/utils/Utilities.dart';
 import 'package:ugflix/widget/widgets.dart';
 import 'package:ugflix/screens/gardens/VideoPlayerScreen.dart';
@@ -226,10 +222,11 @@ class _MovieDetailScreenState extends State<MovieDetailScreen>
             _relatedMovies.clear();
           });
           _fadeController.forward();
-          if (_isSeries)
+          if (_isSeries) {
             _loadEpisodes(reloadedMovie.category_id);
-          else
+          } else {
             _loadRelatedMovies(reloadedMovie.id.toString());
+          }
         }
       },
       color: _accentColor,
@@ -745,9 +742,9 @@ class _MovieDetailScreenState extends State<MovieDetailScreen>
                 fit: BoxFit.cover,
                 placeholder: (context, url) =>
                     Container(color: Colors.grey[850]),
-                errorWidget: (context, url, error) => Image(
+                errorWidget: (context, url, error) => const Image(
                     fit: BoxFit.cover,
-                    image: const AssetImage('assets/images/bg.jpg')),
+                    image: AssetImage('assets/images/bg.jpg')),
                 fadeInDuration: const Duration(milliseconds: 300),
               ),
               Container(
@@ -782,7 +779,7 @@ class _MovieDetailScreenState extends State<MovieDetailScreen>
                         relatedMovie.genre.isNotEmpty)
                       Row(
                         children: [
-                          Icon(FeatherIcons.mic,
+                          const Icon(FeatherIcons.mic,
                               color: CustomTheme.accent, size: 13),
                           const SizedBox(width: 5),
                           Expanded(
@@ -954,7 +951,7 @@ class _MovieDetailShimmer extends StatelessWidget {
   final Color primaryColor;
 
   const _MovieDetailShimmer(
-      {required this.accentColor, required this.primaryColor, super.key});
+      {required this.accentColor, required this.primaryColor});
 
   static const double _kHorizontalPadding = 20.0;
   static const double _kVerticalPadding = 16.0;

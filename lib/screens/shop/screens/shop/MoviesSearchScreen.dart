@@ -24,7 +24,7 @@ class _MoviesSearchScreenState extends State<MoviesSearchScreen> {
   final TextEditingController _searchCtrl = TextEditingController();
 
   /// List of found movies
-  List<NewMovieModel> _movies = [];
+  final List<NewMovieModel> _movies = [];
 
   /// Pagination / state tracking
   int _page = 1;

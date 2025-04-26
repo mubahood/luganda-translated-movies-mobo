@@ -16,6 +16,8 @@ import 'package:ugflix/utils/my_colors.dart';
 import 'package:ugflix/screens/gardens/VideoPlayerScreen.dart';
 
 class SectionResume extends StatefulWidget {
+  const SectionResume({super.key});
+
   @override
   _SectionResumeState createState() => _SectionResumeState();
 }
