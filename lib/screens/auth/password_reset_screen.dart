@@ -23,7 +23,7 @@ class PasswordResetScreen extends StatefulWidget {
 class PasswordResetScreenState extends State<PasswordResetScreen> {
   final _formKey = GlobalKey<FormBuilderState>();
 
-  bool _isLoaderVisible = false;
+  final bool _isLoaderVisible = false;
 
   @override
   void dispose() {
@@ -222,7 +222,7 @@ class PasswordResetScreenState extends State<PasswordResetScreen> {
                               : FxContainer(
                                   bordered: true,
                                   borderColor: Colors.red,
-                                  margin: EdgeInsets.symmetric(
+                                  margin: const EdgeInsets.symmetric(
                                     vertical: 15,
                                   ),
                                   color: Colors.red.shade50,

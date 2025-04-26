@@ -164,7 +164,7 @@ class MainController extends GetxController {
     for (var element in items) {
       cartItems.add(element);
       // Ensure element.id is not null before calling toString()
-      cartItemsIDs.add(element.id?.toString() ?? ''); // Handle potential null ID
+      cartItemsIDs.add(element.id.toString() ?? ''); // Handle potential null ID
       // Calculate total safely
       tot.value += (Utils.int_parse(element.product_quantity) *
           Utils.int_parse(element.product_price_1));
@@ -230,17 +230,15 @@ class MainController extends GetxController {
       List<MyPermission> userPermissions = await MyPermission.get_items(); // Adjust if needs user ID filter
       for (var element in userPermissions) {
         // Make slug comparison safer (case-insensitive, null check)
-        String slugLower = element.slug?.toLowerCase() ?? '';
+        String slugLower = element.slug.toLowerCase() ?? '';
         if (slugLower == 'canmanagefarmers') {
           canManageFarmers = true;
         }
         if (slugLower == 'cananswerquestions') {
           canAnswerQuestions = true;
         }
-        if (element.slug != null) {
-          loggedInUser.permissions.add(element.slug!);
-        }
-      }
+        loggedInUser.permissions.add(element.slug);
+            }
 
       // Fetch user's roles
       List<MyRole> myRoles = await MyRole.get_items(); // Adjust if needs user ID filter

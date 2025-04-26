@@ -15,10 +15,10 @@ class MyApp extends StatelessWidget {
     AppTheme.init();
 
     return GetMaterialApp(
-      title: 'mOmulimisa',
+      title: 'UGFlix',
       debugShowCheckedModeBanner: false,
       theme: AppTheme.theme,
-      home: OnBoardingScreen(),
+      home: const OnBoardingScreen(),
       // home: GardensScreen(),
       initialRoute: AppRouter.splash,
       getPages: AppRouter.routes,

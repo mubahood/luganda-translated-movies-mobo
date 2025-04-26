@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "917167658458",
+    "project_id": "u-lits",
+    "storage_bucket": "u-lits.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:917167658458:android:5b81238bcc3ca653b41ce3",
+        "android_client_info": {
+          "package_name": "ulits.com"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "917167658458-4bc0tdh5nt8e8n9atd5k5639i6b3m4ph.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAalMu3i1jbCmYH8PCXXMYT0lbLjqCK4VI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "917167658458-4bc0tdh5nt8e8n9atd5k5639i6b3m4ph.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

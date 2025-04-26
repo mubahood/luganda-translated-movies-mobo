@@ -38,7 +38,7 @@ class _SeriesScreenState extends State<SeriesScreen> {
   void getEpisodes() async {
     Utils.toast("Loading episodes...");
     episodes = await MovieModel.get_items(
-      where: "category_id = " + widget.item.id.toString(),
+      where: "category_id = ${widget.item.id}",
     );
     if (episodes.isEmpty) {
       Utils.toast("No episodes found.");
@@ -197,7 +197,7 @@ class _SeriesScreenState extends State<SeriesScreen> {
                                     borderRadiusAll: 0,
                                     color: CustomTheme.accent,
                                     child: FxText.bodySmall(
-                                      "VJ: " + episodes[index].genre,
+                                      "VJ: ${episodes[index].genre}",
                                       color: CustomTheme.color,
                                       maxLines: 1,
                                       fontWeight: 700,

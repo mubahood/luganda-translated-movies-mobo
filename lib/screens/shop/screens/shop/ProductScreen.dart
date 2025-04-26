@@ -14,7 +14,6 @@ import '../../../../utils/AppConfig.dart';
 import '../../../../utils/CustomTheme.dart';
 import '../../../../utils/Utilities.dart';
 import '../../../../widget/widgets.dart';
-import '../../models/ChatHead.dart';
 import '../../models/ImageModelLocal.dart';
 import '../../models/Product.dart';
 import 'cart/CartScreen.dart';

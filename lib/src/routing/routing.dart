@@ -31,7 +31,7 @@ class AppRouter {
     ),
     GetPage(
       name: onBoarding,
-      page: () => OnBoardingScreen(),
+      page: () => const OnBoardingScreen(),
     ),
     GetPage(
       name: register,

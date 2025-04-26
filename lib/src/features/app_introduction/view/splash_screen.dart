@@ -34,7 +34,7 @@ class _SplashScreenState extends State<SplashScreen> {
     await Future.delayed(const Duration(seconds: 4));
 
     if (mainController.loggedInUser.id < 1) {
-      Get.to(() => OnBoardingScreen());
+      Get.to(() => const OnBoardingScreen());
       return;
     }
 
@@ -70,10 +70,10 @@ class _SplashScreenState extends State<SplashScreen> {
                 ),
               ),
               const SizedBox(height: 25),
-              Center(
+              const Center(
                   child: Text(
                 AppConfig.APP_NAME,
-                style: const TextStyle(
+                style: TextStyle(
                   fontSize: 20,
                   fontWeight: FontWeight.bold,
                 ),

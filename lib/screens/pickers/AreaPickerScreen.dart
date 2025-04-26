@@ -207,9 +207,6 @@ class _AreaPickerScreenState extends State<AreaPickerScreen>
     String name = "-";
     var resp = await dio.get(
         'https://maps.googleapis.com/maps/api/geocode/json?latlng=$lat,$long&key=${AppConfig.GOOGLE_MAP_API}');
-    if (resp == null) {
-      return name;
-    }
     if (resp.data != null &&
         resp.data['results'] != null &&
         resp.data['results'].length > 0) {

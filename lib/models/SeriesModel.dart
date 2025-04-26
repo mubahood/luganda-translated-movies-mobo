@@ -91,7 +91,7 @@ class SeriesModel {
     List<SeriesModel> data = [];
 
     RespondModel resp =
-        RespondModel(await Utils.http_get('${SeriesModel.end_point}', {}));
+        RespondModel(await Utils.http_get(SeriesModel.end_point, {}));
 
     if (resp.code != 1) {
       return [];

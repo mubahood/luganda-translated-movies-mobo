@@ -9,7 +9,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
-import 'package:internet_connection_checker/internet_connection_checker.dart';
 import 'package:intl/intl.dart';
 import 'package:ugflix/models/DistrictModel.dart';
 import 'package:ugflix/screens/auth/login_screen.dart';
@@ -18,7 +17,6 @@ import 'package:path_provider/path_provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sqflite/sqflite.dart';
 
-import '../controllers/MainController.dart';
 import '../models/DynamicModel.dart';
 import '../models/FarmerGroupModel.dart';
 import '../models/FarmerQuestion.dart';
@@ -28,9 +26,7 @@ import '../models/MapLocationModel.dart';
 import '../models/MyPermission.dart';
 import '../models/ParishModel.dart';
 import '../models/SubcountyModel.dart';
-import '../screens/shop/models/ChatHead.dart';
 import '../screens/shop/models/Product.dart';
-import '../screens/shop/screens/shop/chat/ChatsScreen.dart';
 import 'AppConfig.dart';
 import 'CustomTheme.dart';
 
@@ -401,7 +397,7 @@ class Utils {
 
     dynamic response;
     var dio = Dio();
-    (dio.httpClientAdapter as DefaultHttpClientAdapter).onHttpClientCreate =
+    (dio.httpClientAdapter as IOHttpClientAdapter).onHttpClientCreate =
         (HttpClient client) {
       client.badCertificateCallback =
           (X509Certificate cert, String host, int port) => true;
@@ -459,7 +455,7 @@ class Utils {
 
     dioPackage.Response response;
     var dio = Dio();
-    (dio.httpClientAdapter as DefaultHttpClientAdapter).onHttpClientCreate =
+    (dio.httpClientAdapter as IOHttpClientAdapter).onHttpClientCreate =
         (HttpClient client) {
       client.badCertificateCallback =
           (X509Certificate cert, String host, int port) => true;
@@ -480,7 +476,7 @@ class Utils {
           },
         ),
       );
-    /*  print("==========================");
+      /*  print("==========================");
       print( "${AppConfig.API_BASE_URL}/$path");
       Utils.log(response.data.toString());
       print("==========================");*/
@@ -500,14 +496,15 @@ class Utils {
   }
 
   static Future<bool> is_connected() async {
+    return true;
     //check using internet_connection_checker
-    final connectionChecker = InternetConnectionChecker.instance;
+    /*  final connectionChecker = InternetConnectionChecker.instance;
     bool isConnected = await connectionChecker.hasConnection;
     if (isConnected) {
       return true;
     } else {
       return false;
-    }
+    }*/
     // bool is_connected = false;
     // var connectivityResult = await (Connectivity().checkConnectivity());
     //
@@ -553,9 +550,6 @@ class Utils {
     var dio = Dio();
     var resp = await dio.get(
         'https://maps.googleapis.com/maps/api/geocode/json?address=$keyword,Uganda&key=${AppConfig.GOOGLE_MAP_API}');
-    if (resp == null) {
-      return obj;
-    }
     for (var x in resp.data['results']) {
       obj.name = x['formatted_address'];
       obj.latitude = x['geometry']['location']['lat'];

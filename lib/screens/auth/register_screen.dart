@@ -276,7 +276,7 @@ class RegisterScreenState extends State<RegisterScreen> {
                             const SizedBox(height: 28),
                             Row(
                               children: [
-                                Expanded(
+                                const Expanded(
                                     child: Divider(
                                         color: Colors.white70, thickness: 1)),
                                 const SizedBox(width: 10),
@@ -290,7 +290,7 @@ class RegisterScreenState extends State<RegisterScreen> {
                                   ),
                                 ),
                                 const SizedBox(width: 10),
-                                Expanded(
+                                const Expanded(
                                     child: Divider(
                                         color: Colors.white70, thickness: 1)),
                               ],

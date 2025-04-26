@@ -1,13 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:upgrader/upgrader.dart';
+import 'package:overlay_support/overlay_support.dart';
 
 import 'core/app.dart';
 
 void main() {
-  runApp(
-    UpgradeAlert(
-      child: const MyApp(),
-      barrierDismissible: false,
-    ),
-  );
+  runApp(const MyApp());
 }

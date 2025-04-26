@@ -10,7 +10,7 @@ import '../../../../screens/shop/screens/shop/full_app/full_app.dart';
 import '../../../../utils/AppConfig.dart';
 
 class OnBoardingScreen extends StatefulWidget {
-  OnBoardingScreen({super.key});
+  const OnBoardingScreen({super.key});
 
   @override
   State<OnBoardingScreen> createState() => _OnBoardingScreenState();
