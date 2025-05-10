@@ -93,11 +93,12 @@ class _SectionSeriesState extends State<SectionSeries> {
         colorText: Colors.white,
       );
     } finally {
-      if (mounted)
+      if (mounted) {
         setState(() {
           _loading = false;
           _initial = false;
         });
+      }
     }
   }
 

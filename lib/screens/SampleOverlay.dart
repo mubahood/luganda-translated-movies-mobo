@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:overlay_support/overlay_support.dart'
     as FlutterOverlayApps
@@ -18,7 +17,7 @@ class SampleOverlay extends StatelessWidget {
           child: ElevatedButton(
             onPressed: () async {
               // Open overlay
-              await FlutterOverlayApps.showOverlay((context, progress,) {
+              FlutterOverlayApps.showOverlay((context, progress,) {
                 return const TopScreen();
               },
 
@@ -46,7 +45,7 @@ class MyOverlaContent extends StatefulWidget {
 }
 
 class _MyOverlaContentState extends State<MyOverlaContent> {
-  String _dataFromApp = "Hey send data";
+  final String _dataFromApp = "Hey send data";
 
   @override
   void initState() {

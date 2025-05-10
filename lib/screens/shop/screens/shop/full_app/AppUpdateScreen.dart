@@ -181,7 +181,7 @@ class _AppUpdateScreenState extends State<AppUpdateScreen> {
   // --- Main Content Area (Glass) ---
 
   Widget _buildGlassContent(TextTheme textTheme) {
-    final m = widget.manifestService!;
+    final m = widget.manifestService;
 
     return SingleChildScrollView(
       padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 40.0),
@@ -346,7 +346,7 @@ class _AppUpdateScreenState extends State<AppUpdateScreen> {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Icon(FeatherIcons.alertCircle, color: Colors.redAccent, size: 40),
+            const Icon(FeatherIcons.alertCircle, color: Colors.redAccent, size: 40),
             const SizedBox(height: 16),
             FxText(errorMessage,
                 style: textTheme.bodyLarge?.copyWith(color: _textMutedColor),

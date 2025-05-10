@@ -220,10 +220,11 @@ class _MovieDetailScreenState extends State<MovieDetailScreen>
             _relatedMovies.clear();
           });
           _fadeController.forward();
-          if (_isSeries)
+          if (_isSeries) {
             _loadEpisodes(reloadedMovie.category_id);
-          else
+          } else {
             _loadRelatedMovies(reloadedMovie.id.toString());
+          }
         }
       },
       color: _accentColor,
@@ -739,9 +740,9 @@ class _MovieDetailScreenState extends State<MovieDetailScreen>
                 fit: BoxFit.cover,
                 placeholder: (context, url) =>
                     Container(color: Colors.grey[850]),
-                errorWidget: (context, url, error) => Image(
+                errorWidget: (context, url, error) => const Image(
                     fit: BoxFit.cover,
-                    image: const AssetImage('assets/images/bg.jpg')),
+                    image: AssetImage('assets/images/bg.jpg')),
                 fadeInDuration: const Duration(milliseconds: 300),
               ),
               Container(
@@ -776,7 +777,7 @@ class _MovieDetailScreenState extends State<MovieDetailScreen>
                         relatedMovie.genre.isNotEmpty)
                       Row(
                         children: [
-                          Icon(FeatherIcons.mic,
+                          const Icon(FeatherIcons.mic,
                               color: CustomTheme.accent, size: 13),
                           const SizedBox(width: 5),
                           Expanded(
@@ -948,7 +949,7 @@ class _MovieDetailShimmer extends StatelessWidget {
   final Color primaryColor;
 
   const _MovieDetailShimmer(
-      {required this.accentColor, required this.primaryColor, super.key});
+      {required this.accentColor, required this.primaryColor});
 
   static const double _kHorizontalPadding = 20.0;
   static const double _kVerticalPadding = 16.0;

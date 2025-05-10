@@ -8,7 +8,6 @@ import 'package:ugflix/models/ManifestModel.dart';
 import 'package:ugflix/models/ManifestService.dart';
 import 'package:ugflix/models/NewMovieModel.dart';
 import 'package:ugflix/utils/CustomTheme.dart';
-import 'package:ugflix/widget/widgets.dart';
 import '../MoviesSearchScreen.dart';
 import '../widgets.dart';
 import 'MovieDetailScreen.dart';

@@ -43,7 +43,7 @@ class _SectionDashboardState extends State<SectionDashboard>
 
   // --- Ads State ---
   // BannerAd? _bannerAd;
-  bool _isBannerAdReady = false;
+  final bool _isBannerAdReady = false;
 
   // --- Ad Unit IDs (Use Test IDs for Development) ---
   // TODO: Replace with your actual AdMob Ad Unit IDs before publishing!
@@ -190,10 +190,10 @@ class _SectionDashboardState extends State<SectionDashboard>
           const SizedBox(height: 24),
           FxButton.outlined(
             onPressed: _refreshData,
-            child: FxText('Retry', color: Colors.yellowAccent[700]),
             borderColor: Colors.yellow.shade700,
             splashColor: Colors.yellowAccent[700]?.withOpacity(0.2),
             borderRadiusAll: _kChipBorderRadius,
+            child: FxText('Retry', color: Colors.yellowAccent[700]),
           ),
         ],
       ),
@@ -306,7 +306,7 @@ class _SectionDashboardState extends State<SectionDashboard>
               padding: const EdgeInsets.all(8.0),
               decoration: BoxDecoration(
                   color: Colors.white.withOpacity(0.1), shape: BoxShape.circle),
-              child: Icon(FeatherIcons.mic, color: Colors.yellow, size: 24),
+              child: const Icon(FeatherIcons.mic, color: Colors.yellow, size: 24),
             ),
           ),
         ],
@@ -324,7 +324,7 @@ class _SectionDashboardState extends State<SectionDashboard>
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
         child: Row(
           children: [
-            Icon(FeatherIcons.search,
+            const Icon(FeatherIcons.search,
                 color: Colors.yellow, size: 20), // Accent search icon
             const SizedBox(width: 10),
             Expanded(
@@ -416,7 +416,7 @@ class _SectionDashboardState extends State<SectionDashboard>
                       Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          Icon(FeatherIcons.mic,
+                          const Icon(FeatherIcons.mic,
                               color: Colors.yellow, size: 16),
                           const SizedBox(width: 5),
                           FxText.bodyLarge(movie.vj,
@@ -516,7 +516,7 @@ class _SectionDashboardState extends State<SectionDashboard>
                   children: [
                     FxText('View All', color: Colors.yellow, fontWeight: 600),
                     const SizedBox(width: 4),
-                    Icon(FeatherIcons.arrowRight,
+                    const Icon(FeatherIcons.arrowRight,
                         color: Colors.yellow, size: 18),
                   ],
                 ),
@@ -607,7 +607,7 @@ class _SectionDashboardState extends State<SectionDashboard>
                     const SizedBox(height: 4),
                     Row(
                       children: [
-                        Icon(FeatherIcons.mic, color: Colors.yellow, size: 12),
+                        const Icon(FeatherIcons.mic, color: Colors.yellow, size: 12),
                         const SizedBox(width: 4),
                         Expanded(
                           child: FxText(
@@ -716,7 +716,7 @@ class _SectionDashboardState extends State<SectionDashboard>
                             fontWeight: isSelected ? 700 : 500),
                         trailing: !isSelected
                             ? null
-                            : Icon(FeatherIcons.checkCircle,
+                            : const Icon(FeatherIcons.checkCircle,
                                 color: CustomTheme.accent, size: 24),
                         dense: false,
                       );
@@ -735,7 +735,7 @@ class _SectionDashboardState extends State<SectionDashboard>
   Widget _buildFilterBottomSheetHeader() {
     // Keep implementation from previous version
     return Container(
-      padding: EdgeInsets.only(
+      padding: const EdgeInsets.only(
           left: _kHorizontalPadding,
           right: _kHorizontalPadding,
           bottom: _kVerticalPadding * 0.8,

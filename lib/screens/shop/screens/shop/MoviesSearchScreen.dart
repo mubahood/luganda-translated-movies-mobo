@@ -283,7 +283,7 @@ class _MoviesSearchScreenState extends State<MoviesSearchScreen> {
                 height: 80,
                 imageUrl: movie.getThumbnail(),
                 placeholder: (context, url) =>
-                    ShimmerLoadingWidget(height: 80, width: 80),
+                    const ShimmerLoadingWidget(height: 80, width: 80),
                 errorWidget: (context, url, error) => const Image(
                     width: 80,
                     height: 80,
@@ -373,16 +373,16 @@ class _MoviesSearchScreenState extends State<MoviesSearchScreen> {
               // Shimmer for the thumbnail
               ClipRRect(
                 borderRadius: BorderRadius.circular(8),
-                child: ShimmerLoadingWidget(height: 80, width: 80),
+                child: const ShimmerLoadingWidget(height: 80, width: 80),
               ),
               const SizedBox(width: 10),
               // Shimmer for text
-              Expanded(
+              const Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     ShimmerLoadingWidget(height: 16, width: double.infinity),
-                    const SizedBox(height: 8),
+                    SizedBox(height: 8),
                     ShimmerLoadingWidget(height: 14, width: 80),
                   ],
                 ),

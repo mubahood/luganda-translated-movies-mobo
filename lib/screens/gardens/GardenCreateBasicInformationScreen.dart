@@ -159,27 +159,6 @@ class GardenCreateBasicInformationScreenState
                             textInputAction: TextInputAction.next,
                           ),
                           const SizedBox(height: 15),
-                          //FormBuilderChoiceChip for soil_type
-                          FormBuilderChoiceChips(
-                            decoration: CustomTheme.in_3(
-                              label: GetStringUtils("Soil type").capitalize!,
-                            ),
-                            name: "soil_type",
-                            initialValue: widget.garden.soil_type,
-                            spacing: 10,
-                            selectedColor: CustomTheme.primary,
-                            backgroundColor: Colors.grey.shade100,
-                            options: const [
-                              FormBuilderChipOption(value: "Loamy"),
-                              FormBuilderChipOption(value: "Clay"),
-                              FormBuilderChipOption(value: "Sandy"),
-                              FormBuilderChipOption(value: "Peaty"),
-                            ],
-                            onChanged: (x) {
-                              widget.garden.soil_type = x.toString();
-                            },
-                          ),
-                          const SizedBox(height: 15),
                           FormBuilderTextField(
                             decoration: CustomTheme.in_3(
                               label: GetStringUtils("Soil PH").capitalize!,

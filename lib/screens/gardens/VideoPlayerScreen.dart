@@ -183,8 +183,8 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen>
           right: 16,
           child: FxContainer(
             color: Colors.red,
-            child: FxText("data go here"),
             borderRadiusAll: 20,
+            child: FxText("data go here"),
           ),
 
           /* Draggable(
@@ -193,7 +193,7 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen>
             child: _miniPlayer(),
           ),*/
         );
-      }, duration: Duration(minutes: 2));
+      }, duration: const Duration(minutes: 2));
     }
   }
 
@@ -252,7 +252,7 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen>
         decoration: BoxDecoration(
           color: Colors.black87,
           borderRadius: BorderRadius.circular(8),
-          boxShadow: [BoxShadow(color: Colors.black45, blurRadius: 8)],
+          boxShadow: const [BoxShadow(color: Colors.black45, blurRadius: 8)],
         ),
         clipBehavior: Clip.hardEdge,
         child: AspectRatio(
@@ -280,9 +280,9 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen>
           filter: ImageFilter.blur(sigmaX: 16, sigmaY: 16),
           child: Container(color: Colors.black54),
         ),
-        Column(
+        const Column(
           mainAxisAlignment: MainAxisAlignment.center,
-          children: const [
+          children: [
             SizedBox(
               width: 60,
               height: 60,
@@ -385,7 +385,7 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen>
                       _ctrl,
                       allowScrubbing: true,
                       padding: const EdgeInsets.symmetric(horizontal: 8),
-                      colors: VideoProgressColors(
+                      colors: const VideoProgressColors(
                         playedColor: CustomTheme.accent,
                         bufferedColor: Colors.white30,
                         backgroundColor: Colors.white12,
@@ -476,7 +476,7 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen>
                           final idx = speeds.indexOf(s);
                           return ChoiceChip(
                             label: Text(
-                              "${s}×",
+                              "$s×",
                               style: TextStyle(
                                 color:
                                     idx == _speedIndex
